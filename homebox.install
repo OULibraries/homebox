@@ -1,0 +1,68 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * The install file for Home box allows the module to install (and uninstall) itself. This is required as this module uses its own table.
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+function homebox_install() {
+  drupal_install_schema('homebox');
+}
+
+function homebox_schema() {
+  // Schema for home box pages
+  $schema['homebox_pages'] = array(
+    'fields' => array(
+      'pid'  => array('type' => 'serial', 'not null' => TRUE),
+      'name' => array('type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => ''),
+    ),
+    'primary key' => array('pid'),
+  );
+  // Schema for default layout settings
+  $schema['homebox_default'] = array(
+    'fields' => array(
+      'pid'     => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'bid'     => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'region'  => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'movable' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 1),
+      'weight'  => array('type' => 'int', 'unsigned' => FALSE, 'not null' => TRUE, 'default' => 0)
+    ),
+    'primary key' => array('bid', 'pid'),
+  );
+  // Schema for user custom settings
+  $schema['homebox_users'] = array(
+    'fields' => array(
+      'uid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'pid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'bid'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'region' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'weight' => array('type' => 'int', 'unsigned' => FALSE, 'not null' => TRUE, 'default' => 0),
+      'status' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 1),
+      'color'  => array('type' => 'varchar', 'length' => 7, 'not null' => TRUE, 'default' => ''),
+      'open'   => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 1),
+    ),
+    'primary key' => array('uid', 'bid', 'pid'),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function homebox_uninstall() {
+  // Remove variables
+  foreach (homebox_pages() as $page) {
+    variable_del('homebox_column_count_'. $page->pid);
+    variable_del('homebox_users_use_colors_'. $page->pid);
+    // Colors
+    for ($i = 0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
+      variable_del('homebox_color_'. $page->pid . '_' . $i);
+    }
+  }
+  // Remove schema
+  drupal_uninstall_schema('homebox');
+}

@@ -1,0 +1,4 @@
+// $Id$
+
+CHANGELOG for Home box for Drupal 6
+  o to come
