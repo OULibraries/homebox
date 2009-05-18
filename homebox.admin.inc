@@ -61,7 +61,7 @@ function homebox_admin_page() {
     $form['delete'] = array(
       '#type' => 'submit',
       '#value' => t('Delete page'),
-      '#weight' => 2,
+      '#weight' => 3,
     );
   }
   else {
@@ -158,7 +158,7 @@ function homebox_admin_page_submit($form, &$form_state) {
     drupal_set_message(t('The page has been added.'));
   }
   $form_state['redirect'] = 'admin/build/homebox';
-  // menu_cache_clear_all();
+  menu_cache_clear_all();
   return;
 }
 

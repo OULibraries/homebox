@@ -32,6 +32,13 @@ INSTALLATION
 
  * Enable jQuery update and jQuery UI modules
  * Be sure to follow instructions from README.txt in jQuery UI module
+
+   --- IMPORTANT ---- Begin
+   Be sure to grab jQuery UI package from Google Code - http://jquery-ui.googlecode.com/files/jquery.ui-1.6.zip
+
+   If not sure read this http://drupal.org/node/463270
+   --- IMPORTANT ---- End
+
  * Enable optional modules if you want (see list above)
  * Enable Home box module
  * Go to Administer > Site building > Home box
