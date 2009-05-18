@@ -1,4 +1,6 @@
 // $Id$
 
-CHANGELOG for Home box for Drupal 6
-  o to come
+CHANGELOG for Home box for Drupal 6.x-1.x-dev
+  o Fix warning during install
+  o Added a condition on hook_views_pre_execute() to prevent user_save from firing when not on a homebox context
+  o README.txt update

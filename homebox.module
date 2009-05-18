@@ -21,15 +21,17 @@ define('HOMEBOX_NUMBER_OF_COLOURS', 6);
 function homebox_menu() {
   $items = array();
 
-  //  User pages
-  foreach (homebox_pages() as $page) {
-    $items['homebox/'. $page->pid] = array(
-      'title' => $page->name,
-      'page callback' => 'homebox_build',
-      'page arguments' => array(1),
-      'access arguments' => array('access homebox '. $page->name),
-      'type' => MENU_NORMAL_ITEM,
-    );
+  // User pages
+  if (is_array(homebox_pages()) && count(homebox_pages()) > 0) {
+    foreach (homebox_pages() as $page) {
+      $items['homebox/'. $page->pid] = array(
+        'title' => $page->name,
+        'page callback' => 'homebox_build',
+        'page arguments' => array(1),
+        'access arguments' => array('access homebox '. $page->name),
+        'type' => MENU_NORMAL_ITEM,
+      );
+    }
   }
 
   //  Ajax Callbacks
@@ -715,8 +717,13 @@ function _homebox_get_css_classes_for_block($block, $pid) {
  */
 function homebox_views_pre_execute(&$view) {
   global $user;
-  // Make sure $user is logged in
-  if ($user->uid != 0) {
+  global $base_url;
+
+  $referer = preg_replace("#^$base_url#", '', $_SERVER['HTTP_REFERER']);
+  $normal = drupal_get_normal_path($referer);
+
+  // Make sure $user is logged in, comes from an Ajax Request for Views
+  if ($user->uid != 0 && arg(0) == 'homebox') {
     $exposed = &$_SESSION['views'];
     // We save the current user exposed parameters to the database
     user_save($user, array('homebox_views_exposed' => $exposed));
