@@ -52,7 +52,7 @@ function homebox_admin_page() {
     }
     else {
       $form['path_module'] = array(
-        '#value' => '<p>'. t('If you add the Path module enabled, you could specify an URL alias for that page.') .'</p>',
+        '#value' => '<p>'. t('If you had the Path module enabled, you could specify an URL alias for that page.') .'</p>',
       );
     }
 
@@ -76,6 +76,7 @@ function homebox_admin_page() {
       '#type' => 'textfield',
       '#size' => 32,
       '#maxlength' => 64,
+      '#prefix' => theme('advanced_help_topic', 'homebox', 'new-page'),
     );
     $form['submit'] = array(
       '#type' => 'submit',

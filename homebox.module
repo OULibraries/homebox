@@ -101,16 +101,20 @@ function homebox_forms() {
 function homebox_help($path, $arg) {
   switch ($path) {
     case 'admin/build/homebox':
-      $output = '<p>'. t("Home box pages are listed below. Each page is accessible from one url on your site. You can create as many pages as you need, set its default layout (i.e. blocks that you want to be available per page, color options, etc.). Don't forget to visit the <a href='!permissions'>permissions page</a> to set access to home box pages for each role. <strong>NOTE:</strong> if a page doesn't contain any block, visiting it will fire a <em>Page not found (404)</em> error.", array('!permissions' => url('admin/user/permissions', array('fragment' => 'module-homebox')))) .'</p>';
+      $output = '<p>'. theme('advanced_help_topic', 'homebox', 'introduction') .'&nbsp;';
+      $output .= t("Home box pages are listed below. Each page is accessible from one url on your site. You can create as many pages as you need, set its default layout (i.e. blocks that you want to be available per page, color options, etc.). Don't forget to visit the <a href='!permissions'>permissions page</a> to set access to home box pages for each role. <strong>NOTE:</strong> if a page doesn't contain any block, visiting it will fire a <em>Page not found (404)</em> error.", array('!permissions' => url('admin/user/permissions', array('fragment' => 'module-homebox')))) .'</p>';
       break;
     case 'admin/build/homebox/edit':
-      $output = '<p>'. t("You can rename or delete a Home box page.") .'</p>';
+      $output = '<p>'. theme('advanced_help_topic', 'homebox', 'new-page') .'&nbsp;';
+      $output .= t("You can rename or delete a Home box page.") .'</p>';
       break;
     case 'admin/build/homebox/layout/%':
-      $output = '<p>'. t("This page behave the same way as Drupal block administration page. Drag blocks to whatever column you want to enable it for your users. Note that you can change the number of columns in the <a href='!settings_url'>settings page</a>", array('!settings_url' => url('admin/build/homebox/settings/'. arg(4)))) .'.</p>';
+      $output = '<p>'. theme('advanced_help_topic', 'homebox', 'default-layout') .'&nbsp;';
+      $output .= t("This page behave the same way as Drupal block administration page. Drag blocks to whatever column you want to enable it for your users. Note that you can change the number of columns in the <a href='!settings_url'>settings page</a>", array('!settings_url' => url('admin/build/homebox/settings/'. arg(4)))) .'.</p>';
       break;
     case 'admin/build/homebox/settings/%':
-      $output = '<p>'. t('Home box configuration page.');
+      $output = '<p>'. theme('advanced_help_topic', 'homebox', 'settings') .'&nbsp;';
+      $output .= t('Home box configuration page.');
       break;
   }
   return $output;

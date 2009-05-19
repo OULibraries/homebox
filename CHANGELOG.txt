@@ -17,3 +17,4 @@ CHANGELOG for Home box for Drupal
   o Removed unnecessary code here and there
   o Removed unnecessary CSS rules
   o Fixed all Drupal coding standards reported by Coder module
+  o Added Advanced help documentation

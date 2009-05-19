@@ -26,6 +26,7 @@ The following modules are not required but recommended for integration or ease o
  * Path 6.x (provided with Drupal core)
  * Color picker 6.x-1.0-beta1 - http://drupal.org/project/colorpicker
  * Views 6.x-2.5 -  http://drupal.org/project/views
+ * Advanced Help 6.x-1.2 - http://drupal.org/project/advanced_help
 
 INSTALLATION
 ------------
