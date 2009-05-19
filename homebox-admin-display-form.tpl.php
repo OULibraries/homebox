@@ -1,5 +1,11 @@
 <?php
 // $Id$
+
+/**
+ * @file
+ * homebox-admin-display-form.tpl.php
+ * Default theme implementation to configure homebox blocks.
+ */
 ?>
 <?php
   // Add table javascript.
@@ -32,8 +38,6 @@
       <tr class="draggable <?php print $row % 2 == 0 ? 'odd' : 'even'; ?><?php print $data->row_class ? ' '. $data->row_class : ''; ?>">
         <td class="block">
           <?php print $data->block_title; ?>
-          <br />
-          <?php print $data->roles; ?>
         </td>
         <td><?php print $data->region_select; ?></td>
         <td><?php print $data->weight_select; ?> <?php print $data->bid ?></td>
@@ -46,3 +50,4 @@
 </table>
 
 <?php print $form_submit; ?>
+<!-- End Homebox admin form layout -->

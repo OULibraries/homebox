@@ -56,11 +56,14 @@ function homebox_schema() {
 function homebox_uninstall() {
   // Remove variables
   foreach (homebox_pages() as $page) {
+    // Remove url_alias records for homebox
+    db_query("DELETE FROM {url_alias} WHERE src = 'homebox/%d'", $page->pid);
+    // Settings
     variable_del('homebox_column_count_'. $page->pid);
     variable_del('homebox_users_use_colors_'. $page->pid);
     // Colors
     for ($i = 0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
-      variable_del('homebox_color_'. $page->pid . '_' . $i);
+      variable_del('homebox_color_'. $page->pid .'_'. $i);
     }
   }
   // Remove schema

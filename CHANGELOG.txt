@@ -1,6 +1,19 @@
 // $Id$
 
-CHANGELOG for Home box for Drupal 6.x-1.x-dev
-  o Fix warning during install
+CHANGELOG for Home box for Drupal
+
+6.x-1.x-dev - 2009/05/18
+  o Fixed warning during install
   o Added a condition on hook_views_pre_execute() to prevent user_save from firing when not on a homebox context
   o README.txt update
+
+6.x-1.x-dev - 2009/05/19
+  o Fixed uninstall procedure to delete url aliases from url_alias table
+  o Fixed block sorting on admin page
+  o Block overriding themselves for front end display when blocks had the same weight value
+  o Fixed exposed filters for views when defined in default display and not overriden in block display
+  o Fixed exposed filters to only be displayed in config portlet zone when view option "Exposed form in block" is set to "Yes"
+  o Replaced cache_clear_all() calls with menu_rebuild(), we have no cache to clear, but we have menu items to rebuild
+  o Removed unnecessary code here and there
+  o Removed unnecessary CSS rules
+  o Fixed all Drupal coding standards reported by Coder module

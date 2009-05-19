@@ -1,6 +1,13 @@
 <?php
 // $Id$
 
+/**
+ * @file
+ * Home box admin file, takes care admin interface for homebox
+ *
+ * Defines home box pages, default layout, settings
+ */
+
 function homebox_admin_page() {
   $pid = arg(4);
   if ($pid) {
@@ -108,7 +115,7 @@ function theme_homebox_admin_new_page($form) {
 function homebox_admin_page_validate($form, &$form_state) {
   if ($form_state['values']['name']) {
     if ($form_state['values']['op'] == t('Save page')) {
-      if (db_result(db_query("SELECT COUNT(*) FROM {homebox_pages} WHERE name = '%s' AND pid != %d", $form_state['values']['name'], $form_state['values']['pid']))) {
+      if (db_result(db_query("SELECT COUNT(*) FROM {homebox_pages} WHERE name = '%s' AND pid <> %d", $form_state['values']['name'], $form_state['values']['pid']))) {
         form_set_error('name', t('The page name %name already exists. Please choose another page name.', array('%name' => $form_state['values']['name'])));
       }
     }
@@ -158,7 +165,7 @@ function homebox_admin_page_submit($form, &$form_state) {
     drupal_set_message(t('The page has been added.'));
   }
   $form_state['redirect'] = 'admin/build/homebox';
-  menu_cache_clear_all();
+  menu_rebuild();
   return;
 }
 
@@ -200,8 +207,6 @@ function homebox_layout($pid) {
     }
   }
 
-  // TODO problem with sorting function, order is well saved
-  // but this doesn't show up in admin screen
   usort($blocks, '_homebox_block_compare');
 
   return drupal_get_form('homebox_admin_display_form', $blocks, $pid, $theme = NULL);
@@ -244,25 +249,10 @@ function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) 
       '#type' => 'value',
       '#value' => $block['delta'],
     );
-    // $title = $block['title'] ? check_plain($block['title']) : check_plain($block['info']);
     $form[$key]['info'] = array(
       '#value' => check_plain($block['info'])
     );
 
-    // Get roles for this block
-    $result = db_query("SELECT DISTINCT(name) FROM {role} r, {blocks_roles} br WHERE br.rid = r.rid AND br.module = '%s' AND br.delta = '%s'", $block['module'], $block['delta']);
-
-    $roles = array();
-    while ($r = db_fetch_object($result)) {
-      $roles[] = $r->name;
-    }
-
-    $form[$key]['roles'] = array(
-      '#type' => 'markup',
-      '#prefix' => '<span class="roles">'. t('Restricted to:') .' ',
-      '#value' => implode(', ', $roles),
-      '#suffix' => '</span>',
-    );
     $form[$key]['weight'] = array(
       '#type' => 'weight',
       '#default_value' => $block['weight'],
@@ -322,7 +312,7 @@ function homebox_admin_display_form_submit($form, &$form_state) {
 
   // We remove blocks from the homebox_users table that are no longer in the homebox_default table
   $result = db_query("DELETE FROM {homebox_users} WHERE pid = %d AND bid NOT IN (SELECT bid FROM {homebox_default})", $pid);
-  
+  menu_rebuild();
   drupal_set_message(t('Home box layout settings have been updated.'));
 }
 
@@ -330,7 +320,6 @@ function homebox_admin_display_form_submit($form, &$form_state) {
  * Process variables for homebox-admin-display.tpl.php.
  *
  * @param $variables
- * @see homebox-admin-display.tpl.php
  * @see theme_homebox_admin_display()
  */
 function template_preprocess_homebox_admin_display_form(&$variables) {
@@ -364,7 +353,6 @@ function template_preprocess_homebox_admin_display_form(&$variables) {
       $variables['block_listing'][$region][$i]->row_class = isset($block['#attributes']['class']) ? $block['#attributes']['class'] : '';
       $variables['block_listing'][$region][$i]->block_modified = isset($block['#attributes']['class']) && strpos($block['#attributes']['class'], 'block-modified') !== FALSE ? TRUE : FALSE;
       $variables['block_listing'][$region][$i]->block_title =  drupal_render($block['info']);
-      $variables['block_listing'][$region][$i]->roles =  drupal_render($block['roles']);
       $variables['block_listing'][$region][$i]->region_select = drupal_render($block['region']) . drupal_render($block['theme']);
       $variables['block_listing'][$region][$i]->weight_select = drupal_render($block['weight']);
       $variables['block_listing'][$region][$i]->movable = drupal_render($block['movable']);
@@ -380,7 +368,7 @@ function template_preprocess_homebox_admin_display_form(&$variables) {
 
 /**
  * Forms for administration settings
- * 
+ *
  * @param $form_state
  * @return
  *  $form
@@ -390,7 +378,7 @@ function homebox_configure_form(&$form_state, $pid) {
   drupal_set_title(t('!page_name settings', array('!page_name' => $page_name)));
 
   $form['columns'] = array(
-    '#type' => 'select', 
+    '#type' => 'select',
     '#title' => t('Number of columns'),
     '#default_value' => variable_get('homebox_column_count_'. $pid, 3),
     '#options' => array('1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '6' => 6, '7' => 7, '8' => 8, '9' => 9),
@@ -416,23 +404,23 @@ function homebox_configure_form(&$form_state, $pid) {
       '#description' => t('Click an input to change choose a color.'),
     );
 
-    for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) { 
-      $form['color']['homebox_color_'. $pid . '_' . $i] = array(
+    for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
+      $form['color']['homebox_color_'. $pid .'_'. $i] = array(
         '#type' => 'colorpicker_textfield',
         '#title' => t('Color #!number', array('!number' => $i)),
         '#description' => t('Enter an hexadecimal value prefixed with #.'),
-        '#default_value' => variable_get('homebox_color_'. $pid . '_' . $i, '#E4F0F8'),
+        '#default_value' => variable_get('homebox_color_'. $pid .'_'. $i, '#E4F0F8'),
         '#colorpicker' => 'homebox_colorpicker',
       );
     }
   }
   else {
-    for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) { 
-      $form['color']['homebox_color_'. $pid . '_' . $i] = array(
+    for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
+      $form['color']['homebox_color_'. $pid .'_'. $i] = array(
         '#type' => 'textfield',
         '#title' => t('Color #!number', array('!number' => $i)),
         '#description' => t('Enter an hexadecimal value, ex: #ff33dd'),
-        '#default_value' => variable_get('homebox_color_'. $pid . '_' . $i, '#E4F0F8'),
+        '#default_value' => variable_get('homebox_color_'. $pid .'_'. $i, '#E4F0F8'),
       );
     }
     $form['color']['message'] = array(
@@ -454,7 +442,7 @@ function homebox_configure_form(&$form_state, $pid) {
 
 /**
  * Forms for administration settings
- * 
+ *
  * @param $form
  * @param $form_state
  */
@@ -467,7 +455,7 @@ function homebox_configure_form_validate($form, &$form_state) {
 
 /**
  * Forms for administration settings
- * 
+ *
  * @param $form
  * @param $form_state
  */
@@ -490,7 +478,7 @@ function homebox_configure_form_submit($form, &$form_state) {
  *
  * Active blocks are sorted by region, then by weight.
  * Disabled blocks are sorted by name.
- * 
+ *
  * @param $a
  *  An array
  * @param $b
@@ -499,17 +487,6 @@ function homebox_configure_form_submit($form, &$form_state) {
  *  Comparison result
  */
 function _homebox_block_compare($a, $b) {
-  static $regions;
-
-  // We need the region list to correctly order by region.
-  if (!isset($regions)) {
-    $regions = array_flip(array_keys(homebox_named_columns($a['pid'])));
-    $regions[HOMEBOX_REGION_NONE] = count($regions);
-  }
-  // Sort by region
-  if ((!empty($a['region']) && !empty($b['region'])) && ($place = ($regions[$a['region']] - $regions[$b['region']]))) {
-    return $place;
-  }
   // Sort by weight.
   $weight = $a['weight'] - $b['weight'];
   if ($weight) {
@@ -521,7 +498,7 @@ function _homebox_block_compare($a, $b) {
 
 /**
  * Returns a keyed array containing regions/columns named base on Drupal variable homebox_column_count
- * 
+ *
  * @return
  *  A keyed array like array(1 => 'Column 1', 2 => 'Column 2')
  */

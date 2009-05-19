@@ -1,5 +1,11 @@
 <?php
 // $Id$
+
+/**
+ * @file
+ * homebox-block.tpl.php
+ * Default theme implementation each homebox block.
+ */
 ?>
 <div id="homebox-block-<?php print $block->module .'-'. $block->delta; ?>" class="<?php print $block->homebox_classes ?> clear-block block block-<?php print $block->module ?>">
   <div class="homebox-portlet-inner">
@@ -8,7 +14,7 @@
       <?php if (variable_get('homebox_users_use_colors_'. $pid, FALSE)): ?>
         <div class="homebox-colors">
           <?php for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++): ?>
-            <span href="#" class="homebox-color-selector" style="background-color: <?php print variable_get('homebox_color_'. $pid . '_' . $i, '#E4F0F8') ?>;">&nbsp;</span>
+            <span href="#" class="homebox-color-selector" style="background-color: <?php print variable_get('homebox_color_'. $pid .'_'. $i, '#E4F0F8') ?>;">&nbsp;</span>
           <?php endfor ?>
         </div>
       <?php endif ?>

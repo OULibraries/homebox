@@ -64,15 +64,16 @@
   display: none;
   border-bottom: 1px solid #ddd;
 }
-#homebox .homebox-portlet .portlet-content .view-filters {
-  display: none;
-}
 #homebox .homebox-portlet div.views-exposed-widgets {
   padding: 0 7px;
 }
 #homebox .homebox-portlet div.views-exposed-widgets div.views-exposed-widget {
   clear: both;
 }
+#homebox div.view-header {
+  text-align: right;
+}
+
 /*
 ** Icons
 */
@@ -150,7 +151,4 @@ div.homebox-colors {
   height: auto;
   visibility: visible;
   overflow: visible;
-}
-div#homebox div.view-header {
-  text-align: right;
 }
