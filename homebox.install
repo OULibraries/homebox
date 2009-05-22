@@ -69,3 +69,9 @@ function homebox_uninstall() {
   // Remove schema
   drupal_uninstall_schema('homebox');
 }
+
+function homebox_update_6001() {
+  $ret[] = update_sql("DELETE FROM {homebox_users} WHERE uid = 0");
+
+  return $ret;
+}

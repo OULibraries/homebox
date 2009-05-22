@@ -18,3 +18,7 @@ CHANGELOG for Home box for Drupal
   o Removed unnecessary CSS rules
   o Fixed all Drupal coding standards reported by Coder module
   o Added Advanced help documentation
+
+6.x-1.x-dev - 2009/05/22
+  o Replace drupal_substr by drupal_strlen (http://drupal.org/node/469262)
+  o Do not save user settings when $user->0 i.e. Anonymous

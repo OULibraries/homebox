@@ -455,7 +455,7 @@ function _homebox_get_view_name($block) {
   $delta = $block->delta;
 
   // if this is 32, this should be an md5 hash.
-  if (drupal_substr($delta) == 32) {
+  if (drupal_strlen($delta) == 32) {
     $hashes = variable_get('views_block_hashes', array());
     if (!empty($hashes[$delta])) {
       $delta = $hashes[$delta];
@@ -552,6 +552,11 @@ function theme_homebox_views_exposed_filter($block) {
 function homebox_save_user_settings() {
   global $user;
 
+  if ($user->uid == 0) {
+    drupal_json(TRUE);
+    exit();
+  }
+
   $pid = (int) trim($_POST['pid']);
 
   $order = trim($_POST['order']);
@@ -593,6 +598,11 @@ function homebox_save_user_settings() {
 function homebox_save_user_color() {
   global $user;
 
+  if ($user->uid == 0) {
+    drupal_json(TRUE);
+    exit();
+  }
+
   // Retrieve values from POST
   $bid = (int) trim($_POST['box']);
   $pid = (int) trim($_POST['pid']);
@@ -624,6 +634,11 @@ function homebox_save_user_color() {
  */
 function homebox_save_user_open() {
   global $user;
+
+  if ($user->uid == 0) {
+    drupal_json(TRUE);
+    exit();
+  }
 
   // Retrieve values from POST
   $bid = (int) trim($_POST['box']);
