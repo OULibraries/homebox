@@ -19,9 +19,10 @@
         </div>
       <?php endif ?>
       <?php if ($block->module == 'views'): ?>
-        <?php print theme('homebox_views_exposed_filter', $block) ?>
+        <?php $filters = theme('homebox_views_exposed_filter', $block) ?>
+        <?php print $filters ?>
       <?php endif ?>
-      <?php if (variable_get('homebox_users_use_colors_'. $pid, FALSE) || $block->module == 'views'): ?>
+      <?php if (variable_get('homebox_users_use_colors_'. $pid, FALSE) || $block->module == 'views' && !is_null($filters)): ?>
         <div class="clear-block"></div>
       <?php endif ?>
     </div>

@@ -152,6 +152,14 @@ function homebox_admin_page_submit($form, &$form_state) {
     // Update the users who have this role set:
     db_query('DELETE FROM {homebox_users} WHERE pid = %d', $form_state['values']['pid']);
 
+    // Delete variables
+    variable_del('homebox_column_count_'. $form_state['values']['pid']);
+    variable_del('homebox_users_use_colors_'. $form_state['values']['pid']);
+    // Colors
+    for ($i = 0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
+      variable_del('homebox_color_'. $form_state['values']['pid'] .'_'. $i);
+    }
+
     if (module_exists('path')) {
       $path = 'homebox/'. $form_state['values']['pid'];
       if (drupal_get_path_alias($path) != $path) {
@@ -188,10 +196,12 @@ function homebox_layout($pid) {
 
       $blocks[$key]['pid'] = $pid;
 
+      // Weights information
       $query = "SELECT weight FROM {homebox_default} WHERE bid = %d AND pid = %d";
       $weight = db_result(db_query($query, $block['bid'], $pid));
       $blocks[$key]['weight'] = $weight ? $weight : 99;
 
+      // Movable?
       $query = "SELECT movable FROM {homebox_default} WHERE bid = %d AND pid = %d";
       $movable = db_result(db_query($query, $block['bid'], $pid));
 
@@ -201,6 +211,27 @@ function homebox_layout($pid) {
       else {
         $blocks[$key]['movable'] = $movable;
       }
+
+      // Visible by default?
+      $query = "SELECT status FROM {homebox_default} WHERE bid = %d AND pid = %d";
+      $status = db_result(db_query($query, $block['bid'], $pid));
+      if ($status === FALSE) {
+        $blocks[$key]['status'] = TRUE;
+      }
+      else {
+        $blocks[$key]['status'] = $status;
+      }
+
+      // Collapsed/open by default?
+      $query = "SELECT open FROM {homebox_default} WHERE bid = %d AND pid = %d";
+      $open = db_result(db_query($query, $block['bid'], $pid));
+      if ($status === FALSE) {
+        $blocks[$key]['open'] = TRUE;
+      }
+      else {
+        $blocks[$key]['open'] = $open;
+      }
+
     }
     else {
       // Remove exposed views blocks
@@ -270,6 +301,14 @@ function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) 
       '#default_value' => $column,
       '#options' => $block_regions,
     );
+    $form[$key]['status'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => $block['status'],
+    );
+    $form[$key]['open'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => $block['open'],
+    );
     $form[$key]['movable'] = array(
       '#type' => 'checkbox',
       '#default_value' => $block['movable'],
@@ -307,7 +346,7 @@ function homebox_admin_display_form_submit($form, &$form_state) {
     // Check to see if this is a block
     // We check $block['region'] == 0, since we don't want to store block that are not enabled
     if (is_array($block) && is_numeric($block['bid']) && $block['bid'] != 0 && is_numeric($block['region']) && (int) $block['region'] > 0) {
-      db_query("INSERT INTO {homebox_default} (bid, pid, weight, region, movable) VALUES (%d, %d, %d, %d, %d)", $block['bid'], $pid, $block['weight'], $block['region'], $block['movable']);
+      db_query("INSERT INTO {homebox_default} (bid, pid, weight, region, movable, status, open) VALUES (%d, %d, %d, %d, %d, %d, %d)", $block['bid'], $pid, $block['weight'], $block['region'], $block['movable'], $block['status'], $block['open']);
     }
   }
 
@@ -356,6 +395,8 @@ function template_preprocess_homebox_admin_display_form(&$variables) {
       $variables['block_listing'][$region][$i]->block_title =  drupal_render($block['info']);
       $variables['block_listing'][$region][$i]->region_select = drupal_render($block['region']) . drupal_render($block['theme']);
       $variables['block_listing'][$region][$i]->weight_select = drupal_render($block['weight']);
+      $variables['block_listing'][$region][$i]->status = drupal_render($block['status']);
+      $variables['block_listing'][$region][$i]->open = drupal_render($block['open']);
       $variables['block_listing'][$region][$i]->movable = drupal_render($block['movable']);
       $variables['block_listing'][$region][$i]->bid = drupal_render($block['bid']);
       $variables['block_listing'][$region][$i]->printed = FALSE;

@@ -22,3 +22,12 @@ CHANGELOG for Home box for Drupal
 6.x-1.x-dev - 2009/05/22
   o Replace drupal_substr by drupal_strlen (http://drupal.org/node/469262)
   o Do not save user settings when $user->0 i.e. Anonymous
+
+6.x-1.x-dev - 2009/05/26
+  o Added ability to set default visibility/collapse state settings for each block
+  o Fixes init page display where anonymous were saved
+  o Added warning message to unregistered users
+  o Delete variable upon page deletion
+  o Fixe a small issue that let settings icon appear on a block even if no block settings were available
+  o Added translations directory and homebox.pot
+  o Added a message for anymous users to tell them that they need to login/register

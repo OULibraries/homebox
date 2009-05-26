@@ -75,3 +75,21 @@ function homebox_update_6001() {
 
   return $ret;
 }
+
+function homebox_update_6002() {
+  $ret = array();
+
+  $field_definition = array(
+    'type' => 'int',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 1,
+  );
+
+  db_add_field($ret, 'homebox_default', 'status', $field_definition);
+  db_add_field($ret, 'homebox_default', 'open', $field_definition);
+
+  $ret[] = update_sql("DELETE FROM {homebox_users} WHERE uid = 0");
+
+  return $ret;
+}

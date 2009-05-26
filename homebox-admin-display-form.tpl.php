@@ -22,6 +22,8 @@
       <th><?php print t('Block'); ?></th>
       <th><?php print t('Region'); ?></th>
       <th><?php print t('Weight'); ?></th>
+      <th><?php print t('Visible'); ?></th>
+      <th><?php print t('Open'); ?></th>
       <th><?php print t('Movable'); ?></th>
     </tr>
   </thead>
@@ -41,6 +43,8 @@
         </td>
         <td><?php print $data->region_select; ?></td>
         <td><?php print $data->weight_select; ?> <?php print $data->bid ?></td>
+        <td><?php print $data->status; ?></td>
+        <td><?php print $data->open; ?></td>
         <td><?php print $data->movable; ?></td>
       </tr>
       <?php $row++; ?>

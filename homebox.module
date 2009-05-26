@@ -34,7 +34,7 @@ function homebox_menu() {
     }
   }
 
-  //  Ajax Callbacks
+  // Ajax Callbacks
   $items['homebox/save'] = array(
     'page callback' => 'homebox_save_user_settings',
     'access callback' => '_homebox_user_access_current_homebox',
@@ -230,13 +230,19 @@ function homebox_load_blocks_in_regions($pid) {
   $regions = array();
   $column_count = variable_get('homebox_column_count_'. $pid, 3);
 
-  $blocks = _homebox_db_fetch_all_blocks(db_query("SELECT bid, region, weight
+  $blocks = _homebox_db_fetch_all_blocks(db_query("SELECT bid, region, weight, status, open
                                                    FROM {homebox_default}
                                                    WHERE pid = %d ORDER BY region ASC, weight ASC", $pid));
 
   // Retrieve customization from user
   // and adds new blocks to the user table
-  $blocks = _homebox_apply_user_settings($blocks, $pid);
+  if ($user->uid != 0) {
+    $blocks = _homebox_apply_user_settings($blocks, $pid);
+  }
+  else {
+    $message = t("Please be sure to <a href='!login_url'>login</a> on our site to have your preferences saved. If you do not have an account please <a href='!register_url'>register</a>, and then you will be able to save your preferences.", array('!login_url' => url('user/login'),'!register_url' => url('user/register')));
+    drupal_set_message($message, $type = 'warning', $repeat = FALSE);
+  }
 
   // Preparing blocks object for theming
   foreach ($blocks as $key => $block_settings) {
@@ -710,7 +716,7 @@ function _homebox_get_css_classes_for_block($block, $pid) {
   $movable = (bool) db_result(db_query("SELECT movable FROM {homebox_default} WHERE bid = %d", $block['bid']));
   $classes[] = $movable ? 'homebox-draggable' : NULL;
   // Adds CSS class for collapsed block
-  if (!is_null($block['status'])) {
+  if (!is_null($block['open'])) {
     $classes[] = (bool) $block['open'] ? FALSE : ' homebox-portlet-collapsed';
   }
   // Adds CSS for closed block
