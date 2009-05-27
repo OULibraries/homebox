@@ -29,6 +29,8 @@ function homebox_schema() {
       'bid'     => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
       'region'  => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
       'movable' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 1),
+      'status'  => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 1),
+      'open'    => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 1),
       'weight'  => array('type' => 'int', 'unsigned' => FALSE, 'not null' => TRUE, 'default' => 0)
     ),
     'primary key' => array('bid', 'pid'),
@@ -90,6 +92,26 @@ function homebox_update_6002() {
   db_add_field($ret, 'homebox_default', 'open', $field_definition);
 
   $ret[] = update_sql("DELETE FROM {homebox_users} WHERE uid = 0");
+
+  return $ret;
+}
+
+function homebox_update_6003() {
+  $ret = array();
+
+  $field_definition = array(
+    'type' => 'int',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 1,
+  );
+
+  if (!db_column_exists('homebox_default', 'status')) {
+    db_add_field($ret, 'homebox_default', 'status', $field_definition);
+  }
+  if (!db_column_exists('homebox_default', 'open')) {
+    db_add_field($ret, 'homebox_default', 'open', $field_definition);
+  }
 
   return $ret;
 }
