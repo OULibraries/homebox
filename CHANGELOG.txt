@@ -31,3 +31,8 @@ CHANGELOG for Home box for Drupal
   o Fixe a small issue that let settings icon appear on a block even if no block settings were available
   o Added translations directory and homebox.pot
   o Added a message for anymous users to tell them that they need to login/register
+  
+6.x-1.0-beta1 - 2009/06/04
+  o Added french translations
+  o Added french advanced help
+  o Going to beta1
