@@ -443,7 +443,7 @@ function homebox_configure_form(&$form_state, $pid) {
     $form['color']['homebox_colorpicker'] = array(
       '#type' => 'colorpicker',
       '#title' => t('Color picker'),
-      '#description' => t('Click an input to change choose a color.'),
+      '#description' => t('Click an input to choose a color.'),
     );
 
     for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
