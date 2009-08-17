@@ -777,7 +777,8 @@ function homebox_pages() {
   $result = db_query('SELECT * FROM {homebox_pages} ORDER BY name');
 
   while ($page = db_fetch_object($result)) {
-    $page->safe_name = str_replace(array("'", '""'), " ", $page->name);
+    $filter = '![^abcdefghijklmnopqrstuvwxyz0-9-_]+!s';
+    $page->safe_name = preg_replace($filter, '-', drupal_strtolower($page->name));
     $pages[] = $page;
   }
 
@@ -801,7 +802,9 @@ function _homebox_get_profile_name($pid) {
 function _homebox_get_profile_safe_name($pid) {
   $page = db_fetch_object(db_query('SELECT * FROM {homebox_pages} WHERE pid = %d', $pid));
   if (is_object($page) && $page->name != '' && $pid == $page->pid) {
-    return str_replace(array("'", '""'), " ", $page->name);
+    $filter = '![^abcdefghijklmnopqrstuvwxyz0-9-_]+!s';
+    $page->safe_name = preg_replace($filter, '-', drupal_strtolower($page->name));
+    return $page->safe_name;
   }
   return FALSE;
 }
@@ -812,7 +815,7 @@ function _homebox_get_profile_safe_name($pid) {
  */
 function _homebox_user_access_current_homebox() {
   $pid = $_POST['pid'];
-  if (is_numeric($pid) && !is_null($pid) && $page_name = _homebox_get_profile_safe_name($pid)) {
+  if (is_numeric($pid) && !is_null($pid) && $page_safe_name = _homebox_get_profile_safe_name($pid)) {
     return user_access('access homebox '. $page_safe_name);
   }
   return FALSE;
