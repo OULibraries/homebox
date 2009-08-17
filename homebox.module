@@ -28,7 +28,7 @@ function homebox_menu() {
         'title' => $page->name,
         'page callback' => 'homebox_build',
         'page arguments' => array(1),
-        'access arguments' => array('access homebox '. $page->name),
+        'access arguments' => array('access homebox '. $page->safe_name),
         'type' => MENU_NORMAL_ITEM,
       );
     }
@@ -127,7 +127,7 @@ function homebox_perm() {
   $permissions = array('administer homebox');
 
   foreach (homebox_pages() as $page) {
-    $permissions[] = "access homebox ". $page->name;
+    $permissions[] = "access homebox ". $page->safe_name;
   }
   return $permissions;
 }
@@ -777,6 +777,7 @@ function homebox_pages() {
   $result = db_query('SELECT * FROM {homebox_pages} ORDER BY name');
 
   while ($page = db_fetch_object($result)) {
+    $page->safe_name = str_replace(array("'", '""'), " ", $page->name);
     $pages[] = $page;
   }
 
@@ -795,12 +796,24 @@ function _homebox_get_profile_name($pid) {
 }
 
 /**
+ * Helper function to return a named profile from an $pid
+ */
+function _homebox_get_profile_safe_name($pid) {
+  $page = db_fetch_object(db_query('SELECT * FROM {homebox_pages} WHERE pid = %d', $pid));
+  if (is_object($page) && $page->name != '' && $pid == $page->pid) {
+    return str_replace(array("'", '""'), " ", $page->name);
+  }
+  return FALSE;
+}
+
+
+/**
  * Helper function to check access to current homebox
  */
 function _homebox_user_access_current_homebox() {
   $pid = $_POST['pid'];
-  if (is_numeric($pid) && !is_null($pid) && $page_name = _homebox_get_profile_name($pid)) {
-    return user_access('access homebox '. $page_name);
+  if (is_numeric($pid) && !is_null($pid) && $page_name = _homebox_get_profile_safe_name($pid)) {
+    return user_access('access homebox '. $page_safe_name);
   }
   return FALSE;
 }
