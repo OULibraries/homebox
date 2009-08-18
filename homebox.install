@@ -132,6 +132,7 @@ function homebox_update_6005() {
 
   $res = db_query('SELECT rid, perm FROM {permission}');
   $perms = array();
+  drupal_load('module', 'homebox');
   while ($p = db_fetch_object($res)) {
     $perm = $p->perm;
 
