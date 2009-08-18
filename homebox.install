@@ -116,14 +116,6 @@ function homebox_update_6003() {
   return $ret;
 }
 
-function homebox_update_6004() {
-  $ret = array();
-
-  drupal_set_message("<strong>Homebox permission names have changed!</strong> You must go to Administer > Permissions and reset or check that proper permissions are set for each roles and each homebox. If you do not do check this every homebox could return an access denied error!", $type = 'warning', $repeat = TRUE);
-
-  return $ret;
-}
-
 /**
  * Update the permissions table, to fix invalid permission names having non-English characters.
  */
