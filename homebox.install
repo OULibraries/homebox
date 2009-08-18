@@ -119,7 +119,35 @@ function homebox_update_6003() {
 function homebox_update_6004() {
   $ret = array();
 
-  drupal_set_message("<strong>Homebox permission names have changed!</strong> You must go to Administer > Permissions and reset proper access to each roles for each homebox. If you do not do this every homebox will return an access denied!", $type = 'warning', $repeat = TRUE);
+  drupal_set_message("<strong>Homebox permission names have changed!</strong> You must go to Administer > Permissions and reset or check that proper permissions are set for each roles and each homebox. If you do not do check this every homebox could return an access denied error!", $type = 'warning', $repeat = TRUE);
 
   return $ret;
+}
+
+/**
+ * Update the permissions table, to fix invalid permission names having non-English characters.
+ */
+function homebox_update_6005() {
+  $ret = array();
+
+  $res = db_query('SELECT rid, perm FROM {permission}');
+  $perms = array();
+  while ($p = db_fetch_object($res)) {
+    $perm = $p->perm;
+
+    foreach (homebox_pages() as $page) {
+      $perm = preg_replace('/access homebox '. $page->name . '/', 'access homebox '. $page->safe_name, $perm);
+    }
+
+    $perms[$p->rid] = $perm;
+  }
+
+  foreach ($perms as $rid => $permission) {
+    // Use db_query as update_sql() could fail if single quotes are in a permission string.
+    db_query("UPDATE {permission} SET perm = '%s' WHERE rid = %d", $permission, $rid);
+    $ret[] = array('success' => TRUE, 'query' => 'UPDATE {permission} SET perm = ' . check_plain($permission) . ' WHERE rid = '. $rid);
+  }
+
+  return $ret;
+
 }
