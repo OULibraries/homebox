@@ -227,6 +227,7 @@ function homebox_build($pid) {
  */
 function homebox_load_blocks_in_regions($pid) {
   global $user;
+
   $regions = array();
   $column_count = variable_get('homebox_column_count_'. $pid, 3);
 
@@ -249,6 +250,29 @@ function homebox_load_blocks_in_regions($pid) {
     // Retrieve information from blocks Drupal table
     $block = db_query_range("SELECT * FROM {blocks} WHERE bid = %d", array($block_settings['bid']), $from = 0, $to = 1);
     $block = db_fetch_object($block);
+
+    // Check for permissions set at the block level
+    $allowed_roles = db_query("SELECT rid FROM {blocks_roles} WHERE module = '%s' AND delta = %d", $block->module, $block->delta);
+    // We need to first grant access, because no record means no role restriction
+    $can_access_block = TRUE;
+    $stop = FALSE;
+
+    while (($role = db_fetch_object($allowed_roles)) && $stop == FALSE && $user->uid != 1) {
+      // We found at least one record, so we become pessimistic
+      $can_access_block = FALSE;
+      if (isset($user->roles[$role->rid])) {
+        // User has permission to view this block
+        $can_access_block = TRUE;
+        // We don't need to continue
+        $stop = TRUE;
+      }
+    }
+
+    // If the user can't access this block
+    // stop here and go to the next block
+    if ($can_access_block == FALSE) {
+      continue;
+    }
 
     // Block created with Views, check access
     $can_access_view = FALSE;
