@@ -131,7 +131,7 @@ Drupal.homebox.saveBoxesOrder = function() {
   });
   
   $.ajax({
-    url: Drupal.settings.basePath + 'homebox/save',
+    url: Drupal.settings.basePath + '?q=homebox/save',
     type: "POST",
     dataType: "json",
     data: {order: newOrder, pid: pid},
@@ -144,7 +144,7 @@ Drupal.homebox.saveBoxesOrder = function() {
 Drupal.homebox.saveBoxesColor = function(boxId, pid, color) {
   color = Drupal.homebox.convertRgbToHex(color);
   $.ajax({
-    url: Drupal.settings.basePath + 'homebox/save-color',
+    url: Drupal.settings.basePath + '?q=homebox/save-color',
     type: "POST",
     dataType: "json",
     data: {box: boxId, pid: pid, color: color},
@@ -161,7 +161,7 @@ Drupal.homebox.saveOpenState = function(boxId, pid, isOpen) {
     isOpen = 0;
   }
   $.ajax({
-    url: Drupal.settings.basePath + 'homebox/save-open',
+    url: Drupal.settings.basePath + '?q=homebox/save-open',
     type: "POST",
     dataType: "json",
     data: {box: boxId, pid: pid, open: isOpen},
