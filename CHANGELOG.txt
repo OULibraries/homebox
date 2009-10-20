@@ -36,3 +36,10 @@ CHANGELOG for Home box for Drupal
   o Added french translations
   o Added french advanced help
   o Going to beta1
+
+6.x-1.0 - 2009/08/10
+  o Going to 1.0
+
+6.x-1.1 - 2009/10/20
+  o Fixed Ajax calls so that they can be executed without URL alias turn On
+  o Fixed block level permission check
