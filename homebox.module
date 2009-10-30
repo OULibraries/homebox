@@ -252,7 +252,7 @@ function homebox_load_blocks_in_regions($pid) {
     $block = db_fetch_object($block);
 
     // Check for permissions set at the block level
-    $allowed_roles = db_query("SELECT rid FROM {blocks_roles} WHERE module = '%s' AND delta = %d", $block->module, $block->delta);
+    $allowed_roles = db_query("SELECT rid FROM {blocks_roles} WHERE module = '%s' AND delta = '%s'", $block->module, $block->delta);
     // We need to first grant access, because no record means no role restriction
     $can_access_block = TRUE;
     $stop = FALSE;
