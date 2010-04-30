@@ -133,7 +133,31 @@ function homebox_admin_page_validate($form, &$form_state) {
 
 function homebox_admin_page_submit($form, &$form_state) {
   if ($form_state['values']['op'] == t('Save page')) {
+    // We need the old homebox name to update permission name
+    $old_name = db_result(db_query("SELECT name FROM {homebox_pages} WHERE pid = %d", $form_state['values']['pid']));
+    $filter = '![^abcdefghijklmnopqrstuvwxyz0-9-_]+!s';
+    $old_name = preg_replace($filter, '-', drupal_strtolower($old_name));
+
     db_query("UPDATE {homebox_pages} SET name = '%s' WHERE pid = %d", $form_state['values']['name'], $form_state['values']['pid']);
+
+    $res = db_query('SELECT rid, perm FROM {permission}');
+    $perms = array();
+
+    while ($p = db_fetch_object($res)) {
+      $perm = $p->perm;
+
+      foreach (homebox_pages() as $page) {
+        $filter = '![^abcdefghijklmnopqrstuvwxyz0-9-_]+!s';
+        $safe_name = preg_replace($filter, '-', drupal_strtolower($form_state['values']['name']));
+        $perm = preg_replace('/access homebox '. $old_name . '/', 'access homebox '. $safe_name, $perm);
+      }
+
+      $perms[$p->rid] = $perm;
+    }
+
+    foreach ($perms as $rid => $permission) {
+      db_query("UPDATE {permission} SET perm = '%s' WHERE rid = %d", $permission, $rid);
+    }
 
     if ((user_access('create url aliases') || user_access('administer url aliases')) && module_exists('path')) {
       $path = trim($form_state['values']['path']);
@@ -184,58 +208,44 @@ function homebox_admin_page_submit($form, &$form_state) {
 function homebox_layout($pid) {
   $page_name = _homebox_get_profile_name($pid);
   drupal_set_title(t('!page_name layout', array('!page_name' => $page_name)));
+
   // Gets admin build block helper for usort function
   require_once(drupal_get_path('module', 'block') .'/block.admin.inc');
 
   // Fetch and sort blocks
   $blocks = _block_rehash();
 
-  foreach ($blocks as $key => $block) {
+  $home_blocks = array();
+
+  $result = db_query("SELECT * FROM {homebox_default} WHERE pid = %d", $pid);
+
+  while ($record = db_fetch_object($result)) {
+    $home_blocks["$record->bid"] = $record;
+  }
+
+  foreach ($blocks as $key => &$block) {
     // We don't want to list exposed views blocks
-    if (strpos($blocks[$key]['delta'], '-exp-') !== 0) {
-
-      $blocks[$key]['pid'] = $pid;
-
-      // Weights information
-      $query = "SELECT weight FROM {homebox_default} WHERE bid = %d AND pid = %d";
-      $weight = db_result(db_query($query, $block['bid'], $pid));
-      $blocks[$key]['weight'] = $weight ? $weight : 99;
-
-      // Movable?
-      $query = "SELECT movable FROM {homebox_default} WHERE bid = %d AND pid = %d";
-      $movable = db_result(db_query($query, $block['bid'], $pid));
-
-      if ($movable === FALSE) {
-        $blocks[$key]['movable'] = TRUE;
-      }
-      else {
-        $blocks[$key]['movable'] = $movable;
-      }
-
-      // Visible by default?
-      $query = "SELECT status FROM {homebox_default} WHERE bid = %d AND pid = %d";
-      $status = db_result(db_query($query, $block['bid'], $pid));
-      if ($status === FALSE) {
-        $blocks[$key]['status'] = TRUE;
-      }
-      else {
-        $blocks[$key]['status'] = $status;
-      }
-
-      // Collapsed/open by default?
-      $query = "SELECT open FROM {homebox_default} WHERE bid = %d AND pid = %d";
-      $open = db_result(db_query($query, $block['bid'], $pid));
-      if ($status === FALSE) {
-        $blocks[$key]['open'] = TRUE;
-      }
-      else {
-        $blocks[$key]['open'] = $open;
-      }
-
+    if (strpos($block['delta'], '-exp-') === 0) {
+       // Remove exposed views blocks
+       unset($blocks[$key]);
+       continue;
     }
+    $bid = $block['bid'];
+
+    $block['pid'] = $pid;
+    if (isset($home_blocks[$bid])) {
+      $hb = $home_blocks[$bid];
+      $block['weight']  = $hb->weight;
+      $block['movable'] = (bool) $hb->movable;
+      $block['status']  = (bool) $hb->status;
+      $block['open']    = (bool) $hb->open;
+    }
+    // Set defaults.
     else {
-      // Remove exposed views blocks
-      unset($blocks[$key]);
+      $block['weight']  = 99;
+      $block['movable'] = TRUE;
+      $block['status']  = TRUE;
+      $block['open']    = TRUE;
     }
   }
 
@@ -269,7 +279,6 @@ function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) 
   $form = array(
     '#tree' => TRUE,
   );
-
   // Iterate on each block
   foreach ($blocks as $i => $block) {
     $key = $block['module'] .'_'. $block['delta'];
@@ -425,6 +434,14 @@ function homebox_configure_form(&$form_state, $pid) {
     '#default_value' => variable_get('homebox_column_count_'. $pid, 3),
     '#options' => array('1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '6' => 6, '7' => 7, '8' => 8, '9' => 9),
     '#description' => t('Set the number of columns you want to activate for this Home box page.'),
+  );
+
+  $form['homebox_cache_enabled_'. $pid] = array(
+    '#type' => 'select',
+    '#title' => t('Use blocks cache?'),
+    '#default_value' => variable_get('homebox_cache_enabled_'. $pid, 0),
+    '#options' => array(0 => t('Don\'t use'), 1 => t('Use if available')),
+    '#description' => t('Homebox will use the blocks cache if available for the rendering of the blocks. This can greatly improve performances, but has the drawback to break Views blocks that uses Ajax AND are using <strong>Block settings: Caching</strong>. You can use this option only if the Views blocks used in your homebox that use Ajax are set to <strong>Block settings: Caching:</strong> Do not cache.'),
   );
 
   $form['color'] = array(

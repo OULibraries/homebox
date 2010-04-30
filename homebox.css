@@ -17,23 +17,26 @@
   width: 300px;
   margin: 3px;
   padding: 5px;
-  padding-bottom: 30px;
   background: url(images/stripe.png);
 }
 
+#homebox.column-count-1 .homebox-column {
+  width: 100%;
+}
 #homebox.column-count-2 .homebox-column {
-  width: 45%;
+  width: 48%;
 }
 #homebox.column-count-3 .homebox-column {
-  width: 30%;
+  width: 31%;
 }
-
+#homebox.column-count-4 .homebox-column {
+  width: 23%;
+}
 /*
 ** Portlets/boxes
 */
 #homebox .homebox-portlet {
   margin: 5px 0;
-  width: 98%;
   padding: 0;
   border: 3px solid #eee;
   background-color: white;
@@ -107,10 +110,10 @@
 ** Placeholder
 */
 #homebox .homebox-placeholder {
-  border: 1px dotted black;
   visibility: visible !important;
-  height: 50px !important;
-  margin: 30px 35px 0 25px;
+  margin: 5px 0;
+  padding: 0;
+  background: #FFFFDD;
 }
 #homebox .homebox-placeholder * {
   visibility: hidden;

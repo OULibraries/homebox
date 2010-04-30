@@ -8,8 +8,8 @@ Drupal.behaviors.homebox = function(context) {
     $columns = $homebox.find('>div.homebox-column');
     
     // Equilize columns height
-    // $columns = Drupal.homebox.equalizeColumnsHeights($columns);
-    // Drupal.addPlaceholders($columns);
+    $columns = Drupal.homebox.equalizeColumnsHeights($columns);
+    //Drupal.addPlaceholders($columns);
     
     // Make columns sortable
     $columns.sortable({
@@ -17,9 +17,8 @@ Drupal.behaviors.homebox = function(context) {
       handle: '.portlet-header',
       connectWith: $columns,
       revert: true,
-      // placeholder: 'homebox-placeholder',
-      // forcePlaceholderSize: true,
-      containment: $homebox,
+      placeholder: 'homebox-placeholder',
+      forcePlaceholderSize: true,
       stop: function() {
         Drupal.homebox.saveBoxesOrder($columns);
       }
@@ -55,6 +54,7 @@ Drupal.behaviors.homebox = function(context) {
     // Attach click event on settings icon
     $boxes.find('.portlet-header .portlet-settings').click(function() {
       $(this).parents(".homebox-portlet:first").find(".portlet-config").toggle();
+      Drupal.homebox.equalizeColumnsHeights($columns);
     });
     // Attach click event on close
     $boxes.find('.portlet-header .portlet-close').click(function() {
@@ -65,7 +65,7 @@ Drupal.behaviors.homebox = function(context) {
       Drupal.homebox.saveBoxesOrder();
     });
     // Add click behaviour to checkboxes that enable/disable blocks
-    $togglers = $homebox.find('>#homebox-settings input.homebox_toggle_box');
+    $togglers = $homebox.find('#homebox-settings input.homebox_toggle_box');
     $togglers.click(function() {
       if ($(this).attr('checked')) {
         el_id = $(this).attr('id').replace('homebox_toggle_', '');
@@ -100,24 +100,30 @@ Drupal.behaviors.homebox = function(context) {
       // Prevent click event propagation
       return false;
     });
+    
+    $homebox.ajaxStop(function(){
+      Drupal.homebox.equalizeColumnsHeights($columns);
+    });
   }
 };
 
 Drupal.homebox.equalizeColumnsHeights = function(columns) {
   maxHeight = 0;
   $columns.each(function() {
+    $(this).height('auto');
     currentHeight = $(this).height();
     if (maxHeight < currentHeight) {
       maxHeight = currentHeight;
     };
   }).each(function() {
-    $(this).height(maxHeight + 30);
+    $(this).height(maxHeight);
   });
   return $columns;
 };
 
 Drupal.homebox.saveBoxesOrder = function() {
   var newOrder = new String();
+  $columns = Drupal.homebox.equalizeColumnsHeights($columns);
   $columns.each(function(colIndex) {
     var colIndex = colIndex + 1;
     $(this).find('>.homebox-portlet').each(function(boxIndex) {
@@ -155,6 +161,7 @@ Drupal.homebox.saveBoxesColor = function(boxId, pid, color) {
 };
 
 Drupal.homebox.saveOpenState = function(boxId, pid, isOpen) {
+  $columns = Drupal.homebox.equalizeColumnsHeights($columns);
   if (isOpen == true) {
     isOpen = 1;
   }else{
@@ -186,5 +193,4 @@ Drupal.homebox.convertRgbToHex = function(rgb) {
   } else {
     return rgb;
   };
-
 };

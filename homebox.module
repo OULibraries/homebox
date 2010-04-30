@@ -126,10 +126,13 @@ function homebox_help($path, $arg) {
 function homebox_perm() {
   $permissions = array('administer homebox');
 
-  foreach (homebox_pages() as $page) {
-    $permissions[] = "access homebox ". $page->safe_name;
+  if ($pages = homebox_pages()) {
+    foreach ($pages as $page) {
+      $permissions[] = "access homebox ". $page->safe_name;
+    }
+    return $permissions;
   }
-  return $permissions;
+  return NULL;
 }
 
 /**
@@ -245,6 +248,8 @@ function homebox_load_blocks_in_regions($pid) {
     drupal_set_message($message, $type = 'warning', $repeat = FALSE);
   }
 
+  $is_cache_enabled = (bool) variable_get('homebox_cache_enabled_'. $pid, 0);
+
   // Preparing blocks object for theming
   foreach ($blocks as $key => $block_settings) {
     // Retrieve information from blocks Drupal table
@@ -285,8 +290,18 @@ function homebox_load_blocks_in_regions($pid) {
       }
     }
 
+   // Attempt to find a block in the cache table
+   if ($is_cache_enabled == TRUE && !count(module_implements('node_grants')) && $_SERVER['REQUEST_METHOD'] == 'GET' && ($cid = _block_get_cache_id($block)) && ($cache = cache_get($cid, 'cache_block'))) {
+     $array = $cache->data;
+   }
+   else {
+     $array = module_invoke($block->module, 'block', 'view', $block->delta);
+     if (isset($cid)) {
+       cache_set($cid, $array, 'cache_block', CACHE_TEMPORARY);
+     }
+   }
+
     // Render block content
-    $array = module_invoke($block->module, 'block', 'view', $block->delta);
     if (isset($array) && is_array($array)) {
       foreach ($array as $k => $v) {
         $block->$k = $v;
@@ -540,7 +555,7 @@ function theme_homebox_views_exposed_filter($block) {
     if ($filters = $view->display[$display_id]->display_options['filters']) {
       foreach ($filters as $filter) {
         if ($filter['exposed'] == TRUE) {
-          $array = module_invoke($block->module, 'block', 'view', '-exp-'. $block->delta);
+          $array = module_invoke($block->module, 'block', 'view', '-exp-'. $delta);
           if (isset($array) && is_array($array)) {
             foreach ($array as $k => $v) {
               $content .= $v;
@@ -557,7 +572,7 @@ function theme_homebox_views_exposed_filter($block) {
       foreach ($filters as $filter) {
         // Here we check if default has exposed AND that our display inherit from default
         if ($filter['exposed'] == TRUE && ($view->display[$display_id]->display_options['default']['filters'] == TRUE || !isset($view->display[$display_id]->display_options['default']['filters']))) {
-          $array = module_invoke($block->module, 'block', 'view', '-exp-'. $block->delta);
+          $array = module_invoke($block->module, 'block', 'view', '-exp-'. $delta);
           if (isset($array) && is_array($array)) {
             foreach ($array as $k => $v) {
               $content .= $v;

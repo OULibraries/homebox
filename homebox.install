@@ -63,6 +63,7 @@ function homebox_uninstall() {
     // Settings
     variable_del('homebox_column_count_'. $page->pid);
     variable_del('homebox_users_use_colors_'. $page->pid);
+    variable_del('homebox_cache_enabled_'. $page->pid);
     // Colors
     for ($i = 0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
       variable_del('homebox_color_'. $page->pid .'_'. $i);
