@@ -15,7 +15,7 @@ Drupal.behaviors.homebox = function(context) {
       items: '.homebox-portlet.homebox-draggable',
       handle: '.portlet-header',
       connectWith: $columns,
-      revert: true,
+      revert: 100,
       placeholder: 'homebox-placeholder',
       forcePlaceholderSize: true,
       stop: function() {
