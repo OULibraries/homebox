@@ -13,7 +13,6 @@ CONTENTS OF THIS FILE
 REQUIREMENTS
 ------------
 
- * jQuery update 6.x-1.1 - http://drupal.org/project/jquery_update
  * jQuery UI 6.x-1.2 - http://drupal.org/project/jquery_ui
  * jQuery UI 1.6
    - Grab jQuery UI package from Google Code - http://jquery-ui.googlecode.com/files/jquery.ui-1.6.zip
@@ -25,12 +24,13 @@ The following modules are not required but recommended for integration or ease o
 
  * Path 6.x (provided with Drupal core)
  * Color picker 6.x-1.0-beta1 - http://drupal.org/project/colorpicker
- * Views 6.x-2.5 -  http://drupal.org/project/views
+ * Views 6.x-2.10 -  http://drupal.org/project/views
+ * Advanced Help 6.x-1.2 - http://drupal.org/project/advanced_help
 
 INSTALLATION
 ------------
 
- * Enable jQuery update and jQuery UI modules
+ * Enable jQuery UI modules
  * Be sure to follow instructions from README.txt in jQuery UI module
 
    --- IMPORTANT ---- Begin
@@ -68,4 +68,3 @@ THINGS TO KNOW
        for exposed filter you set.
      - "Use AJAX" must be set to "Yes" (otherwise, user will be sent to the page display of the View when clicking the Apply button)
      - "Empty text" should be set, if no value is given, then exposed filters won't work if initial view result is empty
-     

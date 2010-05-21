@@ -1,58 +1,97 @@
 <?php
 // $Id$
 
+/**
+ * @file
+ * Home box admin file, takes care admin interface for homebox
+ *
+ * Defines home box pages, default layout, settings
+ */
+
 function homebox_admin_page() {
-  $pid = arg(4);
-  if ($pid) {
-    // Display the edit page form.
-    $page = db_fetch_object(db_query('SELECT * FROM {homebox_pages} WHERE pid = %d', $pid));
-    $form['name'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Page name'),
-      '#default_value' => $page->name,
-      '#size' => 30,
-      '#required' => TRUE,
-      '#maxlength' => 64,
-      '#description' => t('The name for this page. Example: "dashboard", "editorial board", "site administrator".'),
+  // Already validated
+  $page = homebox_get_page(arg(4));
+  
+  if (!$page) {
+    $form['page'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Add a new page'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
     );
+  }
+  
+  $form['page']['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Machine Name'),
+    '#required' => TRUE,
+    '#size' => 32,
+    '#maxlength' => 64,
+    '#description' => t('The machine readable name of this page. It must be unique, and it must contain only alphanumeric characters and underscores. Once created, you will not be able to change this value!'),
+  );
+  
+  if($page) {
+    $form['page']['name']['#value'] = $page->name;
+    $form['page']['name']['#disabled'] = TRUE;
+  }
+  
+  $form['page']['options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Home Box Options'),
+    '#collapsible' => TRUE,
+  );
+  
+  if(!$page) {
+    $form['page']['options']['#collapsed'] = TRUE;
+  }
 
-    // Path alias
-    if (module_exists('path')) {
-      $path = db_fetch_object(db_query("SELECT pid, dst FROM {url_alias} WHERE src = 'homebox/%d'", arg(4)));
-
-      $form['path'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('URL path settings'),
-        '#collapsible' => TRUE,
-        '#collapsed' => is_null($path),
-        '#access' => user_access('create url aliases'),
-        '#weight' => 1,
-      );
-      $form['path']['path'] = array(
-        '#type' => 'textfield',
-        '#default_value' => $path->dst,
-        '#maxlength' => 128,
-        '#collapsible' => TRUE,
-        '#collapsed' => TRUE,
-        '#description' => t('Optionally specify an alternative URL by which this page can be accessed. For example, type "dashboard" when creating a Dashboard page. Use a relative path and don\'t add a trailing slash or the URL alias won\'t work.'),
-      );
-      if ($path) {
-        $form['path']['pid'] = array(
-          '#type' => 'value',
-          '#value' => $path->pid,
-        );
-      }
-    }
-    else {
-      $form['path_module'] = array(
-        '#value' => '<p>'. t('If you add the Path module enabled, you could specify an URL alias for that page.') .'</p>',
-      );
-    }
-
-    $form['pid'] = array(
-      '#type' => 'value',
-      '#value' => $pid,
-    );
+  $form['page']['options']['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#size' => 32,
+    '#default_value' => $page->settings['title'],
+    '#maxlength' => 64,
+    '#prefix' => theme('advanced_help_topic', 'homebox', 'new-page'),
+    '#description' => t('The title of the page that will be created.'),
+  );
+  
+  $form['page']['options']['path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Path'),
+    '#size' => 32,
+    '#default_value' => $page->settings['path'],
+    '#maxlength' => 255,
+    '#description' => t('Optionally specify an alternative URL by which this page can be accessed. For example, type "dashboard" when creating a Dashboard page. Use a relative path and don\'t add a trailing slash or the URL alias won\'t work.'),
+  );
+  
+  $form['page']['options']['menu'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Create a Menu Entry'),
+    '#description' => t('If checked, a menu entry will be created for this page.'),
+    '#default_value' => $page ? $page->settings['menu'] : 1,
+  );
+  
+  $form['page']['options']['enabled'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable the Page'),
+    '#description' => t('If unchecked, only users with the <i>administer homebox</i> permission will be able to view this page.'),
+    '#default_value' => $page ? $page->settings['enabled'] : 1,
+  );
+  
+  $result = db_query('SELECT rid, name FROM {role} ORDER BY name');
+  $role_options = array();
+  while ($role = db_fetch_object($result)) {
+    $role_options[$role->name] = $role->name;
+  }
+  $form['page']['options']['roles'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Allow only certain roles to access the page'),
+    '#default_value' => count($page->settings['roles']) ? $page->settings['roles'] : array(),
+    '#options' => $role_options,
+    '#description' => t('Select which roles can view the page.'),
+  );
+  
+  if ($page) {
     $form['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Save page'),
@@ -65,18 +104,26 @@ function homebox_admin_page() {
     );
   }
   else {
-    $form['name'] = array(
-      '#type' => 'textfield',
-      '#size' => 32,
-      '#maxlength' => 64,
+    $form['page']['import_fieldset'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Import Home Box',
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
     );
-    $form['submit'] = array(
+    $form['page']['import_fieldset']['import'] = array(
+      '#title' => t('Import Data'),
+      '#type' => 'textarea',
+      '#description' => t('Optionally include an exported Home Box to import settings and block layout. Ensure that the path is currently not in use. The machine name supplied in the import data will be ignored.'),
+    );
+    $form['page']['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Add page'),
     );
+    
     $form['#submit'][] = 'homebox_admin_page_submit';
     $form['#validate'][] = 'homebox_admin_page_validate';
   }
+  
   return $form;
 }
 
@@ -88,129 +135,200 @@ function homebox_admin_page() {
 function theme_homebox_admin_new_page($form) {
 
   $pages = homebox_pages();
+  $output = drupal_render($form);
 
-  $header = array(t('Name'), array('data' => t('Operations'), 'colspan' => 3));
+  $header = array(t('Name'), array('data' => t('Operations'), 'colspan' => 4));
   if (is_array($pages) && !empty($pages)) {
     foreach ($pages as $page) {
-      $layout = l(t('layout'), 'admin/build/homebox/layout/'. $page->pid);
-      $settings = l(t('settings'), 'admin/build/homebox/settings/'. $page->pid);
-      $rows[] = array(l($page->name, 'homebox/'. $page->pid), l(t('edit'), 'admin/build/homebox/edit/'. $page->pid), $layout, $settings);
+      $link = l($page->settings['title'], $page->settings['path']);
+      $edit = l(t('Edit'), 'admin/build/homebox/edit/' . $page->name);
+      $layout = l(t('Layout'), 'admin/build/homebox/layout/' . $page->name);
+      $settings = l(t('Settings'), 'admin/build/homebox/settings/' . $page->name);
+      $export = l(t('Export'), 'admin/build/homebox/export/' . $page->name);
+      $rows[] = array($link, $edit, $layout, $settings, $export);
     }
   }
-  $rows[] = array(drupal_render($form['name']), array('data' => drupal_render($form['submit']), 'colspan' => 3));
-
-  $output = drupal_render($form);
+  
   $output .= theme('table', $header, $rows);
 
   return $output;
 }
 
 function homebox_admin_page_validate($form, &$form_state) {
-  if ($form_state['values']['name']) {
-    if ($form_state['values']['op'] == t('Save page')) {
-      if (db_result(db_query("SELECT COUNT(*) FROM {homebox_pages} WHERE name = '%s' AND pid != %d", $form_state['values']['name'], $form_state['values']['pid']))) {
-        form_set_error('name', t('The page name %name already exists. Please choose another page name.', array('%name' => $form_state['values']['name'])));
-      }
+  // If no imported settings...
+  if (!$form_state['values']['import']) {
+    // Filter title
+    $form_state['values']['title'] = filter_xss($form_state['values']['title']);
+    
+    // Make sure a title is present
+    if(!$form_state['values']['title']) {
+      form_set_error('title', t('You must enter a page title.')); 
     }
-    else if ($form_state['values']['op'] == t('Add page')) {
-      if (db_result(db_query("SELECT COUNT(*) FROM {homebox_pages} WHERE name = '%s'", $form_state['values']['name']))) {
-        form_set_error('name', t('The page name %name already exists. Please choose another page name.', array('%name' => $form_state['values']['name'])));
-      }
+    
+    // Check if the path exists
+    if(!$form_state['values']['path']) {
+      form_set_error('path', t('You must enter a path.')); 
+    }
+    // If so, make sure it's valid
+    else {
+      homebox_check_path($form_state['values']['path'], 'path');
+    }
+    
+    // Check machine name
+    if ($form_state['values']['name'] && $form_state['values']['op'] == t('Add page')) {
+      homebox_check_name($form_state['values']['name'], 'name');
     }
   }
   else {
-    form_set_error('name', t('You must specify a valid page name.'));
+    /*
+     * The following checks the import data object and validates
+     * all of the components as done above
+     */
+    // Add object back to the form
+    $form_state['values']['import'] = homebox_check_page_object(
+      $form_state['values']['import'], 
+      $form_state['values']['name'],
+      TRUE,
+      'import'
+    );
   }
 }
 
 function homebox_admin_page_submit($form, &$form_state) {
   if ($form_state['values']['op'] == t('Save page')) {
-    db_query("UPDATE {homebox_pages} SET name = '%s' WHERE pid = %d", $form_state['values']['name'], $form_state['values']['pid']);
-
-    if ((user_access('create url aliases') || user_access('administer url aliases')) && module_exists('path')) {
-      $path = trim($form_state['values']['path']);
-      $path = ($path == '') ? NULL : $path;
-
-      $pid = db_result(db_query("SELECT pid FROM {url_alias} WHERE src = 'homebox/%d'", $form_state['values']['pid']));
-
-      path_set_alias('homebox/'. $form_state['values']['pid'], isset($path) ? $path : NULL, isset($pid) ? $pid : NULL);
-    }
-
-    drupal_set_message(t('Changes have been saved.'));
-  }
-  else if ($form_state['values']['op'] == t('Delete page')) {
-    db_query('DELETE FROM {homebox_pages} WHERE pid = %d', $form_state['values']['pid']);
-    db_query('DELETE FROM {homebox_default} WHERE pid = %d', $form_state['values']['pid']);
-    // Update the users who have this role set:
-    db_query('DELETE FROM {homebox_users} WHERE pid = %d', $form_state['values']['pid']);
-
-    if (module_exists('path')) {
-      $path = 'homebox/'. $form_state['values']['pid'];
-      if (drupal_get_path_alias($path) != $path) {
-        path_set_alias($path);
+    // Fetch old page to amend
+    $page = homebox_get_page($form_state['values']['name']);
+    
+    // Change settings
+    $page->settings['title'] = $form_state['values']['title'];
+    $page->settings['path'] = $form_state['values']['path'];
+    $page->settings['menu'] = $form_state['values']['menu'];
+    $page->settings['enabled'] = (int) $form_state['values']['enabled'];
+    $page->settings['roles'] = array();
+    
+    foreach ($form_state['values']['roles'] as $role) {
+      if ($role) {
+        $page->settings['roles'][] = $role;
       }
     }
-
+    
+    // Save settings
+    homebox_save_page($page);
+    
+    drupal_set_message(t('Changes have been saved'));
+  }
+  else if ($form_state['values']['op'] == t('Delete page')) {
+    // Delete the page
+    homebox_delete_page($form_state['values']['name']);
     drupal_set_message(t('The page has been deleted.'));
   }
   else if ($form_state['values']['op'] == t('Add page')) {
-    db_query("INSERT INTO {homebox_pages} (name) VALUES ('%s')", $form_state['values']['name']);
+    // Build page object
+    $page = new stdClass;
+    $page->name = $form_state['values']['name'];
+    
+    // Check to see if imported homebox object is present
+    if ($form_state['values']['import']) {
+      $page->settings = $form_state['values']['import']->settings;
+    }
+    else {
+      // Build settings
+      $page->settings = array(
+        'title' => $form_state['values']['title'],
+        'path' => $form_state['values']['path'],
+        'menu' => $form_state['values']['menu'],
+        'enabled' => (int) $form_state['values']['enabled'],
+        'regions' => HOMEBOX_DEFAULT_REGIONS,
+        'cache' => 0,
+        'color' => 0,
+        'colors' => array(),
+        'blocks' => array(),
+      );
+    }
+    
+    // Save page
+    homebox_save_page($page);
+    
     drupal_set_message(t('The page has been added.'));
   }
+  
   $form_state['redirect'] = 'admin/build/homebox';
-  menu_cache_clear_all();
+  menu_rebuild();
   return;
 }
 
 /**
  * Form builder function for module settings.
  */
-function homebox_layout($pid) {
-  $page_name = _homebox_get_profile_name($pid);
-  drupal_set_title(t('!page_name layout', array('!page_name' => $page_name)));
+function homebox_layout($page) {
+  drupal_set_title(t('!page_name layout', array('!page_name' => $page->settings['title'])));
+
   // Gets admin build block helper for usort function
   require_once(drupal_get_path('module', 'block') .'/block.admin.inc');
 
   // Fetch and sort blocks
   $blocks = _block_rehash();
 
-  foreach ($blocks as $key => $block) {
+  $home_blocks = $page->settings['blocks'];
+
+  foreach ($blocks as $key => &$block) {
     // We don't want to list exposed views blocks
-    if (strpos($blocks[$key]['delta'], '-exp-') !== 0) {
-
-      $blocks[$key]['pid'] = $pid;
-
-      $query = "SELECT weight FROM {homebox_default} WHERE bid = %d AND pid = %d";
-      $weight = db_result(db_query($query, $block['bid'], $pid));
-      $blocks[$key]['weight'] = $weight ? $weight : 99;
-
-      $query = "SELECT movable FROM {homebox_default} WHERE bid = %d AND pid = %d";
-      $movable = db_result(db_query($query, $block['bid'], $pid));
-
-      if ($movable === FALSE) {
-        $blocks[$key]['movable'] = TRUE;
-      }
-      else {
-        $blocks[$key]['movable'] = $movable;
-      }
+    if (strpos($block['delta'], '-exp-') === 0) {
+       // Remove exposed views blocks
+       unset($blocks[$key]);
+       continue;
     }
+    
+    // Generate identified for current block
+    $id = $block['module'] . '_' . $block['delta'];
+
+    // Check if current block has settings
+    if (isset($home_blocks[$id])) {
+      $hb = $home_blocks[$id];
+      $block['weight']  = $hb['weight'];
+      $block['movable'] = (bool) $hb['movable'];
+      $block['status']  = (bool) $hb['status'];
+      $block['open']    = (bool) $hb['open'];
+      $block['closable'] = (bool) $hb['closable'];
+      $block['title'] = $hb['title'];
+    }
+    // Set defaults.
     else {
-      // Remove exposed views blocks
-      unset($blocks[$key]);
+      $block['weight']  = 99;
+      $block['movable'] = TRUE;
+      $block['status']  = TRUE;
+      $block['open']    = TRUE;
+      $block['closable'] = TRUE;
     }
   }
 
-  // TODO problem with sorting function, order is well saved
-  // but this doesn't show up in admin screen
   usort($blocks, '_homebox_block_compare');
 
-  return drupal_get_form('homebox_admin_display_form', $blocks, $pid, $theme = NULL);
+  return drupal_get_form('homebox_admin_display_form', $blocks, $page, $theme = NULL);
+}
+
+/**
+ * Generate a page export form
+ */
+function homebox_export_form(&$form_state, $page) {
+  $code = '$homebox = new stdClass;' . "\n";
+  $code .= '$homebox->name = \'' . $page->name . '\';' . "\n";
+  $code .= '$homebox->settings = ' . var_export($page->settings, TRUE) . ';';
+  
+  $form['export'] = array(
+    '#title' => $page->name,
+    '#type' => 'textarea',
+    '#rows' => 30,
+    '#value' => $code,
+  ); 
+  
+  return $form;
 }
 
 /**
  * Generate main blocks administration form.
  */
-function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) {
+function homebox_admin_display_form(&$form_state, $blocks, $page, $theme = NULL) {
   global $theme_key, $custom_theme;
 
   // Add CSS
@@ -219,7 +337,7 @@ function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) 
   // If non-default theme configuration has been selected, set the custom theme.
   $custom_theme = isset($theme) ? $theme : variable_get('theme_default', 'garland');
 
-  $columns = homebox_named_columns($pid);
+  $columns = homebox_named_columns($page->settings['regions']);
 
   $block_regions = $columns + array(HOMEBOX_REGION_NONE => '<'. t('none') .'>');
 
@@ -232,7 +350,6 @@ function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) 
   $form = array(
     '#tree' => TRUE,
   );
-
   // Iterate on each block
   foreach ($blocks as $i => $block) {
     $key = $block['module'] .'_'. $block['delta'];
@@ -244,25 +361,10 @@ function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) 
       '#type' => 'value',
       '#value' => $block['delta'],
     );
-    // $title = $block['title'] ? check_plain($block['title']) : check_plain($block['info']);
     $form[$key]['info'] = array(
       '#value' => check_plain($block['info'])
     );
 
-    // Get roles for this block
-    $result = db_query("SELECT DISTINCT(name) FROM {role} r, {blocks_roles} br WHERE br.rid = r.rid AND br.module = '%s' AND br.delta = '%s'", $block['module'], $block['delta']);
-
-    $roles = array();
-    while ($r = db_fetch_object($result)) {
-      $roles[] = $r->name;
-    }
-
-    $form[$key]['roles'] = array(
-      '#type' => 'markup',
-      '#prefix' => '<span class="roles">'. t('Restricted to:') .' ',
-      '#value' => implode(', ', $roles),
-      '#suffix' => '</span>',
-    );
     $form[$key]['weight'] = array(
       '#type' => 'weight',
       '#default_value' => $block['weight'],
@@ -270,7 +372,7 @@ function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) 
     );
 
     // Get default region/column for block
-    $column = db_result(db_query("SELECT region FROM {homebox_default} WHERE bid = %d AND pid = %d", $block['bid'], $pid));
+    $column = $page->settings['blocks'][$key]['region'];
     // If not set assign to <none>
     $column = ($column != 0) ? $column : HOMEBOX_REGION_NONE;
 
@@ -279,9 +381,26 @@ function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) 
       '#default_value' => $column,
       '#options' => $block_regions,
     );
+    $form[$key]['title'] = array(
+      '#type' => 'textfield',
+      '#default_value' => $block['title'],
+      '#size' => 15,
+    );
+    $form[$key]['status'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => $block['status'],
+    );
+    $form[$key]['open'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => $block['open'],
+    );
     $form[$key]['movable'] = array(
       '#type' => 'checkbox',
       '#default_value' => $block['movable'],
+    );
+    $form[$key]['closable'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => $block['closable'],
     );
     $form[$key]['bid'] = array(
       '#type' => 'hidden',
@@ -289,9 +408,9 @@ function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) 
     );
   }
 
-  $form['pid'] = array(
+  $form['name'] = array(
     '#type' => 'hidden',
-    '#value' => $pid,
+    '#value' => $page->name,
   );
 
   $form['submit'] = array(
@@ -307,38 +426,56 @@ function homebox_admin_display_form(&$form_state, $blocks, $pid, $theme = NULL) 
  */
 function homebox_admin_display_form_submit($form, &$form_state) {
   // Page pid
-  $pid = $form_state['values']['pid'];
+  $page = homebox_get_page($form_state['values']['name']);
 
   // We can safely remove old records
-  db_query("DELETE FROM {homebox_default} WHERE pid = %d", $pid);
+  $page->settings['blocks'] = array();
 
   foreach ($form_state['values'] as $key => $block) {
     // Check to see if this is a block
     // We check $block['region'] == 0, since we don't want to store block that are not enabled
     if (is_array($block) && is_numeric($block['bid']) && $block['bid'] != 0 && is_numeric($block['region']) && (int) $block['region'] > 0) {
-      db_query("INSERT INTO {homebox_default} (bid, pid, weight, region, movable) VALUES (%d, %d, %d, %d, %d)", $block['bid'], $pid, $block['weight'], $block['region'], $block['movable']);
+      $page->settings['blocks'][$key] = array(
+        'module' => $block['module'],
+        'delta' => $block['delta'],
+        'region' => $block['region'],
+        'movable' => $block['movable'],
+        'status' => $block['status'],
+        'open' => $block['open'],
+        'closable' => $block['closable'],
+        'title' => $block['title'],
+        'weight' => $block['weight'],
+      );
     }
   }
 
-  // We remove blocks from the homebox_users table that are no longer in the homebox_default table
-  $result = db_query("DELETE FROM {homebox_users} WHERE pid = %d AND bid NOT IN (SELECT bid FROM {homebox_default})", $pid);
+  // Save the page
+  homebox_save_page($page);
   
-  drupal_set_message(t('Home box layout settings have been updated.'));
+  /*
+   * There is no reason to remove the blocks from user settings that
+   * were removed here. Blocks that aren't in the page will be stripped
+   * from the user settings upon rendering. Once the user saves, the
+   * settings will be updated.
+   */
+   
+  menu_rebuild();
+  drupal_set_message(t('Layout settings have been updated for !page_title.', array('!page_title' => $page->settings['title'])));
 }
 
 /**
  * Process variables for homebox-admin-display.tpl.php.
  *
  * @param $variables
- * @see homebox-admin-display.tpl.php
  * @see theme_homebox_admin_display()
  */
 function template_preprocess_homebox_admin_display_form(&$variables) {
-
   global $theme_key;
   drupal_add_css($path = drupal_get_path('module', 'homebox') .'/homebox.css', $type = 'module', $media = 'all', $preprocess = TRUE);
 
-  $block_regions = homebox_named_columns($variables['form']['pid']['#value']);
+  // Load page
+  $page = homebox_get_page($variables['form']['name']['#value']);
+  $block_regions = homebox_named_columns($page->settings['regions']);
   $variables['block_regions'] = $block_regions + array(HOMEBOX_REGION_NONE => t('Disabled'));
   foreach ($block_regions as $key => $value) {
     // Initialize an empty array for the region.
@@ -364,10 +501,13 @@ function template_preprocess_homebox_admin_display_form(&$variables) {
       $variables['block_listing'][$region][$i]->row_class = isset($block['#attributes']['class']) ? $block['#attributes']['class'] : '';
       $variables['block_listing'][$region][$i]->block_modified = isset($block['#attributes']['class']) && strpos($block['#attributes']['class'], 'block-modified') !== FALSE ? TRUE : FALSE;
       $variables['block_listing'][$region][$i]->block_title =  drupal_render($block['info']);
-      $variables['block_listing'][$region][$i]->roles =  drupal_render($block['roles']);
       $variables['block_listing'][$region][$i]->region_select = drupal_render($block['region']) . drupal_render($block['theme']);
+      $variables['block_listing'][$region][$i]->title = drupal_render($block['title']);
       $variables['block_listing'][$region][$i]->weight_select = drupal_render($block['weight']);
+      $variables['block_listing'][$region][$i]->status = drupal_render($block['status']);
+      $variables['block_listing'][$region][$i]->open = drupal_render($block['open']);
       $variables['block_listing'][$region][$i]->movable = drupal_render($block['movable']);
+      $variables['block_listing'][$region][$i]->closable = drupal_render($block['closable']);
       $variables['block_listing'][$region][$i]->bid = drupal_render($block['bid']);
       $variables['block_listing'][$region][$i]->printed = FALSE;
 
@@ -380,21 +520,28 @@ function template_preprocess_homebox_admin_display_form(&$variables) {
 
 /**
  * Forms for administration settings
- * 
+ *
  * @param $form_state
  * @return
  *  $form
  */
-function homebox_configure_form(&$form_state, $pid) {
-  $page_name = _homebox_get_profile_name($pid);
-  drupal_set_title(t('!page_name settings', array('!page_name' => $page_name)));
+function homebox_configure_form(&$form_state, $page) {
+  drupal_set_title(t('!page_name settings', array('!page_name' => $page->settings['title'])));
 
   $form['columns'] = array(
-    '#type' => 'select', 
+    '#type' => 'select',
     '#title' => t('Number of columns'),
-    '#default_value' => variable_get('homebox_column_count_'. $pid, 3),
+    '#default_value' => $page->settings['regions'],
     '#options' => array('1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '6' => 6, '7' => 7, '8' => 8, '9' => 9),
     '#description' => t('Set the number of columns you want to activate for this Home box page.'),
+  );
+
+  $form['homebox_cache_enabled_'. $pid] = array(
+    '#type' => 'select',
+    '#title' => t('Use blocks cache?'),
+    '#default_value' => $page->settings['cache'],
+    '#options' => array(0 => t('Don\'t use'), 1 => t('Use if available')),
+    '#description' => t('Homebox will use the blocks cache if available for the rendering of the blocks. This can greatly improve performances, but has the drawback to break Views blocks that uses Ajax AND are using <strong>Block settings: Caching</strong>. You can use this option only if the Views blocks used in your homebox that use Ajax are set to <strong>Block settings: Caching:</strong> Do not cache.'),
   );
 
   $form['color'] = array(
@@ -406,44 +553,44 @@ function homebox_configure_form(&$form_state, $pid) {
   $form['color']['colors_enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Can users set custom colors for each boxes?'),
-    '#default_value' => variable_get('homebox_users_use_colors_'. $pid, FALSE),
+    '#default_value' => $page->settings['color'],
   );
 
   if (module_exists('colorpicker')) {
     $form['color']['homebox_colorpicker'] = array(
       '#type' => 'colorpicker',
       '#title' => t('Color picker'),
-      '#description' => t('Click an input to change choose a color.'),
+      '#description' => t('Click an input to choose a color.'),
     );
 
-    for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) { 
-      $form['color']['homebox_color_'. $pid . '_' . $i] = array(
+    for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
+      $form['color']['block_color_'. $pid .'_'. $i] = array(
         '#type' => 'colorpicker_textfield',
         '#title' => t('Color #!number', array('!number' => $i)),
         '#description' => t('Enter an hexadecimal value prefixed with #.'),
-        '#default_value' => variable_get('homebox_color_'. $pid . '_' . $i, '#E4F0F8'),
+        '#default_value' => $page->settings['colors'][$i] ? $page->settings['colors'][$i] : '#E4F0F8',
         '#colorpicker' => 'homebox_colorpicker',
       );
     }
   }
   else {
-    for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) { 
-      $form['color']['homebox_color_'. $pid . '_' . $i] = array(
+    for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
+      $form['color']['block_color_' . $i] = array(
         '#type' => 'textfield',
         '#title' => t('Color #!number', array('!number' => $i)),
         '#description' => t('Enter an hexadecimal value, ex: #ff33dd'),
-        '#default_value' => variable_get('homebox_color_'. $pid . '_' . $i, '#E4F0F8'),
+        '#default_value' => $page->settings['colors'][$i] ? $page->settings['colors'][$i] : '#E4F0F8',
       );
     }
     $form['color']['message'] = array(
-      '#type' => 'markup',
+      '#type' => 'item',
       '#value' => t('If you had the <a href="@url">Color picker</a> module enabled you could choose colors more easily.', array('@url' => 'http://drupal.org/project/colorpicker')),
     );
   }
 
-  $form['pid'] = array(
+  $form['name'] = array(
     '#type' => 'hidden',
-    '#value' => $pid,
+    '#value' => $page->name,
   );
 
   $form['#validate'] = array('homebox_configure_form_validate');
@@ -454,35 +601,59 @@ function homebox_configure_form(&$form_state, $pid) {
 
 /**
  * Forms for administration settings
- * 
+ *
  * @param $form
  * @param $form_state
  */
 function homebox_configure_form_validate($form, &$form_state) {
+  // Make sure the column choice is between 1-9
   $columns = (int) $form_state['values']['columns'];
   if ($columns < 1 ||  $columns > 9) {
     form_set_error('columns', t('You must enter a value between 1 and 9.'));
+  }
+  
+  // Check colors for string length and format - not valid HTML colors!
+  for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
+    if (strlen($form_state['values']['block_color_' . $i]) != 7) {
+      form_set_error('block_color_' . $i, t('Colors must begin with a # and follow by 6 characters.'));
+    }
+    
+    if (substr_count($form_state['values']['block_color_' . $i], '#') != 1) {
+      form_set_error('block_color_' . $i, t('Colors must begin with a # and follow by 6 characters.'));
+    }
   }
 }
 
 /**
  * Forms for administration settings
- * 
+ *
  * @param $form
  * @param $form_state
  */
 function homebox_configure_form_submit($form, &$form_state) {
-  // profile id
-  $pid = $form_state['values']['pid'];
+  // Fetch page
+  $page = homebox_get_page($form_state['values']['name']);
 
-  $column_count = (int)$form_state['values']['columns'];
-  variable_set('homebox_column_count_'. $pid, $column_count);
+  // Adjust settings
+  $page->settings['regions'] = (int) $form_state['values']['columns'];
+  $page->settings['cache'] = (int) $form_state['values']['cache'];
+  $page->settings['color'] = (int) $form_state['values']['colors_enabled'];
+  
+  // Adjust colors
+  for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
+    $page->settings['colors'][$i] = $form_state['values']['block_color_' . $i];
+  }
+  
+  // If blocks are available and set on regions that were removed, move them!
+  foreach ($page->settings['blocks'] as $key => $block) {
+    // Check block region
+    if ($block['region'] > $page->settings['regions']) {
+      $page->settings['blocks'][$key]['region'] = 1;
+    }
+  }
 
-  // we need to update default placement in {homebox_default}
-  db_query("UPDATE {homebox_default} SET region = %d WHERE pid = %d AND region > %d", $column_count, $pid, $column_count);
-  db_query("UPDATE {homebox_users} SET region = %d WHERE pid = %d AND region > %d", $column_count, $pid, $column_count);
-
-  variable_set('homebox_users_use_colors_'. $pid, (bool)$form_state['values']['colors_enabled']);
+  // Save settings
+  homebox_save_page($page);
 }
 
 /**
@@ -490,7 +661,7 @@ function homebox_configure_form_submit($form, &$form_state) {
  *
  * Active blocks are sorted by region, then by weight.
  * Disabled blocks are sorted by name.
- * 
+ *
  * @param $a
  *  An array
  * @param $b
@@ -499,17 +670,6 @@ function homebox_configure_form_submit($form, &$form_state) {
  *  Comparison result
  */
 function _homebox_block_compare($a, $b) {
-  static $regions;
-
-  // We need the region list to correctly order by region.
-  if (!isset($regions)) {
-    $regions = array_flip(array_keys(homebox_named_columns($a['pid'])));
-    $regions[HOMEBOX_REGION_NONE] = count($regions);
-  }
-  // Sort by region
-  if ((!empty($a['region']) && !empty($b['region'])) && ($place = ($regions[$a['region']] - $regions[$b['region']]))) {
-    return $place;
-  }
   // Sort by weight.
   $weight = $a['weight'] - $b['weight'];
   if ($weight) {
@@ -520,14 +680,14 @@ function _homebox_block_compare($a, $b) {
 }
 
 /**
- * Returns a keyed array containing regions/columns named base on Drupal variable homebox_column_count
- * 
+ * Returns a keyed array containing regions/columns named base on cols
+ *
  * @return
  *  A keyed array like array(1 => 'Column 1', 2 => 'Column 2')
  */
-function homebox_named_columns($pid) {
+function homebox_named_columns($cols) {
   $columns = array();
-  for ($i = 1; $i <= variable_get('homebox_column_count_'. $pid, 3); $i++) {
+  for ($i = 1; $i <= $cols; $i++) {
     $columns[$i] = t('Column !count', array('!count' => $i));
   }
   return $columns;
