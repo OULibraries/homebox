@@ -12,6 +12,10 @@ function homebox_admin_page() {
   // Already validated
   $page = homebox_get_page(arg(4));
   
+  if ($page) {
+    drupal_set_title(t('Edit !page_name', array('!page_name' => $page->settings['title'])));
+  }
+  
   if (!$page) {
     $form['page'] = array(
       '#type' => 'fieldset',
@@ -133,7 +137,6 @@ function homebox_admin_page() {
  * @ingroup themeable
  */
 function theme_homebox_admin_new_page($form) {
-
   $pages = homebox_pages();
   $output = drupal_render($form);
 
@@ -548,6 +551,8 @@ function homebox_configure_form(&$form_state, $page) {
     '#type' => 'fieldset',
     '#title' => t('Boxes colors customization'),
     '#description' => t('Here you can set colors that users can use to customize their boxes.'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
   );
 
   $form['color']['colors_enabled'] = array(
@@ -570,6 +575,8 @@ function homebox_configure_form(&$form_state, $page) {
         '#description' => t('Enter an hexadecimal value prefixed with #.'),
         '#default_value' => $page->settings['colors'][$i] ? $page->settings['colors'][$i] : '#E4F0F8',
         '#colorpicker' => 'homebox_colorpicker',
+        '#size' => 7,
+        '#maxlength' => 7,
       );
     }
   }
@@ -580,6 +587,8 @@ function homebox_configure_form(&$form_state, $page) {
         '#title' => t('Color #!number', array('!number' => $i)),
         '#description' => t('Enter an hexadecimal value, ex: #ff33dd'),
         '#default_value' => $page->settings['colors'][$i] ? $page->settings['colors'][$i] : '#E4F0F8',
+        '#size' => 7,
+        '#maxlength' => 7,
       );
     }
     $form['color']['message'] = array(
