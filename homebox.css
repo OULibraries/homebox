@@ -12,28 +12,36 @@
 /*
 ** Columns/regions
 */
+
 #homebox .homebox-column {
-  float: left;
-  width: 300px;
   margin: 3px;
   padding: 5px;
-  padding-bottom: 30px;
   background: url(images/stripe.png);
 }
 
-#homebox.column-count-2 .homebox-column {
-  width: 45%;
+#homebox .homebox-column-wrapper {
+  float: left;
 }
-#homebox.column-count-3 .homebox-column {
-  width: 30%;
+#homebox .homebox-column-wrapper-maximized {
+  width: 100%;
 }
-
+#homebox.column-count-1 .homebox-column-wrapper {
+  width: 100%;
+}
+#homebox.column-count-2 .homebox-column-wrapper {
+  width: 50%;
+}
+#homebox.column-count-3 .homebox-column-wrapper {
+  width: 33%;
+}
+#homebox.column-count-4 .homebox-column-wrapper {
+  width: 25%;
+}
 /*
 ** Portlets/boxes
 */
 #homebox .homebox-portlet {
   margin: 5px 0;
-  width: 98%;
   padding: 0;
   border: 3px solid #eee;
   background-color: white;
@@ -64,15 +72,19 @@
   display: none;
   border-bottom: 1px solid #ddd;
 }
-#homebox .homebox-portlet .portlet-content .view-filters {
-  display: none;
-}
 #homebox .homebox-portlet div.views-exposed-widgets {
   padding: 0 7px;
 }
 #homebox .homebox-portlet div.views-exposed-widgets div.views-exposed-widget {
+  /* clear: both; */
+}
+#homebox div.view-header {
+  text-align: right;
+}
+#homebox .portlet-maximized {
   clear: both;
 }
+
 /*
 ** Icons
 */
@@ -94,6 +106,12 @@
 .portlet-close {
   background: url(images/close.gif);
 }
+.portlet-maximize {
+  background: url(images/maximize.gif);
+}
+.portlet-maximized .portlet-maximize {
+  background: url(images/minimize.gif);
+}
 
 /*
 ** Closed box/portlet class
@@ -106,10 +124,10 @@
 ** Placeholder
 */
 #homebox .homebox-placeholder {
-  border: 1px dotted black;
   visibility: visible !important;
-  height: 50px !important;
-  margin: 30px 35px 0 25px;
+  margin: 5px 0;
+  padding: 0;
+  background: #FFFFDD;
 }
 #homebox .homebox-placeholder * {
   visibility: hidden;
@@ -135,22 +153,36 @@ div.homebox-colors {
 /*
 ** Hidding classes for Add content
 */
-  /**
-   * We must use visibility because an input
-   * element can't be changed via JavaScript
-   * since it is not accessible via the DOM anymore.
-   * So visibility + height to 0px behave the same way.
-   */
 .homebox-settings-hidden {
-  height: 0px;
-  visibility: hidden;
+  display: none;
   overflow: hidden;
 }
-.homebox-settings-show {
-  height: auto;
-  visibility: visible;
-  overflow: visible;
+
+/* Page configure UI */
+#homebox-settings {
+  margin: 0 12px 6px 3px;
+  padding: 3px;
+  background: url(images/stripe.png) repeat;
 }
-div#homebox div.view-header {
-  text-align: right;
+#homebox-settings li {
+  display: inline-block;
+  border: 1px solid #DDD;
+  margin: 2px;
+  padding: 3px 6px;
+  background: #FFF;
 }
+ul.homebox-config-links {
+  margin: 0 0 6px;
+}
+li.homebox-config-link {
+  list-style: none;
+  display: inline-block;
+  margin: 0 3px 0 0;
+  padding: 5px;
+  border: 1px solid #ddd;
+  background: #FFF;
+}
+
+/* Misc 
+#homebox-save span { display:none; }
+*/
