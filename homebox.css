@@ -14,7 +14,7 @@
 */
 
 #homebox .homebox-column {
-  margin: 3px;
+  margin: 2px;
   padding: 5px;
   background: url(images/stripe.png);
 }
@@ -36,6 +36,21 @@
 }
 #homebox.column-count-4 .homebox-column-wrapper {
   width: 25%;
+}
+#homebox.column-count-5 .homebox-column-wrapper {
+  width: 20%;
+}
+#homebox.column-count-6 .homebox-column-wrapper {
+  width: 16%;
+}
+#homebox.column-count-7 .homebox-column-wrapper {
+  width: 14.2%;
+}
+#homebox.column-count-8 .homebox-column-wrapper {
+  width: 12.5%;
+}
+#homebox.column-count-9 .homebox-column-wrapper {
+  width: 11.1%;
 }
 /*
 ** Portlets/boxes

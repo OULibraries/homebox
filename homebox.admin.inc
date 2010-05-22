@@ -643,6 +643,11 @@ function homebox_configure_form_submit($form, &$form_state) {
   // Fetch page
   $page = homebox_get_page($form_state['values']['name']);
 
+  // If the region amount changed, clear our theme registry
+  if ($page->settings['regions'] != (int) $form_state['values']['columns']) {
+    menu_rebuild();
+  }
+
   // Adjust settings
   $page->settings['regions'] = (int) $form_state['values']['columns'];
   $page->settings['cache'] = (int) $form_state['values']['cache'];
