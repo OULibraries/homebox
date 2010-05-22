@@ -62,6 +62,22 @@ Drupal.behaviors.homebox = function(context) {
       };
     });
     
+    // Attach double click event on portlet header
+    $boxes.find('.portlet-header').dblclick(function() {
+      if ($(this).parents(".homebox-portlet:first").find(".portlet-content").is(':visible')) {
+        $(this).find('.portlet-minus').toggleClass("portlet-plus");  
+        $(this).find('.portlet-minus').toggleClass("portlet-minus");
+      }
+      else {
+        $(this).find('.portlet-plus').toggleClass("portlet-minus");
+        $(this).find('.portlet-plus').toggleClass("portlet-plus"); 
+      }
+      
+      $(this).parents(".homebox-portlet:first").find(".portlet-content").toggle();
+      
+      Drupal.homebox.equalizeColumnsHeights($columns);
+    });
+    
     // Attach click event on settings icon
     $boxes.find('.portlet-header .portlet-settings').click(function() {
       $(this).parents(".homebox-portlet:first").find(".portlet-config").toggle();
