@@ -450,13 +450,13 @@ function homebox_admin_display_form_submit($form, &$form_state) {
       $page->settings['blocks'][$key] = array(
         'module' => $block['module'],
         'delta' => $block['delta'],
-        'region' => $block['region'],
-        'movable' => $block['movable'],
-        'status' => $block['status'],
-        'open' => $block['open'],
-        'closable' => $block['closable'],
+        'region' => (int) $block['region'],
+        'movable' => (int) $block['movable'],
+        'status' => (int) $block['status'],
+        'open' => (int) $block['open'],
+        'closable' => (int) $block['closable'],
         'title' => $block['title'],
-        'weight' => $block['weight'],
+        'weight' => (int) $block['weight'],
       );
     }
   }
