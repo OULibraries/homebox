@@ -37,7 +37,7 @@ Drupal.behaviors.homebox = function(context) {
     $homebox.find('.homebox-unclosable span.portlet-close').remove();
     
     // Add maximize link to every portlet
-    $boxes.find('.portlet-header .portlet-close').after('<span class="portlet-icon portlet-maximize"></span>');
+    $boxes.find('.portlet-header .portlet-minus').before('<span class="portlet-icon portlet-maximize"></span>');
     
     // Attach click event to maximize icon
     $boxes.find('.portlet-header .portlet-maximize').click(function() {
