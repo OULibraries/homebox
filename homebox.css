@@ -32,7 +32,7 @@
   width: 50%;
 }
 #homebox.column-count-3 .homebox-column-wrapper {
-  width: 33%;
+  width: 33.3%;
 }
 #homebox.column-count-4 .homebox-column-wrapper {
   width: 25%;
@@ -41,7 +41,7 @@
   width: 20%;
 }
 #homebox.column-count-6 .homebox-column-wrapper {
-  width: 16%;
+  width: 16.6%;
 }
 #homebox.column-count-7 .homebox-column-wrapper {
   width: 14.2%;
@@ -56,7 +56,7 @@
 ** Portlets/boxes
 */
 #homebox .homebox-portlet {
-  margin: 5px 0;
+  margin: 2px 0 5px;
   padding: 0;
   border: 3px solid #eee;
   background-color: white;
@@ -175,7 +175,7 @@ div.homebox-colors {
 
 /* Page configure UI */
 #homebox-settings {
-  margin: 0 12px 6px 3px;
+  margin: 0 0 6px 3px;
   padding: 3px;
   background: url(images/stripe.png) repeat;
 }
@@ -197,7 +197,3 @@ li.homebox-config-link {
   border: 1px solid #ddd;
   background: #FFF;
 }
-
-/* Misc 
-#homebox-save span { display:none; }
-*/
