@@ -25,12 +25,15 @@ function _homebox_features_api() {
  * Implementation of hook_features_export_options().
  */
 function homebox_features_export_options() {
-  $pages = array();
-  foreach (homebox_pages(FALSE) as $page) {
-    $pages[$page->name] = $page->name;
+  $exports = array();
+  $pages = homebox_pages();
+  if ($pages) {
+    foreach ($pages as $page) {
+      $exports[$page->name] = $page->name;
+    }
   }
-  
-  return $pages;
+
+  return $exports;
 }
 
 /**
