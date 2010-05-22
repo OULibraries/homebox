@@ -82,6 +82,13 @@ function homebox_admin_page() {
     '#default_value' => $page ? $page->settings['enabled'] : 1,
   );
   
+  $form['page']['options']['full'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Disable Block Regions'),
+    '#description' => t('If checked, the theme block regions will be disabled for this page, giving more room for the home box.'),
+    '#default_value' => $page ? $page->settings['full'] : 0,
+  );
+  
   $result = db_query('SELECT rid, name FROM {role} ORDER BY name');
   $role_options = array();
   while ($role = db_fetch_object($result)) {
@@ -205,8 +212,9 @@ function homebox_admin_page_submit($form, &$form_state) {
     // Change settings
     $page->settings['title'] = $form_state['values']['title'];
     $page->settings['path'] = $form_state['values']['path'];
-    $page->settings['menu'] = $form_state['values']['menu'];
+    $page->settings['menu'] = (int) $form_state['values']['menu'];
     $page->settings['enabled'] = (int) $form_state['values']['enabled'];
+    $page->settings['full'] = (int) $form_state['values']['full'];
     $page->settings['roles'] = array();
     
     foreach ($form_state['values']['roles'] as $role) {
@@ -239,8 +247,9 @@ function homebox_admin_page_submit($form, &$form_state) {
       $page->settings = array(
         'title' => $form_state['values']['title'],
         'path' => $form_state['values']['path'],
-        'menu' => $form_state['values']['menu'],
+        'menu' => (int) $form_state['values']['menu'],
         'enabled' => (int) $form_state['values']['enabled'],
+        'full' => (int) $form_state['values']['full'],
         'regions' => HOMEBOX_DEFAULT_REGIONS,
         'cache' => 0,
         'color' => 0,

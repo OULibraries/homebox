@@ -226,7 +226,15 @@ function homebox_build($page) {
   $column_count = $page->settings['regions'];
 
   // Build the page
-  return theme('homebox', $regions, $available_blocks, $color_css_classes, $column_count, $page);
+  if ($page->settings['full']) {
+    // If page is set to full, avoid printing other theme block regions
+    $output = theme('homebox', $regions, $available_blocks, $color_css_classes, $column_count, $page);
+    print theme('page', $output, FALSE);
+  }
+  else {
+    // Simply return the page
+    return theme('homebox', $regions, $available_blocks, $color_css_classes, $column_count, $page); 
+  }
 }
 
 /**
@@ -692,6 +700,7 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
         case 'enabled':
         case 'regions':
         case 'cache':
+        case 'full':
         case 'color':
           // Check that the previous are numeric values
           if(!is_numeric($value)) {
