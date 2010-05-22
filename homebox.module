@@ -996,11 +996,13 @@ function _homebox_get_css_classes_for_block($block) {
 /**
  * Retrieve an array of all available pages either in the
  * database or by hook_homebox()
- *
+ * 
+ * @param $api
+ *   Whether or not to invoke other modules for pages
  * @return
  *   An array of page objects
  */
-function homebox_pages() {
+function homebox_pages($api = TRUE) {
   $pages = array();
   
   // Fetch all available pages from database
@@ -1012,16 +1014,18 @@ function homebox_pages() {
   }
   
   // Fetch all available pages from API
-  $result = module_invoke_all('homebox');
-  foreach ($result as $name => $data) {
-    // Build page object
-    $page = new stdClass;
-    $page->name = $name;
-    $page->settings = $data;
+  if ($api) {
+    $result = module_invoke_all('homebox');
+    foreach ($result as $name => $data) {
+      // Build page object
+      $page = new stdClass;
+      $page->name = $name;
+      $page->settings = $data;
     
-    // Check the data before using it
-    if ($page = homebox_check_page_object($page)) {
-      $pages[] = $page;
+      // Check the data before using it
+      if ($page = homebox_check_page_object($page)) {
+        $pages[] = $page;
+      }
     }
   }
 
@@ -1149,4 +1153,12 @@ function _homebox_user_access_view_homebox($page) {
     // If here, no access
     return FALSE; 
   }
+}
+
+/**
+ * Implementation of hook_features_api().
+ */
+function homebox_features_api() {
+  require_once('homebox.features.inc');
+  return _homebox_features_api();
 }
