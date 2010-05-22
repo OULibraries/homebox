@@ -1,0 +1,102 @@
+<?php
+
+/*
+ * Implementation of hook_homebox()
+ * 
+ * @return
+ *   An array of homebox page settings arrays.
+ *   The machine name is specified in the array key. 
+ *   The machine name and path MUST not be in use.
+ * 
+ * --------------------------------------------------
+ *   The menu might need to be rebuilt in order for pages
+ *   in code to show on the Home Box admin page.
+ * 
+ *   Once an admin saves settings for a page in code, it resides
+ *   in the database, and the code is no longer read, until it's
+ *   deleted.
+ */
+function homebox_example_homebox() {
+  $pages = array();
+  
+  $pages['testbox'] = array(
+    'title' => 'Test Home Box',
+    'path' => 'testbox',
+    'menu' => 1,
+    'enabled' => 1,
+    'regions' => 3,
+    'cache' => 0,
+    'full' => 1,
+    'roles' => array(
+      0 => 'authenticated user',
+    ),
+    'color' => 0,
+    'colors' => array(
+      0 => '#E4F0F8',
+      1 => '#E4F0F8',
+      2 => '#E4F0F8',
+      3 => '#E4F0F8',
+      4 => '#E4F0F8',
+      5 => '#E4F0F8',
+    ),
+    'blocks' => array(
+      'node_0' => array(
+        'module' => 'node',
+        'delta' => '0',
+        'region' => '1',
+        'movable' => 1,
+        'status' => 1,
+        'open' => 1,
+        'closable' => 1,
+        'title' => '',
+        'weight' => '-8',
+      ),
+      'user_2' => array(
+        'module' => 'user',
+        'delta' => '2',
+        'region' => '1',
+        'movable' => 1,
+        'status' => 1,
+        'open' => 1,
+        'closable' => 1,
+        'title' => '',
+        'weight' => '-7',
+      ),
+      'user_1' => array(
+        'module' => 'user',
+        'delta' => '1',
+        'region' => '3',
+        'movable' => 1,
+        'status' => 1,
+        'open' => 1,
+        'closable' => 1,
+        'title' => '',
+        'weight' => '-7',
+      ),
+      'system_0' => array(
+        'module' => 'system',
+        'delta' => '0',
+        'region' => '2',
+        'movable' => 1,
+        'status' => 1,
+        'open' => 1,
+        'closable' => 1,
+        'title' => '',
+        'weight' => '-7',
+      ),
+      'user_3' => array(
+        'module' => 'user',
+        'delta' => '3',
+        'region' => '2',
+        'movable' => 1,
+        'status' => 1,
+        'open' => 1,
+        'closable' => 1,
+        'title' => '',
+        'weight' => '1',
+      ),
+    ),
+  );
+  
+  return $pages; 
+}

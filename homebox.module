@@ -513,7 +513,8 @@ function homebox_list_available_blocks($regions) {
 }
 
 /**
- * Helper function to fetch a page from the database
+ * Helper function to fetch a page from the database or from
+ * a module implementing hook_homebox()
  * 
  * @param $name
  *   The machine name of the page
@@ -530,7 +531,22 @@ function homebox_get_page($name) {
     return $page;
   }
   else {
-    return FALSE;
+    // If not available, check other modules
+    $pages = module_invoke_all('homebox');
+    foreach ($pages as $id => $data) {
+      // Only match page name
+      if ($name == $id) {
+        // Build page object
+        $page = new stdClass;
+        $page->name = $id;
+        $page->settings = $data;
+      
+        // Check the data before using it
+        $page = homebox_check_page_object($page);
+      }
+    }
+    
+    return $page ? $page : FALSE;
   }
 }
 
@@ -745,7 +761,6 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
     // Check name
     if ($status && $homebox->name && !homebox_check_name($homebox->name, $element)) {
       $status = FALSE;
-      continue; 
     }
     
     // Make sure the required values actually exist
@@ -979,7 +994,8 @@ function _homebox_get_css_classes_for_block($block) {
 }
 
 /**
- * Retrieve an array of all available pages
+ * Retrieve an array of all available pages either in the
+ * database or by hook_homebox()
  *
  * @return
  *   An array of page objects
@@ -993,6 +1009,20 @@ function homebox_pages() {
   while ($page = db_fetch_object($result)) {
     $page->settings = unserialize($page->settings);
     $pages[] = $page;
+  }
+  
+  // Fetch all available pages from API
+  $result = module_invoke_all('homebox');
+  foreach ($result as $name => $data) {
+    // Build page object
+    $page = new stdClass;
+    $page->name = $name;
+    $page->settings = $data;
+    
+    // Check the data before using it
+    if ($page = homebox_check_page_object($page)) {
+      $pages[] = $page;
+    }
   }
 
   return empty($pages) ? NULL : $pages;
