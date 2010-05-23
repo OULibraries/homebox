@@ -110,7 +110,7 @@ function homebox_admin_page() {
     );
     $form['delete'] = array(
       '#type' => 'submit',
-      '#value' => t('Delete page'),
+      '#value' => homebox_page_is_api($page->name) ? t('Revert page') : t('Delete page'),
       '#weight' => 3,
     );
   }
