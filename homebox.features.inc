@@ -43,8 +43,8 @@ function homebox_features_export($data, &$export, $module_name = '') {
   $pipe = array();
   $export['dependencies']['homebox'] = 'homebox';
   $export['dependencies']['homebox'] = 'jquery_ui';
-  foreach ($data as $module) {
-    $export['features']['homebox'][$module] = $module;
+  foreach ($data as $name) {
+    $export['features']['homebox'][$name] = $name;
   }
 
   return $pipe;
@@ -84,7 +84,7 @@ function homebox_features_export_render($module = 'foo', $data) {
  * Implementation of hook_features_revert().
  */
 function homebox_features_revert($module = NULL) {
-  // Get default heartbeats from feature
+  // Get home box pages from feature
   if (module_hook($module, 'homebox')) {
     $pages = module_invoke($module, 'homebox');
 
