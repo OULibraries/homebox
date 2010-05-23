@@ -233,6 +233,11 @@ function homebox_admin_page_submit($form, &$form_state) {
     homebox_delete_page($form_state['values']['name']);
     drupal_set_message(t('The page has been deleted.'));
   }
+  else if ($form_state['values']['op'] == t('Revert page')) {
+    // Delete the page from database so the code persists
+    homebox_delete_page($form_state['values']['name']);
+    drupal_set_message(t('The page has been reverted.'));
+  }
   else if ($form_state['values']['op'] == t('Add page')) {
     // Build page object
     $page = new stdClass;
