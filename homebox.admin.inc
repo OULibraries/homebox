@@ -724,3 +724,45 @@ function homebox_named_columns($cols) {
   }
   return $columns;
 }
+
+/*
+ * Provide form for user profile settings
+ * 
+ * This allows an admin to specify a Home Box to reside
+ * as a profile tab
+ */
+function homebox_user_settings_page() {
+  $form = array();
+  
+  // Gather all available pages
+  $pages = homebox_pages();
+  
+  // Build form options
+  $options = array();
+  foreach ($pages as $page) {
+    $options[$page->name] = $page->settings['title'] . ' (' . $page->name . ')'; 
+  }
+  
+  $form['help'] = array(
+    '#type' => 'item',
+    '#value' => t('
+      The permissions set in the chosen Home Boxes will be still be checked. 
+      Make sure that users who can view their own profiles can also view the selected Home Box. 
+      The tab will only be presented if the current user is viewing their own profile.'
+    ),
+  );
+  
+  /* @todo: Should we give option to override user profile pages? */
+  
+  $form['homebox_user_tab'] = array(
+    '#type' => 'select',
+    '#title' => t('Add a profile tab'),
+    '#default_value' => variable_get('homebox_user_tab', 0),
+    '#options' => array(0 => '') + $options,
+    '#description' => t('Optionally add a Home Box as a tab to a user profile.'),
+  );
+  
+  $form['#submit'][] = 'menu_rebuild';
+  
+  return system_settings_form($form);
+}

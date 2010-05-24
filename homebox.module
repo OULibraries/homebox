@@ -38,6 +38,22 @@ function homebox_menu() {
     }
   }
 
+  // Optionally add a tab to user profiles
+  if ($name = variable_get('homebox_user_tab', '')) {
+    $page = homebox_get_page($name);
+    if ($page) {
+      $items['user/%user/' . $page->settings['path']] = array(
+        'title' => $page->settings['title'],
+        'page callback' => 'homebox_build',
+        'page arguments' => array($page),
+        'access callback' => '_homebox_user_access_view_user_homebox',
+        'access arguments' => array($page, 1),
+        'weight' => 1,
+        'type' => MENU_LOCAL_TASK,
+      );
+    }
+  }
+
   // Ajax Callbacks
   $items['homebox/js/save'] = array(
     'page callback' => 'homebox_js_save_user_settings',
@@ -89,6 +105,14 @@ function homebox_menu() {
     'page arguments' => array('homebox_export_form', 4),
     'access arguments' => array('administer homebox'),
     'type' => MENU_CALLBACK,
+    'file' => 'homebox.admin.inc',
+  );
+  // Admin user settings
+  $items['admin/user/homebox'] = array(
+    'title' => 'User Profile Home Box',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('homebox_user_settings_page'),
+    'access arguments' => array('administer homebox'),
     'file' => 'homebox.admin.inc',
   );
   
@@ -786,12 +810,13 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
 
 /**
  * Helper function to determine whether or not a page is living
- * in code
+ * in code.
  * 
  * @param $name
  *   A page name
  * @return
- *   TRUE if the page is living in code
+ *   TRUE if the page is living in code regardless of whether or not
+ *   the code made it into the DB because of a save
  */
 function homebox_page_is_api($name) {
   // Fetch all pages living in code
@@ -1171,6 +1196,23 @@ function _homebox_user_access_view_homebox($page) {
   }
   else {
     // If here, no access
+    return FALSE; 
+  }
+}
+
+/*
+ * Helper function to check access permissions for user 
+ * profile Home Box
+ * 
+ * Only show tab if you're viewing your own account
+ */
+function _homebox_user_access_view_user_homebox($page, $profile) {
+  global $user;
+  
+  if ($user->uid == $profile->uid && _homebox_user_access_view_homebox($page)) {
+    return TRUE; 
+  }
+  else {
     return FALSE; 
   }
 }

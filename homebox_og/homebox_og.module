@@ -54,10 +54,13 @@ function homebox_og_override_group($node) {
     if ($name = variable_get('homebox_og_home', '')) {
       // Make sure the page exists
       if ($page = homebox_get_page($name)) {
-        // Force group name as title
-        drupal_set_title($node->title);
-        // Return the designated home box
-        return homebox_build($page);
+        // Make sure the user has permission to view the home box
+        if (_homebox_user_access_view_homebox($page)) {
+          // Force group name as title
+          drupal_set_title($node->title);
+          // Return the designated home box
+          return homebox_build($page);
+        }
       }
     }
   }
@@ -102,6 +105,11 @@ function homebox_og_group_settings_page() {
     $options[$page->name] = $page->settings['title'] . ' (' . $page->name . ')'; 
   }
   
+  $form['help'] = array(
+    '#type' => 'item',
+    '#value' => t('The permissions set in the chosen Home Boxes will be still be checked. Make sure that the users who are viewing OG components can also view the Home Boxes.'),
+  );
+  
   $form['homebox_og_home'] = array(
     '#type' => 'select',
     '#title' => t('Override group homepages'),
@@ -122,6 +130,8 @@ function homebox_og_group_settings_page() {
     '#description' => t('Optionally add a Home Box as a tab to an organic group home page.'),
   );
   
+  $form['#submit'][] = 'homebox_og_group_settings_page_submit';
+  
   return system_settings_form($form);
 }
 
@@ -129,5 +139,4 @@ function homebox_og_group_settings_page() {
 function homebox_og_group_settings_page_submit($form, &$form_state) {
   // Rebuild the menu
   menu_rebuild();
-  drupal_set_message('e');
 }
