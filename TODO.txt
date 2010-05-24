@@ -1,11 +1,7 @@
 TO DO: Continued development of the 2.x version
 
-Increase drag speed
-Allow home boxes to live in code
-Admin option to flush user settings per page
 Allow custom content boxes
-Override group homepages
-Features integration
+Admin option to flush user settings per page
 Region width overrides
 Improved user config UI
 Message if user is not logged in

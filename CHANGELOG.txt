@@ -62,7 +62,7 @@ CHANGELOG for Home box for Drupal
   o jQuery 1.3.2 seems to works pretty well with http://drupal.org/project/jquery_update 6.x-2.0-alpha1 (i.e jQuery 1.3.2)
   o and hope I didn't forget anything
   
-6.x-2.0-dev - 2010/05/20
+6.x-2.0-dev - 2010/05/24
   o New #794728: Removed incrementing page IDs
   o New #794728: Introduced page machine identifier names
   o New #794728: Removed use and dependance of block IDs
@@ -85,3 +85,12 @@ CHANGELOG for Home box for Drupal
   o New #794728: Option to enable/disable home boxes
   o New #794728: Maximizing widget feature
   o New #794728: Move permissions from hook_perm into page config
+  o New #794728: Increase drag speed
+  o New #794728: Double-clicking a widget header collapses/expands the block
+  o New #794728: Added CSS support for up to 9 regions
+  o New #794728: Fixed cache issue with changing region amount
+  o New #794728: Option to disable theme block regions so home box can go full-width
+  o New #794728: Allow home boxes to live in code via hook_homebox() - included sample module displaying this
+  o New #794728: Features integration
+  o New #794728: Organic Groups integration
+  o New #794728: Offer Home Box as a profile tab
