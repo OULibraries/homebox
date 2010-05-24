@@ -2,5 +2,5 @@
 name = Home box Example
 description = An example implementation of the Home Box API
 dependencies[] = homebox
-package = User interface
+package = Home Box
 core = 6.x

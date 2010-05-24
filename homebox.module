@@ -92,15 +92,6 @@ function homebox_menu() {
     'file' => 'homebox.admin.inc',
   );
   
-  // Organic Groups
-  $items['admin/og/homebox'] = array(
-    'title' => 'Organic groups Home Box',
-    'description' => 'Choose a home box to act as a group home page',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('homebox_group_settings_page'),
-    'access callback' => '_homebox_user_access_group_settings',
-  );
-  
   return $items;
 }
 
@@ -956,79 +947,6 @@ function homebox_js_restore_defaults() {
 
   // Purge user settings
   _homebox_delete_user_settings($name);
-}
-
-// ORGANIC GROUPS INTEGRATION
-
-/*
- * Implementation of hook_menu_alter()
- * 
- * Give Home Box the opportunity to override group homepage nodes
- */
-function homebox_menu_alter(&$items) {
-  $items['node/%node']['page callback'] = 'homebox_override_group';
-}
-
-// Override a group's homepage with a homebox
-function homebox_override_group($node) {
-  // Check if OG is enabled
-  if (module_exists('og')) {
-    // Check if this is a group homepage
-    if (og_is_group_type($node->type)) {
-      // Fetch the designated homebox
-      if ($name = variable_get('homebox_og', '')) {
-        // Make sure the page exists
-        if ($page = homebox_get_page($name)) {
-          // Force group name as title
-          drupal_set_title($node->title);
-          // Return the designated home box
-          return homebox_build($page);
-        }
-      }
-    }
-  } 
-  
-  // Just return the regular node
-  return node_page_view($node);
-}
-
-// Determine if a user can access the OG settings page
-function _homebox_user_access_group_settings() {
-  if (user_access('administer homebox') 
-    && user_access('administer organic groups')) {
-    return TRUE;   
-  }
-  else {
-    return FALSE;
-  }
-}
-
-// OG Home Box settings form
-function homebox_group_settings_page() {
-  $form = array();
-  
-  // Gather all available pages
-  $pages = homebox_pages();
-  
-  // Build form options
-  $options = array();
-  foreach ($pages as $page) {
-    $options[$page->name] = $page->settings['title'] . ' (' . $page->name . ')'; 
-  }
-  
-  $form['homebox_og'] = array(
-    '#type' => 'select',
-    '#title' => t('Override group homepages'),
-    '#default_value' => variable_get('homebox_og', 0),
-    '#options' => array(0 => '') + $options,
-    '#description' => t('
-      If chosen, organic group home pages will be replaced by the specified Home Box. 
-      It is recommended that the chosen Home Box does not have a menu entry because 
-      user settings will persist, if available.
-    '),
-  );
-  
-  return system_settings_form($form);
 }
 
 /**

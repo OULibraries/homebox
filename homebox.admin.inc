@@ -615,11 +615,13 @@ function homebox_configure_form(&$form_state, $page) {
     '#type' => 'hidden',
     '#value' => $page->name,
   );
+  
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+  );
 
-  $form['#validate'] = array('homebox_configure_form_validate');
-  $form['#submit'] = array('homebox_configure_form_submit');
-
-  return system_settings_form($form);
+  return $form;
 }
 
 /**
@@ -682,6 +684,8 @@ function homebox_configure_form_submit($form, &$form_state) {
 
   // Save settings
   homebox_save_page($page);
+  
+  drupal_set_message(t('The setting have been saved.'));
 }
 
 /**
