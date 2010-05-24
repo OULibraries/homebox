@@ -44,8 +44,8 @@ function homebox_menu() {
     if ($page) {
       $items['user/%user/' . $page->settings['path']] = array(
         'title' => $page->settings['title'],
-        'page callback' => 'homebox_build',
-        'page arguments' => array($page),
+        'page callback' => 'homebox_pre_build_user',
+        'page arguments' => array($page, 1),
         'access callback' => '_homebox_user_access_view_user_homebox',
         'access arguments' => array($page, 1),
         'weight' => 1,
@@ -258,6 +258,26 @@ function homebox_build($page) {
   else {
     // Simply return the page
     return theme('homebox', $regions, $available_blocks, $color_css_classes, $column_count, $page); 
+  }
+}
+
+/*
+ * Helper function for performing operations prior to rendering
+ * a Home Box that is set as a user profile tab
+ * 
+ * @param $page
+ *   A page object
+ * @param $user
+ *   A user object
+ */
+function homebox_pre_build_user($page, $user) {
+  drupal_set_title($user->name);
+  $output = homebox_build($page);
+  
+  // Only return if output is available
+  // Certain Home Boxes print instead of return
+  if ($output) {
+    return $output; 
   }
 }
 
