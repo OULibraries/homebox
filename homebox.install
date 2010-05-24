@@ -38,6 +38,8 @@ function homebox_schema() {
  * Implementation of hook_uninstall().
  */
 function homebox_uninstall() {
+  // Remove variables
+  variable_del('homebox_og');
   // Remove schema
   drupal_uninstall_schema('homebox');
 }
