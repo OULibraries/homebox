@@ -742,7 +742,7 @@ function homebox_user_settings_page() {
   foreach ($pages as $page) {
     $options[$page->name] = $page->settings['title'] . ' (' . $page->name . ')'; 
   }
-  
+
   $form['help'] = array(
     '#type' => 'item',
     '#value' => t('
@@ -758,7 +758,7 @@ function homebox_user_settings_page() {
     '#type' => 'select',
     '#title' => t('Add a profile tab'),
     '#default_value' => variable_get('homebox_user_tab', 0),
-    '#options' => array(0 => '') + $options,
+    '#options' => array(0 => '- None -') + $options,
     '#description' => t('Optionally add a Home Box as a tab to a user profile.'),
   );
   

@@ -82,9 +82,22 @@ function _homebox_og_user_access_group_settings() {
 
 // Determine if a user can access the Home Box
 function _homebox_og_user_access_view_homebox($page, $node) {
+  // If this a group node?
+  // Can the user access the node?
+  // Can the user view the Home Box?
   if(og_is_group_type($node->type) 
     && (node_access('view', $node))
     && _homebox_user_access_view_homebox($page)) {
+      // Check if the group tab is set to members only
+      if (variable_get('homebox_og_tab_membersonly', 0)) {
+        if (og_is_group_member($node->nid)) {
+          return TRUE; 
+        }
+        else {
+          return FALSE; 
+        }
+      }
+      
     return TRUE;
   }
   else {
@@ -110,11 +123,16 @@ function homebox_og_group_settings_page() {
     '#value' => t('The permissions set in the chosen Home Boxes will be still be checked. Make sure that the users who are viewing OG components can also view the Home Boxes.'),
   );
   
-  $form['homebox_og_home'] = array(
+  $form['home'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Homepage'),
+  );
+  
+  $form['home']['homebox_og_home'] = array(
     '#type' => 'select',
     '#title' => t('Override group homepages'),
     '#default_value' => variable_get('homebox_og_home', 0),
-    '#options' => array(0 => '') + $options,
+    '#options' => array(0 => '- None -') + $options,
     '#description' => t('
       If chosen, organic group home pages will be replaced by the specified Home Box. 
       It is recommended that the chosen Home Box does not have a menu entry because 
@@ -122,12 +140,24 @@ function homebox_og_group_settings_page() {
     '),
   );
   
-  $form['homebox_og_tab'] = array(
+  $form['tab'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Menu Tab'),
+  );
+  
+  $form['tab']['homebox_og_tab'] = array(
     '#type' => 'select',
     '#title' => t('Add a group tab'),
     '#default_value' => variable_get('homebox_og_tab', 0),
-    '#options' => array(0 => '') + $options,
+    '#options' => array(0 => '- None -') + $options,
     '#description' => t('Optionally add a Home Box as a tab to an organic group home page.'),
+  );
+  
+  $form['tab']['homebox_og_tab_membersonly'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Group members only'),
+    '#description' => t('If checked, a user can only view this group tab if they are a member of the given group.'),
+    '#default_value' => variable_get('homebox_og_tab_membersonly', 0),
   );
   
   $form['#submit'][] = 'homebox_og_group_settings_page_submit';

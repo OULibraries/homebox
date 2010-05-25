@@ -11,7 +11,8 @@
  * 
  * --------------------------------------------------
  *   The menu might need to be rebuilt / cache cleared in order for 
- *   pages in code to show on the Home Box admin page.
+ *   pages in code to show on the Home Box admin page and become
+ *   accessible via the specified path.
  * 
  *   Once an admin saves settings for a page in code, it resides
  *   in the database, and the code is no longer read, until it's

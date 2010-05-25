@@ -113,6 +113,7 @@ function homebox_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('homebox_user_settings_page'),
     'access arguments' => array('administer homebox'),
+    'description' => 'Configure the intergration of Home Box and user profiles.',
     'file' => 'homebox.admin.inc',
   );
   
