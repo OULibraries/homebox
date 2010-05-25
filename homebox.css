@@ -142,7 +142,8 @@
   visibility: visible !important;
   margin: 5px 0;
   padding: 0;
-  background: #FFFFDD;
+  /*background: #FFFFDD;*/
+  border: 3px dashed #ccc;
 }
 #homebox .homebox-placeholder * {
   visibility: hidden;
