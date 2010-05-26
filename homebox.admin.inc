@@ -553,7 +553,7 @@ function homebox_configure_form(&$form_state, $page) {
     '#description' => t('Set the number of columns you want to activate for this Home box page.'),
   );
 
-  $form['homebox_cache_enabled'] = array(
+  $form['cache'] = array(
     '#type' => 'select',
     '#title' => t('Use blocks cache?'),
     '#default_value' => $page->settings['cache'],
