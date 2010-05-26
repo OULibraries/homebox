@@ -85,7 +85,7 @@ function _homebox_og_user_access_view_homebox($page, $node) {
   // If this a group node?
   // Can the user access the node?
   // Can the user view the Home Box?
-  if(og_is_group_type($node->type) 
+  if (og_is_group_type($node->type) 
     && (node_access('view', $node))
     && _homebox_user_access_view_homebox($page)) {
       // Check if the group tab is set to members only

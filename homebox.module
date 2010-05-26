@@ -822,7 +822,7 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
   
   // If the import isn't valid, and form element provided,
   // then flag a form error
-  if(!$status && $element) {
+  if (!$status && $element) {
     form_set_error($element, t('Invalid import data provided.')); 
   }
   
@@ -957,7 +957,7 @@ function homebox_js_save_user_settings() {
   $page = homebox_get_page(filter_xss(trim($_POST['name'])));
   
   // If no page at this step, just exit
-  if(!$page) {
+  if (!$page) {
     drupal_json(TRUE);
     exit();
   }
@@ -1107,7 +1107,7 @@ function homebox_pages($api = TRUE) {
  *   An object representing the user's page settings
  */
 function _homebox_get_user_settings($page, $user = NULL) {
-  if(!$user) {
+  if (!$user) {
     global $user;
   }
   

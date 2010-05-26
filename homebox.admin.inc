@@ -34,7 +34,7 @@ function homebox_admin_page() {
     '#description' => t('The machine readable name of this page. It must be unique, and it must contain only alphanumeric characters and underscores. Once created, you will not be able to change this value!'),
   );
   
-  if($page) {
+  if ($page) {
     $form['page']['name']['#value'] = $page->name;
     $form['page']['name']['#disabled'] = TRUE;
   }
@@ -45,7 +45,7 @@ function homebox_admin_page() {
     '#collapsible' => TRUE,
   );
   
-  if(!$page) {
+  if (!$page) {
     $form['page']['options']['#collapsed'] = TRUE;
   }
 
@@ -171,12 +171,12 @@ function homebox_admin_page_validate($form, &$form_state) {
     $form_state['values']['title'] = filter_xss($form_state['values']['title']);
     
     // Make sure a title is present
-    if(!$form_state['values']['title']) {
+    if (!$form_state['values']['title']) {
       form_set_error('title', t('You must enter a page title.')); 
     }
     
     // Check if the path exists
-    if(!$form_state['values']['path']) {
+    if (!$form_state['values']['path']) {
       form_set_error('path', t('You must enter a path.')); 
     }
     // If so, make sure it's valid
