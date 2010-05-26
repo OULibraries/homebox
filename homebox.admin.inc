@@ -442,7 +442,7 @@ function homebox_admin_display_form(&$form_state, $blocks, $page, $theme = NULL)
  * Process main home blocks administration form submission.
  */
 function homebox_admin_display_form_submit($form, &$form_state) {
-  // Page pid
+  // Page
   $page = homebox_get_page($form_state['values']['name']);
 
   // We can safely remove old records
@@ -553,7 +553,7 @@ function homebox_configure_form(&$form_state, $page) {
     '#description' => t('Set the number of columns you want to activate for this Home box page.'),
   );
 
-  $form['homebox_cache_enabled_'. $pid] = array(
+  $form['homebox_cache_enabled'] = array(
     '#type' => 'select',
     '#title' => t('Use blocks cache?'),
     '#default_value' => $page->settings['cache'],
@@ -583,7 +583,7 @@ function homebox_configure_form(&$form_state, $page) {
     );
 
     for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
-      $form['color']['block_color_'. $pid .'_'. $i] = array(
+      $form['color']['block_color_' . $i] = array(
         '#type' => 'colorpicker_textfield',
         '#title' => t('Color #!number', array('!number' => $i)),
         '#description' => t('Enter an hexadecimal value prefixed with #.'),
@@ -659,11 +659,6 @@ function homebox_configure_form_submit($form, &$form_state) {
   // Fetch page
   $page = homebox_get_page($form_state['values']['name']);
 
-  // If the region amount changed, clear our theme registry
-  if ($page->settings['regions'] != (int) $form_state['values']['columns']) {
-    menu_rebuild();
-  }
-
   // Adjust settings
   $page->settings['regions'] = (int) $form_state['values']['columns'];
   $page->settings['cache'] = (int) $form_state['values']['cache'];
@@ -684,6 +679,9 @@ function homebox_configure_form_submit($form, &$form_state) {
 
   // Save settings
   homebox_save_page($page);
+  
+  // Clear out the menu
+  menu_rebuild();
   
   drupal_set_message(t('The setting have been saved.'));
 }
