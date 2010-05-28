@@ -8,20 +8,20 @@
  */
 ?>
 <?php global $user; ?>
-<div id="homebox" class="column-count-<?php print $column_count ?>">
+<div id="homebox" class="column-count-<?php print $column_count; ?> homebox-<?php print $page->name; ?>">
   <ul class="homebox-config-links">
     <li class="homebox-config-link">
-      <a href="#" id="homebox-add"><?php print t('Edit content') ?></a>
+      <a href="#" id="homebox-add"><?php print t('Edit content'); ?></a>
     </li>
     <?php if ($user->uid): ?>
       <li class="homebox-config-link">
         <span id="homebox-restore">
-          <a href="#"><?php print t('Restore to defaults') ?></a>
+          <a href="#"><?php print t('Restore to defaults'); ?></a>
         </span>  
       </li>
       <li class="homebox-config-link">
         <span id="homebox-save">
-          <a href="#"><?php print t('Save settings') ?></a>
+          <a href="#"><?php print t('Save settings'); ?></a>
           <span></span>
         </span>
       </li>
@@ -32,7 +32,7 @@
     <?php foreach ($available_blocks as $key => $block): ?>
       <?php if ($block['closable']): ?>
         <li>
-          <input type="checkbox" class="homebox_toggle_box" <?php print $block['checked'] ?> id="homebox_toggle_<?php print $block['dom_id'] ?>" /> <?php print $block['subject'] ?>
+          <input type="checkbox" class="homebox_toggle_box" <?php print $block['checked']; ?> id="homebox_toggle_<?php print $block['dom_id']; ?>" /> <?php print $block['subject']; ?>
         </li>
       <?php endif; ?>
     <?php endforeach ?>
@@ -44,7 +44,7 @@
       <?php foreach ($regions[$i] as $key => $weight): ?>
         <?php foreach ($weight as $block): ?>
           <?php if ($block->content): ?>
-            <?php print theme('homebox_block', $block, $page) ?>
+            <?php print theme('homebox_block', $block, $page); ?>
           <?php endif ?>
         <?php endforeach ?>
       <?php endforeach ?>
