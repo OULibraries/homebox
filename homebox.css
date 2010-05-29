@@ -90,9 +90,6 @@
 #homebox .homebox-portlet div.views-exposed-widgets {
   padding: 0 7px;
 }
-#homebox .homebox-portlet div.views-exposed-widgets div.views-exposed-widget {
-  /* clear: both; */
-}
 #homebox div.view-header {
   text-align: right;
 }
@@ -164,6 +161,12 @@ div.homebox-colors {
   height: 16px;
   margin: 1px;
   border: 1px solid #999;
+}
+.homebox-color-message {
+  font-size: 85%;
+  color: #999;
+  float: left;
+  margin-right: 4px;
 }
 
 /*
