@@ -211,10 +211,12 @@ function template_preprocess_homebox(&$variables) {
 
   // Add Home box JavaScript files
   drupal_add_js($data = drupal_get_path('module', 'homebox') .'/homebox.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
-  drupal_add_js($data = drupal_get_path('module', 'homebox') .'/json2.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
+  drupal_add_js($data = drupal_get_path('module', 'homebox') .'/includes/json2.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
+  drupal_add_js($data = drupal_get_path('module', 'homebox') .'/includes/tipsy/jquery.tipsy.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
  
   // Add CSS for home box
   drupal_add_css($path = drupal_get_path('module', 'homebox') .'/homebox.css', $type = 'module', $media = 'all', $preprocess = TRUE);
+  drupal_add_css($path = drupal_get_path('module', 'homebox') .'/includes/tipsy/tipsy.css', $type = 'module', $media = 'all', $preprocess = TRUE);
 
   return $variables;
 }

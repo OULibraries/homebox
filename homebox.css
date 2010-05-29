@@ -124,7 +124,7 @@
 .portlet-maximize {
   background: url(images/maximize.gif);
 }
-.portlet-maximized .portlet-maximize {
+.portlet-maximized .portlet-minimize {
   background: url(images/minimize.gif);
 }
 

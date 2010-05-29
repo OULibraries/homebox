@@ -41,6 +41,8 @@ Drupal.behaviors.homebox = function(context) {
     
     // Attach click event to maximize icon
     $boxes.find('.portlet-header .portlet-maximize').click(function() {
+      $(this).toggleClass("portlet-maximize");
+      $(this).toggleClass("portlet-minimize");
       Drupal.homebox.maximizeBox(this);
       Drupal.homebox.equalizeColumnsHeights($columns);
     });  
@@ -138,6 +140,32 @@ Drupal.behaviors.homebox = function(context) {
     $homebox.ajaxStop(function(){
       Drupal.homebox.equalizeColumnsHeights($columns);
     });
+    
+    // Add tooltips to icons
+    $('span.portlet-icon').tipsy({
+      gravity: 'ne',
+      title: function() {
+        switch ($(this).attr('class').replace('portlet-icon portlet-', '')) {
+          case 'close':
+            return 'Close';
+          case 'maximize':
+            return 'Maximize';
+          case 'minimize':
+            return 'Minimize';
+          case 'minus':
+            return 'Collapse';
+          case 'plus':
+            return 'Expand';
+          case 'settings':
+            return 'Settings';
+        }
+      }
+    });
+    
+    // Remove tooltips on header clicks
+    $boxes.find('.portlet-header').click(function() {
+      $('.tipsy').remove();
+    });
   }
 };
 
@@ -152,6 +180,7 @@ Drupal.homebox.equalizeColumnsHeights = function(columns) {
   }).each(function() {
     $(this).height(maxHeight);
   });
+  
   return $columns;
 };
 
