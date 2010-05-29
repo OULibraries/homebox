@@ -143,7 +143,7 @@ Drupal.behaviors.homebox = function(context) {
     
     // Add tooltips to icons
     $('span.portlet-icon').tipsy({
-      gravity: 'ne',
+      gravity: 's',
       title: function() {
         switch ($(this).attr('class').replace('portlet-icon portlet-', '')) {
           case 'close':
