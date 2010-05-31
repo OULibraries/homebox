@@ -39,8 +39,8 @@
   </ul>
 
   <?php for ($i = 1; $i <= count($regions); $i++): ?>
-   <div class="homebox-column-wrapper">
-    <div class="homebox-column" id="homebox-column-<?php print $i ?>">
+   <div class="homebox-column-wrapper homebox-column-wrapper-<?php print $i; ?>"<?php print count($page->settings['widths']) ? ' style="width: ' . $page->settings['widths'][$i] . '%;"' : ''; ?>>
+    <div class="homebox-column" id="homebox-column-<?php print $i; ?>">
       <?php foreach ($regions[$i] as $key => $weight): ?>
         <?php foreach ($weight as $block): ?>
           <?php if ($block->content): ?>

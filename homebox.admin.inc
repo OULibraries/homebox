@@ -260,6 +260,7 @@ function homebox_admin_page_submit($form, &$form_state) {
         'color' => 0,
         'colors' => array(),
         'blocks' => array(),
+        'widths' => array(),
       );
     }
     
@@ -560,6 +561,24 @@ function homebox_configure_form(&$form_state, $page) {
     '#options' => array(0 => t('Don\'t use'), 1 => t('Use if available')),
     '#description' => t('Homebox will use the blocks cache if available for the rendering of the blocks. This can greatly improve performances, but has the drawback to break Views blocks that uses Ajax AND are using <strong>Block settings: Caching</strong>. You can use this option only if the Views blocks used in your homebox that use Ajax are set to <strong>Block settings: Caching:</strong> Do not cache.'),
   );
+  
+  $form['widths'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Custom column widths'),
+    '#description' => t('Optionally set custom widths for each available region. It is highly recommended that these values total 100. If these values are omitted, the regions will all be the same width.'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+  
+  for ($i=1; $i <= 9; $i++) {
+    $form['widths']['width_' . $i] = array(
+      '#type' => 'textfield',
+      '#title' => t('Column #!number width', array('!number' => $i)),
+      '#default_value' => $page->settings['widths'][$i] ? $page->settings['widths'][$i] : '',
+      '#size' => 10,
+      '#field_suffix' => '%',
+    );
+  }
 
   $form['color'] = array(
     '#type' => 'fieldset',
@@ -647,6 +666,39 @@ function homebox_configure_form_validate($form, &$form_state) {
       form_set_error('block_color_' . $i, t('Colors must begin with a # and follow by 6 characters.'));
     }
   }
+  
+  // Validate custom column widths, if any
+  $widths = 0;
+  for ($i=1; $i <= 9; $i++) {
+    if ($form_state['values']['width_' . $i]) {
+      $widths++; 
+    }
+  }
+  
+  // Only act if widths were entered
+  if ($widths) {
+    if ($widths != $columns) {
+      form_set_error('widths', t('When setting custom widths, you must specify exactly the amount of columns that are available.'));  
+    }
+    else {
+      $widths = 0;
+      // Make sure values are numeric, between 1 and 100
+      for ($i=1; $i <= $columns; $i++) {
+        if (!is_numeric($form_state['values']['width_' . $i]) ||
+          $form_state['values']['width_' . $i] > 100 ||
+          $form_state['values']['width_' . $i] < 0) {
+          form_set_error('width_' . $i, t('Custom column width values must be numeric and in between 0 and 100.'));
+        }
+        $widths++;
+      }
+
+      // Check the amount of widths again to make sure that all
+      // values were consecutive
+      if ($widths != $columns) {
+        form_set_error('widths', t('Custom widths must be entered consecutively.')); 
+      }
+    }
+  }
 }
 
 /**
@@ -667,6 +719,14 @@ function homebox_configure_form_submit($form, &$form_state) {
   // Adjust colors
   for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
     $page->settings['colors'][$i] = $form_state['values']['block_color_' . $i];
+  }
+  
+  // Adjust widths
+  $page->settings['widths'] = array();
+  if ($form_state['values']['width_1']) {
+    for ($i=1; $i <= $page->settings['regions']; $i++) {
+      $page->settings['widths'][$i] = $form_state['values']['width_' . $i]; 
+    }
   }
   
   // If blocks are available and set on regions that were removed, move them!
