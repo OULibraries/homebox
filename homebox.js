@@ -39,6 +39,9 @@ Drupal.behaviors.homebox = function(context) {
     // Add maximize link to every portlet
     $boxes.find('.portlet-header .portlet-minus').before('<span class="portlet-icon portlet-maximize"></span>');
     
+    // Add region to place maximized portlets
+    $homebox.find('.homebox-column-wrapper:first').before('<div class=\'homebox-maximized\'></div>');
+    
     // Attach click event to maximize icon
     $boxes.find('.portlet-header .portlet-maximize').click(function() {
       $(this).toggleClass("portlet-maximize");
@@ -230,10 +233,6 @@ Drupal.homebox.maximizeBox = function(icon) {
          
       // Show close icon again
       $(portlet).find('.portlet-close').show();
-      
-      // Change region wrapper class
-      $('.homebox-maximized').parents('.homebox-column-wrapper-maximized')
-       .attr('class', 'homebox-column-wrapper'); 
        
       // Show the save button
       $('#homebox-save a').show();
@@ -244,11 +243,6 @@ Drupal.homebox.maximizeBox = function(icon) {
     }
     else {
       // Maximizing portlet
-         
-      // Add a place for maximized content (if not available, yet)
-      if ($(homebox).find('.homebox-maximized').length == 0) {         
-        $(homebox).find('.homebox-column:first').before('<div class=\'homebox-maximized\'></div>');
-      }
          
       // Add the portlet to maximized content place and create a placeholder 
       // (for minimizing back to its place)
@@ -262,10 +256,6 @@ Drupal.homebox.maximizeBox = function(icon) {
 
       // Hide close icon (you wont be able to return if you close the widget)
       $(portlet).find('.portlet-close').hide();  
-      
-      // Change region wrapper class
-      $('.homebox-maximized').parents('.homebox-column-wrapper')
-       .attr('class', 'homebox-column-wrapper-maximized');
       
       // Hide the save button
       $('#homebox-save a').hide();

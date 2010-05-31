@@ -22,7 +22,7 @@
 #homebox .homebox-column-wrapper {
   float: left;
 }
-#homebox .homebox-column-wrapper-maximized {
+#homebox .homebox-maximized {
   width: 100%;
 }
 #homebox.column-count-1 .homebox-column-wrapper {
