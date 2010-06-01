@@ -90,7 +90,7 @@ Drupal.behaviors.homebox = function(context) {
     
     // Attach click event on close
     $boxes.find('.portlet-header .portlet-close').click(function() {
-      $(this).parents(".homebox-portlet:first").hide();
+      $(this).parents(".homebox-portlet:first").hide('drop');
       // Uncheck input settings
       dom_id = $(this).parents(".homebox-portlet:first").attr('id');
       $('#homebox_toggle_' + dom_id).attr('checked', false);
@@ -136,8 +136,15 @@ Drupal.behaviors.homebox = function(context) {
       $('#homebox-settings').dialog('open');
     });
     
+    // Save settings progress dialog
+    $('#homebox-save-message').dialog({
+      modal: true,
+      height: 100,
+      autoOpen: false
+    });
+    
     // Save settings link
-    $('#homebox-save a').click(function() {
+    $('#homebox-save-link').click(function() {
       Drupal.homebox.saveBoxes();
     });
     
@@ -159,7 +166,7 @@ Drupal.behaviors.homebox = function(context) {
     });
     
     // Restore to defaults link
-    $('#homebox-restore a').click(function() {
+    $('#homebox-restore-link').click(function() {
       $('#homebox-restore-confirmation').dialog('open');
     });
     
@@ -304,6 +311,9 @@ Drupal.homebox.saveBoxes = function() {
   var open = new Boolean();
   var block = new String();
   var blocks = {};
+  
+  // Show progress dialog
+  $('#homebox-save-message').dialog('open');
 
   $columns = Drupal.homebox.equalizeColumnsHeights($columns);
   $columns.each(function(colIndex) {
@@ -349,10 +359,6 @@ Drupal.homebox.saveBoxes = function() {
   // Encode JSON
   blocks = JSON.stringify(blocks);
   
-  // Replace save link with message
-  $('#homebox-save a').hide();
-  $('#homebox-save span').html('Saving settings...');
-  
   $.ajax({
     url: Drupal.settings.basePath + '?q=homebox/js/save',
     type: "POST",
@@ -360,11 +366,10 @@ Drupal.homebox.saveBoxes = function() {
     dataType: "json",
     data: {name: name, blocks: blocks},
     success: function() {
-      // Replace message with save link
-      $('#homebox-save a').show();
-      $('#homebox-save span').html('');
+      $('#homebox-save-message').dialog('close');
     },
     error: function() {
+      $('#homebox-save-message').dialog('close');
       $('#homebox-save').html('<span style="color:red;">Save failed. Please refresh page.</span>');
       console.log(Drupal.t("An error occured while trying to save you settings."))
     }

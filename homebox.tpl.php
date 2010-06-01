@@ -11,19 +11,14 @@
 <div id="homebox" class="column-count-<?php print $column_count; ?> homebox-<?php print $page->name; ?>">
   <ul class="homebox-config-links">
     <li class="homebox-config-link">
-      <a href="#" id="homebox-add"><?php print t('Edit content'); ?></a>
+      <a href="#" id="homebox-add"><?php print t('Toggle items'); ?></a>
     </li>
     <?php if ($user->uid): ?>
       <li class="homebox-config-link">
-        <span id="homebox-restore">
-          <a href="#"><?php print t('Restore to defaults'); ?></a>
-        </span>  
+        <a href="#" id="homebox-restore-link"><?php print t('Restore to defaults'); ?></a>
       </li>
       <li class="homebox-config-link">
-        <span id="homebox-save">
-          <a href="#"><?php print t('Save settings'); ?></a>
-          <span></span>
-        </span>
+        <a href="#" id="homebox-save-link"><?php print t('Save settings'); ?></a>
       </li>
     <?php endif; ?>
   </ul>
@@ -52,12 +47,14 @@
    </div>
   <?php endfor ?>
 
-  <!-- Used by jQuery UI to provide a confirmation popup -->
+  <!-- Used by jQuery UI to provide popups -->
   <div id="homebox-restore-confirmation" title="Are you sure you want to restore to defaults?">
     Completing this action will purge your custom settings and restore the page to the default configuration.
     This action cannot be undone.
   </div>
   <div id="homebox-restore-inprogress">Restoring default settings...</div>
+  <div id="homebox-save-message">Saving settings...</div>
+  
   <div class="clear-block"></div>
 </div>
 
