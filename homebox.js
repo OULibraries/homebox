@@ -213,13 +213,17 @@ Drupal.behaviors.homebox = function(context) {
 Drupal.homebox.equalizeColumnsHeights = function(columns) {
   maxHeight = 0;
   $columns.each(function() {
-    $(this).height('auto');
-    currentHeight = $(this).height();
-    if (maxHeight < currentHeight) {
-      maxHeight = currentHeight;
+    if ($(this).parent('.homebox-column-wrapper').attr('style') != 'width: 100%;') {
+      $(this).height('auto');
+      currentHeight = $(this).height();
+      if (maxHeight < currentHeight) {
+        maxHeight = currentHeight;
+      };
     };
   }).each(function() {
-    $(this).height(maxHeight);
+    if ($(this).parent('.homebox-column-wrapper').attr('style') != 'width: 100%;') {
+      $(this).height(maxHeight);
+    }
   });
   
   return $columns;

@@ -17,6 +17,7 @@
   margin: 2px;
   padding: 5px;
   background: url(images/stripe.png);
+  min-height: 50px;
 }
 
 #homebox .homebox-column-wrapper {

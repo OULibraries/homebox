@@ -565,7 +565,12 @@ function homebox_configure_form(&$form_state, $page) {
   $form['widths'] = array(
     '#type' => 'fieldset',
     '#title' => t('Custom column widths'),
-    '#description' => t('Optionally set custom widths for each available region. It is highly recommended that these values total 100. If these values are omitted, the regions will all be the same width.'),
+    '#description' => t('
+      Optionally set custom widths for each available region. 
+      If these values are omitted, the regions will all be the same width, set horizontally.<br/>
+      <img src="' . base_path() . drupal_get_path('module', 'homebox') . '/images/layout-example.png" alt="Layout" style="float:right;"/>
+      To achieve a layout like the image to the right, you would set the column count to 4, with widths of 100, 50, 50, and 100.
+    '),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
   );
