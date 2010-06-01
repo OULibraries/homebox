@@ -9,19 +9,13 @@
 ?>
 <?php global $user; ?>
 <div id="homebox" class="column-count-<?php print $column_count; ?> homebox-<?php print $page->name; ?>">
-  <ul class="homebox-config-links">
-    <li class="homebox-config-link">
-      <a href="#" id="homebox-add"><?php print t('Toggle items'); ?></a>
-    </li>
+  <div id="homebox-buttons">
+    <button id="homebox-add"><?php print t('Toggle items'); ?></button>
     <?php if ($user->uid): ?>
-      <li class="homebox-config-link">
-        <a href="#" id="homebox-restore-link"><?php print t('Restore to defaults'); ?></a>
-      </li>
-      <li class="homebox-config-link">
-        <a href="#" id="homebox-save-link"><?php print t('Save settings'); ?></a>
-      </li>
+      <button id="homebox-restore-link"><?php print t('Restore to defaults'); ?></button>
+      <button id="homebox-save-link"><?php print t('Save settings'); ?></button>
     <?php endif; ?>
-  </ul>
+  </div>
   
   <ul id="homebox-settings" title="Toggle available widgets">
     <?php foreach ($available_blocks as $key => $block): ?>
