@@ -203,11 +203,8 @@ function homebox_theme($blocks) {
  *  An array containing preprocessed variables (see home-box.tpl.php)
  */
 function template_preprocess_homebox(&$variables) {
-  // Add jQuery UI needed files
+  // Add required jQuery UI files
   jquery_ui_add(array('ui.draggable', 'ui.droppable', 'ui.sortable', 'ui.dialog'));
-
-  // Add collapsible behaviour for adding/hiding blocks
-  drupal_add_js($data = "misc/collapse.js");
 
   // Add Home box JavaScript files
   drupal_add_js($data = drupal_get_path('module', 'homebox') .'/homebox.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);

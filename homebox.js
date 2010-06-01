@@ -102,10 +102,10 @@ Drupal.behaviors.homebox = function(context) {
     $togglers.click(function() {
       if ($(this).attr('checked')) {
         el_id = $(this).attr('id').replace('homebox_toggle_', '');
-        $('#' + el_id).show();
+        $('#' + el_id).show('drop');
       }else{
         el_id = $(this).attr('id').replace('homebox_toggle_', '');
-        $('#' + el_id).hide();
+        $('#' + el_id).hide('drop');
       };
       Drupal.homebox.equalizeColumnsHeights($columns);
     });
