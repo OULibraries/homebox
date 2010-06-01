@@ -28,7 +28,7 @@
     <?php endif; ?>
   </ul>
   
-  <ul id="homebox-settings" class="homebox-settings-hidden">
+  <ul id="homebox-settings" title="Toggle available widgets">
     <?php foreach ($available_blocks as $key => $block): ?>
       <?php if ($block['closable']): ?>
         <li>
@@ -52,6 +52,11 @@
    </div>
   <?php endfor ?>
 
+  <!-- Used by jQuery UI to provide a confirmation popup -->
+  <div id="homebox-restore-confirmation" title="Are you sure you want to restore to defaults?">
+    Completing this action will purge your custom settings and restore the page to the default configuration.
+    This action cannot be undone.
+  </div>
   <div class="clear-block"></div>
 </div>
 

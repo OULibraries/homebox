@@ -124,9 +124,16 @@ Drupal.behaviors.homebox = function(context) {
       $(this).parents(".homebox-portlet:first").addClass("homebox-color-" + Drupal.homebox.convertRgbToHex(color).replace("#", ''));
     });
     
+    // Put widget selection in a dialog window
+    $('#homebox-settings').dialog({
+      modal: true,
+      autoOpen: false,
+      width: 400
+    });
+    
     // Edit content link
     $('#homebox-add').click(function() {
-      $('#homebox-settings').slideToggle();
+      $('#homebox-settings').dialog('open');
     });
     
     // Save settings link
@@ -134,9 +141,26 @@ Drupal.behaviors.homebox = function(context) {
       Drupal.homebox.saveBoxes();
     });
     
+    // Restore to default confirmation dialog
+    $('#homebox-restore-confirmation').dialog({
+      height: 160,
+      width: 450,
+      autoOpen: false,
+			modal: true,
+			buttons: {
+				'Restore': function() {
+					$(this).dialog('close');
+          Drupal.homebox.restoreBoxes();
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+				}
+			}
+    });
+    
     // Restore to defaults link
     $('#homebox-restore a').click(function() {
-      Drupal.homebox.restoreBoxes();
+      $('#homebox-restore-confirmation').dialog('open');
     });
     
     // Equalize column heights after AJAX calls

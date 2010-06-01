@@ -204,7 +204,7 @@ function homebox_theme($blocks) {
  */
 function template_preprocess_homebox(&$variables) {
   // Add jQuery UI needed files
-  jquery_ui_add(array('ui.draggable', 'ui.droppable', 'ui.sortable'));
+  jquery_ui_add(array('ui.draggable', 'ui.droppable', 'ui.sortable', 'ui.dialog'));
 
   // Add collapsible behaviour for adding/hiding blocks
   drupal_add_js($data = "misc/collapse.js");
@@ -217,6 +217,7 @@ function template_preprocess_homebox(&$variables) {
   // Add CSS for home box
   drupal_add_css($path = drupal_get_path('module', 'homebox') .'/homebox.css', $type = 'module', $media = 'all', $preprocess = TRUE);
   drupal_add_css($path = drupal_get_path('module', 'homebox') .'/includes/tipsy/tipsy.css', $type = 'module', $media = 'all', $preprocess = TRUE);
+  drupal_add_css($path = drupal_get_path('module', 'jquery_ui') .'/jquery.ui/themes/default/ui.all.css', $type = 'module', $media = 'all', $preprocess = TRUE);
 
   return $variables;
 }
