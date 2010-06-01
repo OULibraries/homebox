@@ -57,6 +57,7 @@
     Completing this action will purge your custom settings and restore the page to the default configuration.
     This action cannot be undone.
   </div>
+  <div id="homebox-restore-inprogress">Restoring default settings...</div>
   <div class="clear-block"></div>
 </div>
 

@@ -163,6 +163,13 @@ Drupal.behaviors.homebox = function(context) {
       $('#homebox-restore-confirmation').dialog('open');
     });
     
+    // Restore to default in-progress dialog
+    $('#homebox-restore-inprogress').dialog({
+      autoOpen: false,
+			modal: true,
+      height: 100
+    });
+    
     // Equalize column heights after AJAX calls
     $homebox.ajaxStop(function(){
       Drupal.homebox.equalizeColumnsHeights($columns);
@@ -212,11 +219,11 @@ Drupal.homebox.equalizeColumnsHeights = function(columns) {
 };
 
 Drupal.homebox.restoreBoxes = function() {
+  // Show in-progress dialog
+  $('#homebox-restore-inprogress').dialog('open');
+  
   // Determine page name
   name = $('#homebox').find('input:hidden.name').val();
-  
-  // Replace link with message
-  $('#homebox-restore').html('Restoring default settings...');
   
   $.ajax({
     url: Drupal.settings.basePath + '?q=homebox/js/restore',
@@ -229,6 +236,7 @@ Drupal.homebox.restoreBoxes = function() {
     },
     error: function() {
       $('#homebox-restore').html('<span style="color:red;">Restore failed. Please refresh page.</span>');
+      $('#homebox-restore-inprogress').dialog('close');
       console.log(Drupal.t("An error occured while trying to restore to defaults."))
     }
   });
