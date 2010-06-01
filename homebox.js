@@ -124,58 +124,15 @@ Drupal.behaviors.homebox = function(context) {
       $(this).parents(".homebox-portlet:first").addClass("homebox-color-" + Drupal.homebox.convertRgbToHex(color).replace("#", ''));
     });
     
-    // Put widget selection in a dialog window
-    $('#homebox-settings').dialog({
-      modal: true,
-      autoOpen: false,
-      width: 400
-    });
+    // Initialize popup dialogs
+    Drupal.homebox.initDialogs();
     
-    // Edit content link
-    $('#homebox-add').click(function() {
-      $('#homebox-settings').dialog('open');
-    });
+    // Intialize popup links
+    Drupal.homebox.initDialogLinks();
     
-    // Save settings progress dialog
-    $('#homebox-save-message').dialog({
-      modal: true,
-      height: 100,
-      autoOpen: false
-    });
-    
-    // Save settings link
-    $('#homebox-save-link').click(function() {
-      Drupal.homebox.saveBoxes();
-    });
-    
-    // Restore to default confirmation dialog
-    $('#homebox-restore-confirmation').dialog({
-      height: 160,
-      width: 450,
-      autoOpen: false,
-			modal: true,
-			buttons: {
-				'Restore': function() {
-					$(this).dialog('close');
-          Drupal.homebox.restoreBoxes();
-				},
-				Cancel: function() {
-					$(this).dialog('close');
-				}
-			}
-    });
-    
-    // Restore to defaults link
-    $('#homebox-restore-link').click(function() {
-      $('#homebox-restore-confirmation').dialog('open');
-    });
-    
-    // Restore to default in-progress dialog
-    $('#homebox-restore-inprogress').dialog({
-      autoOpen: false,
-			modal: true,
-      height: 100
-    });
+    // Clear out add item form components
+    $('#homebox-add-form-title').val('');
+    $('#homebox-add-form-content').val('');
     
     // Equalize column heights after AJAX calls
     $homebox.ajaxStop(function(){
@@ -209,6 +166,109 @@ Drupal.behaviors.homebox = function(context) {
     });
   }
 };
+
+Drupal.homebox.initDialogs = function() {
+  // Put widget selection in a dialog window
+  $('#homebox-settings').dialog({
+    modal: true,
+    autoOpen: false,
+    width: 400
+  });
+    
+  // Save settings progress dialog
+  $('#homebox-save-message').dialog({
+    modal: true,
+    height: 100,
+    autoOpen: false
+  });
+  
+  // Deletion confirmation dialog
+  $('#homebox-delete-custom-message').dialog({
+    autoOpen: false,
+	  modal: true,
+    height: 145,
+    width: 500,
+    buttons: {
+		  'Delete': function() {
+				Drupal.homebox.deleteItem();
+			},
+		  Cancel: function() {
+			  $(this).dialog('close');
+		  }
+    }  
+  }); 
+  
+  // Add item dialog
+  $('#homebox-add-form').dialog({
+    autoOpen: false,
+	  modal: true,
+    zIndex: 500,
+    width: 500,
+    height: 350,
+    buttons: {
+		  'Submit': function() {
+        Drupal.homebox.addItem();
+      },
+      Cancel: function() {
+        $('#homebox-add-form-status').hide();
+        $('#homebox-add-form-title').val('');
+        $('#homebox-add-form-content').val('');
+				$(this).dialog('close');
+			}
+    }
+  });
+  
+  // Restore to default in-progress dialog
+  $('#homebox-restore-inprogress').dialog({
+    autoOpen: false,
+	  modal: true,
+    height: 100
+  });
+  
+  // Restore to default confirmation dialog
+  $('#homebox-restore-confirmation').dialog({
+    height: 160,
+    width: 450,
+    autoOpen: false,
+	  modal: true,
+		buttons: {
+		  'Restore': function() {
+			  $(this).dialog('close');
+        Drupal.homebox.restoreBoxes();
+      },
+			Cancel: function() {
+			  $(this).dialog('close');
+      }
+    }
+  });
+}
+
+Drupal.homebox.initDialogLinks = function() {
+  // Edit content link
+  $('#homebox-edit-link').click(function() {
+    $('#homebox-settings').dialog('open');
+  });
+    
+  // Save settings link
+  $('#homebox-save-link').click(function() {
+    Drupal.homebox.saveBoxes();
+  });
+    
+  // Restore to defaults link
+  $('#homebox-restore-link').click(function() {
+    $('#homebox-restore-confirmation').dialog('open');
+  });
+    
+  // Add items link
+  $('#homebox-add-link').click(function() {
+    $('#homebox-add-form').dialog('open');
+  });
+    
+  // Delete custom item link
+  $('.homebox-delete-custom-link').click(function() {
+    $('#homebox-delete-custom-message').dialog('open'); 
+  }); 
+}
 
 Drupal.homebox.equalizeColumnsHeights = function(columns) {
   maxHeight = 0;
@@ -246,8 +306,7 @@ Drupal.homebox.restoreBoxes = function() {
       location.reload(); // Reload page to show defaults
     },
     error: function() {
-      $('#homebox-restore').html('<span style="color:red;">Restore failed. Please refresh page.</span>');
-      $('#homebox-restore-inprogress').dialog('close');
+      $('#homebox-restore-inprogress').html('<span style="color:red;">Restore failed. Please refresh page.</span>');
       console.log(Drupal.t("An error occured while trying to restore to defaults."))
     }
   });
@@ -310,10 +369,50 @@ Drupal.homebox.maximizeBox = function(icon) {
   }
 }
 
+Drupal.homebox.addItem = function() {
+  var name = $('#homebox').find('input:hidden.name').val();
+  var title = $('#homebox-add-form-title').val().stripTags();
+  var content = encodeURIComponent($('#homebox-add-form-content').val());
+  
+  // Make sure both fields are supplied
+  if (!title || !content) {
+    $('#homebox-add-form-status').show();
+    $('#homebox-add-form-status').html('All fields are required.');
+    return;
+  }
+  
+  // First save current configuration
+  Drupal.homebox.saveBoxes() // @todo: Make sure this was successful
+
+  // Show progress message
+  $('#homebox-add-form').html('Adding item...');
+    
+  $.ajax({
+    url: Drupal.settings.basePath + '?q=homebox/js/add',
+    type: "POST",
+    cache: "false",
+    dataType: "json",
+    data: {name: name, title: title, content: content},
+    success: function() {
+      $('#homebox-add-form').html('Refreshing page...');
+      location.reload(); // Reload page
+    },
+    error: function() {
+      $('#homebox-add-form').html('<span style="color:red;">Save failed. Please refresh page.</span>');
+      console.log(Drupal.t("An error occured while trying to add your block."))
+    }
+  });
+}
+
+Drupal.homebox.deleteItem = function() {
+ alert($(this).attr('class'));
+}
+
 Drupal.homebox.saveBoxes = function() {
   var color = new String();
   var open = new Boolean();
   var block = new String();
+  var name = $('#homebox').find('input:hidden.name').val();
   var blocks = {};
   
   // Show progress dialog
@@ -324,9 +423,6 @@ Drupal.homebox.saveBoxes = function() {
     // Determine region
     var colIndex = colIndex + 1;
     $(this).find('>.homebox-portlet').each(function(boxIndex) {
-      // Determine page name
-      name = $(this).find('input:hidden.name').val();
-      
       // Determine block name
       block = $(this).find('input:hidden.homebox').val();
       
@@ -351,11 +447,26 @@ Drupal.homebox.saveBoxes = function() {
       open = $(this).find(".portlet-content").is(':visible');
 
       // Build blocks object
-      blocks[block] = {
+      if (block.search('homebox_') != -1) {
+        // If block is custom, we need more data
+        blocks[block] = {
+          region: colIndex,
+          status: visible,
+          color: color,
+          open: open,
+          title: $(this).find('.portlet-title').html().stripTags(),
+          content: encodeURIComponent($(this).find('.portlet-content').html()),
+          module: 'homebox',
+          delta: block.replace('homebox_', ''),
+        }
+      }
+      else {
+        blocks[block] = {
           region: colIndex,
           status: visible,
           color: color,
           open: open
+        }
       }
     });
   });
@@ -373,8 +484,7 @@ Drupal.homebox.saveBoxes = function() {
       $('#homebox-save-message').dialog('close');
     },
     error: function() {
-      $('#homebox-save-message').dialog('close');
-      $('#homebox-save').html('<span style="color:red;">Save failed. Please refresh page.</span>');
+      $('#homebox-save-message').html('<span style="color:red;">Save failed. Please refresh page.</span>');
       console.log(Drupal.t("An error occured while trying to save you settings."))
     }
   });
@@ -396,3 +506,7 @@ Drupal.homebox.convertRgbToHex = function(rgb) {
     return rgb;
   };
 };
+
+String.prototype.stripTags = function () {
+   return this.replace(/<([^>]+)>/g,'');
+}

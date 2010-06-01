@@ -10,8 +10,11 @@
 <?php global $user; ?>
 <div id="homebox" class="column-count-<?php print $column_count; ?> homebox-<?php print $page->name; ?>">
   <div id="homebox-buttons">
-    <button id="homebox-add"><?php print t('Toggle items'); ?></button>
+    <button id="homebox-edit-link"><?php print t('Toggle items'); ?></button>
     <?php if ($user->uid): ?>
+      <?php if ($page->settings['custom']): ?>
+        <button id="homebox-add-link"><?php print t('Add item'); ?></button>
+      <?php endif; ?>
       <button id="homebox-restore-link"><?php print t('Restore to defaults'); ?></button>
       <button id="homebox-save-link"><?php print t('Save settings'); ?></button>
     <?php endif; ?>
@@ -43,13 +46,24 @@
 
   <!-- Used by jQuery UI to provide popups -->
   <div id="homebox-restore-confirmation" title="Are you sure you want to restore to defaults?">
-    Completing this action will purge your custom settings and restore the page to the default configuration.
+    Completing this action will purge your custom settings and items and restore the page to the default configuration.
     This action cannot be undone.
   </div>
   <div id="homebox-restore-inprogress">Restoring default settings...</div>
   <div id="homebox-save-message">Saving settings...</div>
-  
+  <form id="homebox-add-form" title="Add a new item" class="form-item">
+    <div id="homebox-add-form-status"></div>
+    <label for="title">Title</label>
+    <input type="text" name="title" id="homebox-add-form-title" class="" />
+    <label for="content">Content</label>
+    <textarea name="content" id="homebox-add-form-content" value="" class=""></textarea>
+  </form>
+  <div id="homebox-delete-custom-message" title="Deletion confirmation">
+    <?php print t('Are you sure you want to delete this item? This action cannot be undone.'); ?>
+  </div>
   <div class="clear-block"></div>
+  <!-- Used by jQuery to determine page ID -->
+  <input type="hidden" class="name" value="<?php print $page->name; ?>" />
 </div>
 
 <?php

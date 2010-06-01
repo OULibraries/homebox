@@ -17,7 +17,7 @@
   margin: 2px;
   padding: 5px;
   background: url(images/stripe.png);
-  min-height: 50px;
+  min-height: 40px;
 }
 
 #homebox .homebox-column-wrapper {
@@ -170,14 +170,6 @@ div.homebox-colors {
   margin-right: 4px;
 }
 
-/*
-** Hidding classes for Add content
-*/
-.homebox-settings-hidden {
-  display: none;
-  overflow: hidden;
-}
-
 /* Page configure UI */
 #homebox-settings {
   padding: 3px;
@@ -200,4 +192,33 @@ div.homebox-colors {
   cursor: pointer;
   margin-right: 2px;
   padding: 4px 6px;
+}
+.homebox-delete-custom-link {
+  font-size: 85%;
+  border: none;
+  color: #1C94C4;
+  cursor: pointer;
+  background: #FFF;
+}
+
+/* Form Components */
+#homebox-add-form {
+  margin: 0;
+}
+#homebox-add-form-status {
+  background: #FEF1EC;
+  border: 1px solid #CD0A0A;
+  color: #CD0A0A;
+  padding: 8px;
+  display: none;
+  margin-bottom: 5px;
+  width: 86%;
+}
+input#homebox-add-form-title {
+  margin-bottom: 6px;
+  width: 89%;
+}
+textarea#homebox-add-form-content {
+  width: 89%;
+  height: 135px;
 }

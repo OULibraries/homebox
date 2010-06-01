@@ -65,6 +65,16 @@ function homebox_menu() {
     'access callback' => '_homebox_user_access_save_homebox',
     'type' => MENU_CALLBACK,
   );
+  $items['homebox/js/add'] = array(
+    'page callback' => 'homebox_js_add_item',
+    'access callback' => '_homebox_user_access_save_homebox',
+    'type' => MENU_CALLBACK,
+  );
+  $items['homebox/js/delete'] = array(
+    'page callback' => 'homebox_js_delete_item',
+    'access callback' => '_homebox_user_access_save_homebox',
+    'type' => MENU_CALLBACK,
+  );
 
   // Admin related tasks
   $items['admin/build/homebox'] = array(
@@ -306,15 +316,16 @@ function homebox_load_blocks_in_regions($page) {
   // Preparing blocks object for theming
   foreach ($blocks as $key => $block_settings) {
     // Build block
-    $block = '';
+    $block = new stdClass;
     $block->subject = $block_settings['title'];
+    $block->content = $block_settings['content'];
     $block->module = $block_settings['module'];
     $block->delta = $block_settings['delta'];
     $block->region = (int) $block_settings['region'];
     $block->weight = (int) $block_settings['weight'];
     $block->status = $block_settings['status'] ? TRUE : FALSE;
     $block->open = $block_settings['open'] ? TRUE : FALSE;
-    $block->closable = $block_settings['closable'] ? TRUE : FALSE;
+    $block->closable = ($block_settings['closable'] === 0) ? FALSE : TRUE;
     $block->homebox_classes = _homebox_get_css_classes_for_block($block_settings);
     
     // Check block permissions
@@ -368,8 +379,7 @@ function homebox_load_blocks_in_regions($page) {
       }
 
       // Mostly ugly for now, but we need this for performance issue when saving blocks ordering this prevent many queries!
-      $block->content .= "<input type='hidden' class='homebox' value='". $key ."' />";
-      $block->content .= "<input type='hidden' class='name' value='". $page->name ."' />";
+      $block->hidden .= '<input type="hidden" class="homebox" value="' . $key . '" />';
 
       // If user defined region is greater than
       // real column count put block in the last column/region
@@ -468,6 +478,10 @@ function _homebox_apply_user_settings($page, $blocks) {
     if ($user_blocks) {
       // Blocks that user has in settings but is not a 'default' one (deprecated block)
       foreach (array_diff_key($user_blocks, $blocks) as $key => $block) {
+        // Make sure it's not an allowed custom block first
+        if ($page->settings['custom'] && strstr($key, 'homebox_')) {
+          continue; 
+        }
         unset($user_blocks[$key]);
       }
 
@@ -764,6 +778,7 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
         case 'regions':
         case 'cache':
         case 'full':
+        case 'custom':
         case 'color':
           // Check that the previous are numeric values
           if(!is_numeric($value)) {
@@ -982,17 +997,6 @@ function homebox_js_save_user_settings() {
   // Get user block settings
   $user_blocks = json_decode($_POST['blocks'], TRUE);
   
-  $i = 0;
-  foreach ($user_blocks as $key => $value) {
-    // Add weights to blocks
-    $user_blocks[$key]['weight'] = ++$i;
-    
-    // Prevent crafty users from closing unclosable blocks
-    if (!$page->settings['blocks'][$key]['closable']) {
-      $user_blocks[$key]['status'] = 1;
-    }
-  }
-  
   // Save user settings
   _homebox_save_user_settings($page, $user_blocks);
 }
@@ -1005,11 +1009,100 @@ function homebox_js_save_user_settings() {
 function homebox_js_restore_defaults() {
   drupal_json(TRUE);
   
-  // Load page from POST name
+  // Load name from POST
   $name = filter_xss(trim($_POST['name']));
 
   // Purge user settings
   _homebox_delete_user_settings($name);
+}
+
+/*
+ * Javascript callback
+ * 
+ * Add a custom block to a user's page
+ */
+function homebox_js_add_item() {
+  drupal_json(TRUE);
+  
+  // Load page from POST name
+  $page = homebox_get_page(filter_xss(trim($_POST['name'])));
+  
+  // Make sure page allows custom items
+  if (!$page->settings['custom']) {
+    drupal_json(TRUE);
+    exit();
+  }
+  
+  // Fetch user settings
+  $user_blocks = _homebox_get_user_settings($page);
+  
+  // Determine if any custom blocks are present so we can
+  // generate our next block ID
+  $id = 0;
+  if ($user_blocks) {
+    foreach ($user_blocks as $key => $value) {
+      if (strstr($key, 'homebox_')) {
+        $id++;
+      }
+    }
+  }
+  
+  // Build custom block
+  $block = array(
+    'title' => filter_xss(trim($_POST['title'])),
+    'content' => filter_xss(urldecode(trim($_POST['content']))),
+    'open' => 1,
+    'color' => 'default',
+    'status' => 1,
+    'region' => 1,
+    'module' => 'homebox',
+    'delta' => $id,
+    'movable' => 1,
+    'closable' => 1,
+  );
+  
+  // Add custom block to user's blocks
+  $user_blocks['homebox_' . $id] = $block;
+  
+  // Save again
+  _homebox_save_user_settings($page, $user_blocks);
+}
+
+/**
+ * Javascript callback
+ * 
+ * Delete a custom block
+ */
+function homebox_js_delete_item() {
+  drupal_json(TRUE);
+  
+  // Load page from POST name
+  $page = homebox_get_page(filter_xss(trim($_POST['name'])));
+  
+  // Load block ID from POST
+  $block = trim($_POST['block']);
+  
+  // Make sure page allows custom items
+  // Make sure we have a block ID
+  if (!$page->settings['custom'] || !$block) {
+    drupal_json(TRUE);
+    exit();
+  }
+  
+  // Fetch user settings
+  $user_blocks = _homebox_get_user_settings($page);
+  
+  // Make sure user settings exist
+  if (!$user_blocks) {
+    drupal_json(TRUE);
+    exit(); 
+  }
+  
+  // Remove the block
+  unset($user_blocks[$block]);
+  
+  // Save settings
+  _homebox_save_user_settings($page, $user_blocks);
 }
 
 /**
@@ -1049,7 +1142,7 @@ function _homebox_get_css_classes_for_block($block) {
   $classes = array('homebox-portlet');
   
   // Is the block movable?
-  if ($block['movable']) {
+  if (!($block['movable'] === 0)) {
     $classes[] = 'homebox-draggable';
   }
   
@@ -1064,7 +1157,7 @@ function _homebox_get_css_classes_for_block($block) {
   }
   
   // Adds CSS if block is unclosable
-  if (!$block['closable']) {
+  if ($block['closable'] === 0) {
     $classes[] = 'homebox-unclosable';
   }
 
@@ -1148,9 +1241,29 @@ function _homebox_save_user_settings($page, $blocks) {
   // and perms were checked
   global $user;
   
+  $i = 0;
+  foreach ($blocks as $key => $value) {
+    // Add weights to blocks
+    $blocks[$key]['weight'] = ++$i;
+    
+    // Prevent crafty users from closing unclosable blocks
+    if (!$page->settings['blocks'][$key]['closable']) {
+      $blocks[$key]['status'] = 1;
+    }
+    
+    // Decode HTML content, if available
+    if ($page->settings['custom'] && strstr($key, 'homebox_')) {
+      $blocks[$key]['content'] = filter_xss(urldecode(trim($blocks[$key]['content'])));
+    }
+  }
+  
   // Make sure the blocks provided are part of the defaults
+  // This prevents users from modifying the DOM to return any blocks they want!
   foreach (array_diff_key($blocks, $page->settings['blocks']) as $key => $value) {
-    // This prevents users from modifying the DOM to return any blocks they want!
+    // Make sure it's not an allowed custom block first
+    if ($page->settings['custom'] && strstr($key, 'homebox_')) {
+      continue; 
+    }
     unset($blocks[$key]);
   }
   
