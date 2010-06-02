@@ -488,6 +488,7 @@ function homebox_admin_display_form_submit($form, &$form_state) {
    
   menu_rebuild();
   drupal_set_message(t('Layout settings have been updated for !page_title.', array('!page_title' => $page->settings['title'])));
+  $form_state['redirect'] = 'admin/build/homebox';
 }
 
 /**
@@ -758,6 +759,7 @@ function homebox_configure_form_submit($form, &$form_state) {
   menu_rebuild();
   
   drupal_set_message(t('The setting have been saved.'));
+  $form_state['redirect'] = 'admin/build/homebox';
 }
 
 /**
