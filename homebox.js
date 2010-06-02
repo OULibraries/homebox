@@ -90,7 +90,7 @@ Drupal.behaviors.homebox = function(context) {
     
     // Attach click event on close
     $boxes.find('.portlet-header .portlet-close').click(function() {
-      $(this).parents(".homebox-portlet:first").hide('drop');
+      $(this).parents(".homebox-portlet:first").hide();
       // Uncheck input settings
       dom_id = $(this).parents(".homebox-portlet:first").attr('id');
       $('#homebox_toggle_' + dom_id).attr('checked', false);
@@ -102,10 +102,10 @@ Drupal.behaviors.homebox = function(context) {
     $togglers.click(function() {
       if ($(this).attr('checked')) {
         el_id = $(this).attr('id').replace('homebox_toggle_', '');
-        $('#' + el_id).show('drop');
+        $('#' + el_id).show();
       }else{
         el_id = $(this).attr('id').replace('homebox_toggle_', '');
-        $('#' + el_id).hide('drop');
+        $('#' + el_id).hide();
       };
       Drupal.homebox.equalizeColumnsHeights($columns);
     });
