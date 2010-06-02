@@ -190,7 +190,7 @@ Drupal.homebox.initDialogs = function() {
     width: 500,
     buttons: {
 		  'Delete': function() {
-				Drupal.homebox.deleteItem();
+				Drupal.homebox.deleteItem($(this).find('input').val());
 			},
 		  Cancel: function() {
 			  $(this).dialog('close');
@@ -266,6 +266,10 @@ Drupal.homebox.initDialogLinks = function() {
     
   // Delete custom item link
   $('.homebox-delete-custom-link').click(function() {
+    // Place the block ID into the dialog
+    $('#homebox-delete-custom-message input').val(
+      $(this).attr('id').replace('delete-', '')
+    );
     $('#homebox-delete-custom-message').dialog('open'); 
   }); 
 }
@@ -404,8 +408,26 @@ Drupal.homebox.addItem = function() {
   });
 }
 
-Drupal.homebox.deleteItem = function() {
- alert($(this).attr('class'));
+Drupal.homebox.deleteItem = function(block) {
+  var name = $('#homebox').find('input:hidden.name').val();
+  
+  $('#homebox-delete-custom-message').html('Deleting item...');
+  
+  $.ajax({
+    url: Drupal.settings.basePath + '?q=homebox/js/delete',
+    type: "POST",
+    cache: "false",
+    dataType: "json",
+    data: {name: name, block: block},
+    success: function() {
+      $('#homebox-delete-custom-message').html('Refreshing page...');
+      location.reload(); // Reload page
+    },
+    error: function() {
+      $('#homebox-delete-custom-message').html('<span style="color:red;">Deletion failed. Please refresh page.</span>');
+      console.log(Drupal.t("An error occured while trying to delete your block."))
+    }
+  });
 }
 
 Drupal.homebox.saveBoxes = function() {

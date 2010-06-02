@@ -60,6 +60,7 @@
   </form>
   <div id="homebox-delete-custom-message" title="Deletion confirmation">
     <?php print t('Are you sure you want to delete this item? This action cannot be undone.'); ?>
+    <input type="hidden" value="" />
   </div>
   <div class="clear-block"></div>
   <!-- Used by jQuery to determine page ID -->

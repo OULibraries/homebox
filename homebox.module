@@ -1050,7 +1050,7 @@ function homebox_js_add_item() {
   // Build custom block
   $block = array(
     'title' => filter_xss(trim($_POST['title'])),
-    'content' => filter_xss(urldecode(trim($_POST['content']))),
+    'content' => urldecode(trim($_POST['content'])),
     'open' => 1,
     'color' => 'default',
     'status' => 1,
