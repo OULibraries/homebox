@@ -376,7 +376,7 @@ Drupal.homebox.maximizeBox = function(icon) {
 Drupal.homebox.addItem = function() {
   var name = $('#homebox').find('input:hidden.name').val();
   var title = $('#homebox-add-form-title').val().stripTags();
-  var content = encodeURIComponent($('#homebox-add-form-content').val());
+  var content = $('#homebox-add-form-content').val();
   
   // Make sure both fields are supplied
   if (!title || !content) {
@@ -384,6 +384,12 @@ Drupal.homebox.addItem = function() {
     $('#homebox-add-form-status').html('All fields are required.');
     return;
   }
+  
+  // Convert content newlines to HTML
+  content = content.replace(/\r?\n|\r/g, "<br />");
+  
+  // Encode content
+  content = encodeURIComponent(content);
   
   // First save current configuration
   Drupal.homebox.saveBoxes() // @todo: Make sure this was successful
@@ -456,12 +462,10 @@ Drupal.homebox.saveBoxes = function() {
       
       // Determine custom color, if any
       attributes = $(this).attr('class').split(' ');
+      color = 'default';
       for (a in attributes) {
         if (attributes[a].substr(0, 14) == 'homebox-color-') {
           color = attributes[a].substr(14);
-        }
-        else {
-          color = 'default'; 
         }
       }
       
