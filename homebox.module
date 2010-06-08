@@ -783,7 +783,7 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
           // Check that the previous are numeric values
           if(!is_numeric($value)) {
             $status = FALSE;
-            continue;
+            break 2;
           }
           break;
         case 'title':
@@ -791,27 +791,27 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
           $homebox->settings[$key] = filter_xss($value);
           if (!$homebox->settings[$key]) {
             $status = FALSE;
-            continue;
+            break 2;
           }
           break;
         case 'path':
           if (!homebox_check_path($value, $element)) {
             $status = FALSE;
-            continue;  
+            break 2;  
           }
           break;
         case 'colors':
         case 'roles':
           if (!is_array($value)) {
             $status = FALSE;
-            continue;
+            break 2;
           }
           break;
         case 'blocks':
           // Check that at least one block was provided
           if (!count($homebox->settings['blocks'])) {
             $status = FALSE;
-            continue;
+            break 2;
           }
           break;
         case 'widths':
@@ -819,13 +819,13 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
             if (!is_array($homebox->settings['widths']) ||
               count($homebox->settings['widths']) > $homebox->settings['regions']) {
               $status = FALSE;
-              continue;
+              break 2;
             }
             
             foreach ($homebox->settings['widths'] as $width) {
               if (!is_numeric($width) || $width > 100 || $width < 0) {
                 $status = FALSE;
-                continue;
+                break 3;
               }
             }
           }
@@ -846,7 +846,7 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
       foreach ($required_keys as $key) {
         if (!array_key_exists($key, $homebox->settings)) {
           $status = FALSE;
-          continue;
+          break;
         }
       }
     }

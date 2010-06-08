@@ -813,8 +813,10 @@ function homebox_user_settings_page() {
   
   // Build form options
   $options = array();
-  foreach ($pages as $page) {
-    $options[$page->name] = $page->settings['title'] . ' (' . $page->name . ')'; 
+  if ($pages) {
+    foreach ($pages as $page) {
+      $options[$page->name] = $page->settings['title'] . ' (' . $page->name . ')'; 
+    }
   }
 
   $form['help'] = array(
