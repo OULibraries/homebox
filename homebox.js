@@ -374,6 +374,7 @@ Drupal.homebox.maximizeBox = function(icon) {
 }
 
 Drupal.homebox.addItem = function() {
+  var block = {};
   var name = $('#homebox').find('input:hidden.name').val();
   var title = $('#homebox-add-form-title').val().stripTags();
   var content = $('#homebox-add-form-content').val();
@@ -388,8 +389,14 @@ Drupal.homebox.addItem = function() {
   // Convert content newlines to HTML
   content = content.replace(/\r?\n|\r/g, "<br />");
   
-  // Encode content
-  content = encodeURIComponent(content);
+  // Place data into the custom block object
+  block = {
+		title: title,
+		body: content
+	}
+	
+	// Encode the block
+	block = JSON.stringify(block);
   
   // First save current configuration
   Drupal.homebox.saveBoxes() // @todo: Make sure this was successful
@@ -402,7 +409,7 @@ Drupal.homebox.addItem = function() {
     type: "POST",
     cache: "false",
     dataType: "json",
-    data: {name: name, title: title, content: content},
+    data: {name: name, block: block},
     success: function() {
       $('#homebox-add-form').html('Refreshing page...');
       location.reload(); // Reload page

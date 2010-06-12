@@ -1033,6 +1033,9 @@ function homebox_js_add_item() {
     exit();
   }
   
+  // Load custom block from POST
+  $block = json_decode($_POST['block'], TRUE);
+  
   // Fetch user settings
   $user_blocks = _homebox_get_user_settings($page);
   
@@ -1049,8 +1052,8 @@ function homebox_js_add_item() {
   
   // Build custom block
   $block = array(
-    'title' => filter_xss(trim($_POST['title'])),
-    'content' => urldecode(trim($_POST['content'])),
+    'title' => filter_xss(trim($block['title'])),
+    'content' => trim($block['body']),
     'open' => 1,
     'color' => 'default',
     'status' => 1,

@@ -271,6 +271,13 @@ function homebox_admin_page_submit($form, &$form_state) {
         'blocks' => array(),
         'widths' => array(),
       );
+      
+      // Add roles
+      foreach ($form_state['values']['roles'] as $role) {
+        if ($role) {
+          $page->settings['roles'][] = $role;
+        }
+      }
     }
     
     // Save page
