@@ -212,31 +212,7 @@ function homebox_admin_page_validate($form, &$form_state) {
 }
 
 function homebox_admin_page_submit($form, &$form_state) {
-  if ($form_state['values']['op'] == t('Save page')) {
-    // Fetch old page to amend
-    $page = homebox_get_page($form_state['values']['name']);
-    
-    // Change settings
-    $page->settings['title'] = $form_state['values']['title'];
-    $page->settings['path'] = $form_state['values']['path'];
-    $page->settings['menu'] = (int) $form_state['values']['menu'];
-    $page->settings['enabled'] = (int) $form_state['values']['enabled'];
-    $page->settings['full'] = (int) $form_state['values']['full'];
-    $page->settings['custom'] = (int) $form_state['values']['custom'];
-    $page->settings['roles'] = array();
-    
-    foreach ($form_state['values']['roles'] as $role) {
-      if ($role) {
-        $page->settings['roles'][] = $role;
-      }
-    }
-    
-    // Save settings
-    homebox_save_page($page);
-    
-    drupal_set_message(t('Changes have been saved'));
-  }
-  else if ($form_state['values']['op'] == t('Delete page')) {
+  if ($form_state['values']['op'] == t('Delete page')) {
     // Delete the page
     homebox_delete_page($form_state['values']['name']);
     drupal_set_message(t('The page has been deleted.'));
@@ -256,14 +232,8 @@ function homebox_admin_page_submit($form, &$form_state) {
       $page->settings = $form_state['values']['import']->settings;
     }
     else {
-      // Build settings
+      // Build default settings
       $page->settings = array(
-        'title' => $form_state['values']['title'],
-        'path' => $form_state['values']['path'],
-        'menu' => (int) $form_state['values']['menu'],
-        'enabled' => (int) $form_state['values']['enabled'],
-        'full' => (int) $form_state['values']['full'],
-        'custom' => (int) $form_state['values']['custom'],
         'regions' => HOMEBOX_DEFAULT_REGIONS,
         'cache' => 0,
         'color' => 0,
@@ -272,12 +242,8 @@ function homebox_admin_page_submit($form, &$form_state) {
         'widths' => array(),
       );
       
-      // Add roles
-      foreach ($form_state['values']['roles'] as $role) {
-        if ($role) {
-          $page->settings['roles'][] = $role;
-        }
-      }
+      // Map form settings to page object
+      homebox_admin_form_to_page($page, $form_state);
     }
     
     // Save page
@@ -285,10 +251,47 @@ function homebox_admin_page_submit($form, &$form_state) {
     
     drupal_set_message(t('The page has been added.'));
   }
+  else if ($form_state['values']['op'] == t('Save page')) {
+    // Fetch old page to amend
+    $page = homebox_get_page($form_state['values']['name']);
+    
+    // Map form settings to page object
+    homebox_admin_form_to_page($page, $form_state);
+    
+    // Save settings
+    homebox_save_page($page);
+    
+    drupal_set_message(t('Changes have been saved'));
+  }
   
   $form_state['redirect'] = 'admin/build/homebox';
   menu_rebuild();
   return;
+}
+
+/*
+ * Map settings from the form homebox_admin_page to
+ * a page object
+ * 
+ * @param $page
+ *   A page object
+ * @param $form_state
+ *   The form state on form submission
+ */
+function homebox_admin_form_to_page(&$page, $form_state) {
+  $page->settings['title'] = $form_state['values']['title'];
+  $page->settings['path'] = $form_state['values']['path'];
+  $page->settings['menu'] = (int) $form_state['values']['menu'];
+  $page->settings['enabled'] = (int) $form_state['values']['enabled'];
+  $page->settings['full'] = (int) $form_state['values']['full'];
+  $page->settings['custom'] = (int) $form_state['values']['custom'];
+  $page->settings['roles'] = array();
+    
+  foreach ($form_state['values']['roles'] as $role) {
+    if ($role) {
+      $page->settings['roles'][] = $role;
+    }
+  }
 }
 
 /**
