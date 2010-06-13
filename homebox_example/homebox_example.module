@@ -28,18 +28,18 @@ function homebox_example_homebox() {
     'enabled' => 1,
     'regions' => 3,
     'cache' => 0,
-    'full' => 1,
+    'full' => 0,
     'roles' => array(
       0 => 'authenticated user',
     ),
-    'color' => 0,
+    'color' => 1,
     'colors' => array(
-      0 => '#E4F0F8',
-      1 => '#E4F0F8',
-      2 => '#E4F0F8',
-      3 => '#E4F0F8',
-      4 => '#E4F0F8',
-      5 => '#E4F0F8',
+      0 => '#e4f0f8',
+      1 => '#c4d5b4',
+      2 => '#ecc189',
+      3 => '#ec8989',
+      4 => '#6b6b70',
+      5 => '#4b97e5',
     ),
     'blocks' => array(
       'node_0' => array(
