@@ -341,8 +341,7 @@ Drupal.homebox.maximizeBox = function(icon) {
       $(portlet).find('.portlet-close').show();
        
       // Show the save button
-      $('#homebox-save a').show();
-      $('#homebox-save span').html('');
+      $('#homebox-save-link').show();
       
       // Restore the checkbox under "Edit Content"
       $('input#homebox_toggle_' + $(portlet).attr('id')).removeAttr('disabled');
@@ -364,8 +363,7 @@ Drupal.homebox.maximizeBox = function(icon) {
       $(portlet).find('.portlet-close').hide();  
       
       // Hide the save button
-      $('#homebox-save a').hide();
-      $('#homebox-save span').html('Minimize to save');
+      $('#homebox-save-link').hide();
     
       // Disable the checkbox under "Edit content"
       $('input#homebox_toggle_' + $(portlet).attr('id')).attr('disabled', 'disabled');
