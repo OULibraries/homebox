@@ -488,7 +488,7 @@ Drupal.homebox.saveBoxes = function() {
           color: color,
           open: open,
           title: $(this).find('.portlet-title').html().stripTags(),
-          content: encodeURIComponent($(this).find('.portlet-content').html()),
+          content: $(this).find('.portlet-content').html(),
           module: 'homebox',
           delta: block.replace('homebox_', ''),
         }
