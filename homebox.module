@@ -1268,8 +1268,10 @@ function _homebox_save_user_settings($page, $blocks) {
   db_query("DELETE FROM {homebox_users} WHERE uid = %d AND name = '%s'", $user->uid, $page->name);
   
   // Update settings
-  $page->uid = $user->uid;
-  drupal_write_record('homebox_users', $page);
+  $data->uid = $user->uid;
+  $data->name = $page->name;
+  $data->settings = $blocks;
+  drupal_write_record('homebox_users', $data);
 }
 
 /*

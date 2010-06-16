@@ -29,7 +29,6 @@ function homebox_schema() {
       'name' => array('type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => ''),
       'settings' => array('type' => 'text', 'size' => 'big', 'not null' => TRUE, 'serialize' => TRUE, 'object default' => array()),
     ),
-    'primary key' => array('uid', 'name'),
   );
   return $schema;
 }
