@@ -41,6 +41,11 @@ function homebox_example_homebox() {
       4 => '#6b6b70',
       5 => '#4b97e5',
     ),
+    'widths' => array(
+      0 => 25,
+      1 => 50,
+      2 => 25,
+    ),
     'blocks' => array(
       'node_0' => array(
         'module' => 'node',

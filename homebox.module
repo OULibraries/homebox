@@ -720,14 +720,13 @@ function homebox_check_path($path, $element = NULL) {
   }
   
   // Check path against existing paths
-  $paths = db_query("SELECT path FROM {menu_router}");
-  while ($path = db_fetch_object($paths)) {
-    if ($path->path == $path) {
+  $existing = db_result(db_query("SELECT path FROM {menu_router} WHERE path = '%s'", $path));
+  if ($existing) {
+    drupal_set_message("path: $path");
       if ($element) {
         form_set_error($element, t('The chosen path is already in use.'));
       } 
       return FALSE;
-    }
   }
   
   return TRUE; 
@@ -740,18 +739,15 @@ function homebox_check_path($path, $element = NULL) {
  *   A page object either in the form of imported PHP code or an actual object
  * @param $name
  *   Optionally specify and override the machine name of the page
- * @param $import
- *   TRUE if $data is a plain-text representation of a PHP object, FALSE if already
- *   an actual object
  * @param $element
  *   Optionally specify a form element name to be used to throw form errors
  * @return
  *   A complete page object, or FALSE if data was invalid
  */
-function homebox_check_page_object($data, $name = NULL, $import = FALSE, $element = NULL) {
+function homebox_check_page_object($data, $name = NULL, $element = NULL) {
   $homebox = '';
   
-  if ($import) {
+  if (!is_object($data)) {
     // Evaluate the imported object
     ob_start();
     eval($data);
@@ -796,7 +792,7 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
           break;
         case 'path':
           if (!homebox_check_path($value, $element)) {
-            $status = FALSE;
+            $status = FALSE;drupal_set_message('hit!');
             break 2;  
           }
           break;
@@ -829,12 +825,13 @@ function homebox_check_page_object($data, $name = NULL, $import = FALSE, $elemen
               }
             }
           }
+          break;
       }
     }
     
     // If name is explicitly specified, used it
     $homebox->name = $name ? $name : $homebox->name;
-    
+
     // Check name
     if ($status && $homebox->name && !homebox_check_name($homebox->name, $element)) {
       $status = FALSE;
@@ -1049,10 +1046,10 @@ function homebox_js_add_item() {
       }
     }
   }
-  
+
   // Build custom block
   $block = array(
-    'title' => filter_xss(trim($block['title'])),
+    'title' => strip_tags(trim($block['title'])),
     'content' => trim($block['body']),
     'open' => 1,
     'color' => 'default',
@@ -1252,11 +1249,6 @@ function _homebox_save_user_settings($page, $blocks) {
     // Prevent crafty users from closing unclosable blocks
     if (!$page->settings['blocks'][$key]['closable']) {
       $blocks[$key]['status'] = 1;
-    }
-    
-    // Decode HTML content, if available
-    if ($page->settings['custom'] && strstr($key, 'homebox_')) {
-      $blocks[$key]['content'] = filter_xss(urldecode(trim($blocks[$key]['content'])));
     }
   }
   

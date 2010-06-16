@@ -205,7 +205,6 @@ function homebox_admin_page_validate($form, &$form_state) {
     $form_state['values']['import'] = homebox_check_page_object(
       $form_state['values']['import'], 
       $form_state['values']['name'],
-      TRUE,
       'import'
     );
   }
@@ -750,7 +749,7 @@ function homebox_configure_form_submit($form, &$form_state) {
   $page->settings['widths'] = array();
   if ($form_state['values']['width_1']) {
     for ($i=1; $i <= $page->settings['regions']; $i++) {
-      $page->settings['widths'][$i] = $form_state['values']['width_' . $i]; 
+      $page->settings['widths'][$i] = (int) $form_state['values']['width_' . $i]; 
     }
   }
   

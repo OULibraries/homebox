@@ -94,3 +94,5 @@ CHANGELOG for Home box for Drupal
   o New #794728: Features integration
   o New #794728: Organic Groups integration
   o New #794728: Offer Home Box as a profile tab
+  o New #794728: Region width overrides
+  o New #794728: Custom user-entered blocks
