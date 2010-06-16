@@ -722,7 +722,6 @@ function homebox_check_path($path, $element = NULL) {
   // Check path against existing paths
   $existing = db_result(db_query("SELECT path FROM {menu_router} WHERE path = '%s'", $path));
   if ($existing) {
-    drupal_set_message("path: $path");
       if ($element) {
         form_set_error($element, t('The chosen path is already in use.'));
       } 
@@ -792,7 +791,7 @@ function homebox_check_page_object($data, $name = NULL, $element = NULL) {
           break;
         case 'path':
           if (!homebox_check_path($value, $element)) {
-            $status = FALSE;drupal_set_message('hit!');
+            $status = FALSE;
             break 2;  
           }
           break;
@@ -1180,7 +1179,7 @@ function _homebox_get_css_classes_for_block($block) {
  */
 function homebox_pages($api = TRUE) {
   $pages = array();
-  
+
   // Fetch all available pages from database
   $result = db_query("SELECT * FROM {homebox_pages} ORDER BY name");
 

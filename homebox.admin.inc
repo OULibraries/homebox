@@ -172,6 +172,12 @@ function theme_homebox_admin_new_page($form) {
 }
 
 function homebox_admin_page_validate($form, &$form_state) {
+  // No valifation needed on Delete or Revert
+  if ($form_state['values']['op'] == t('Delete page') ||
+    $form_state['values']['op'] == t('Revert page')) {
+   return; 
+  }
+  
   // If no imported settings...
   if (!$form_state['values']['import']) {
     // Filter title
