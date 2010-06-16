@@ -222,3 +222,17 @@ textarea#homebox-add-form-content {
   width: 89%;
   height: 135px;
 }
+
+/* 
+ * jQuery UI 
+ * 
+ * Until Drupal get's an updated jQuery UI
+ * and theme support
+
+div.ui-dialog-overlay {
+  background: black;
+  opacity: .2;
+}
+ */
+
+.ui-dialog-overlay { background: #aaaaaa url(images/overlay.png) 50% 50% repeat-x; opacity: .30;filter:Alpha(Opacity=30); }

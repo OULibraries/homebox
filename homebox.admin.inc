@@ -445,13 +445,13 @@ function homebox_admin_display_form(&$form_state, $blocks, $page, $theme = NULL)
       '#default_value' => $block['closable'],
     );
     $form[$key]['bid'] = array(
-      '#type' => 'hidden',
+      '#type' => 'value',
       '#value' => $block['bid'],
     );
   }
 
   $form['name'] = array(
-    '#type' => 'hidden',
+    '#type' => 'value',
     '#value' => $page->name,
   );
 
@@ -661,7 +661,7 @@ function homebox_configure_form(&$form_state, $page) {
   }
 
   $form['name'] = array(
-    '#type' => 'hidden',
+    '#type' => 'value',
     '#value' => $page->name,
   );
   

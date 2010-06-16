@@ -8,6 +8,7 @@
  *   An array of homebox page settings arrays.
  *   The machine name is specified in the array key. 
  *   The machine name and path MUST not be in use.
+ *   Both name and path registered by first-come
  * 
  * --------------------------------------------------
  *   The menu might need to be rebuilt / cache cleared in order for 

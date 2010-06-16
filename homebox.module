@@ -632,7 +632,7 @@ function homebox_save_page($page, $check = FALSE) {
     db_query("DELETE FROM {homebox_pages} WHERE name = '%s'", $page->name);
     
     // Save the new/updated page
-    if (!db_query("INSERT INTO {homebox_pages} (name, settings) VALUES ('%s', '%s')", $page->name, serialize($page->settings))) {
+    if (!drupal_write_record('homebox_pages', $page)) {
       return FALSE;
     }
   }
@@ -719,13 +719,16 @@ function homebox_check_path($path, $element = NULL) {
     return FALSE;
   }
   
-  // Check path against existing paths
-  $existing = db_result(db_query("SELECT path FROM {menu_router} WHERE path = '%s'", $path));
-  if ($existing) {
+  // Check path against existing Home Box paths
+  $pages = db_query("SELECT * FROM {homebox_pages}");
+  while ($page = db_fetch_object($pages)) {
+    $page->settings = unserialize($page->settings);
+    if ($page->settings['path'] == $path) {
       if ($element) {
         form_set_error($element, t('The chosen path is already in use.'));
       } 
       return FALSE;
+    }
   }
   
   return TRUE; 
@@ -1265,7 +1268,8 @@ function _homebox_save_user_settings($page, $blocks) {
   db_query("DELETE FROM {homebox_users} WHERE uid = %d AND name = '%s'", $user->uid, $page->name);
   
   // Update settings
-  db_query("INSERT INTO {homebox_users} (uid, name, settings) VALUES (%d, '%s', '%s')", $user->uid, $page->name, serialize($blocks));
+  $page->uid = $user->uid;
+  drupal_write_record('homebox_users', $page);
 }
 
 /*
