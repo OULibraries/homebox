@@ -17,6 +17,7 @@
       <?php endif; ?>
       <button id="homebox-restore-link"><?php print t('Restore to defaults'); ?></button>
       <button id="homebox-save-link"><?php print t('Save settings'); ?></button>
+      <span id="minimize-to-save">Minimize to save</span>
     <?php endif; ?>
   </div>
   

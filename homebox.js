@@ -86,6 +86,7 @@ Drupal.behaviors.homebox = function(context) {
     // Attach click event on settings icon
     $boxes.find('.portlet-header .portlet-settings').click(function() {
       $(this).parents(".homebox-portlet:first").find(".portlet-config").toggle();
+      Drupal.homebox.equalizeColumnsHeights($columns);
     });
     
     // Attach click event on close
@@ -342,6 +343,7 @@ Drupal.homebox.maximizeBox = function(icon) {
        
       // Show the save button
       $('#homebox-save-link').show();
+      $('#minimize-to-save').hide();
       
       // Restore the checkbox under "Edit Content"
       $('input#homebox_toggle_' + $(portlet).attr('id')).removeAttr('disabled');
@@ -364,6 +366,7 @@ Drupal.homebox.maximizeBox = function(icon) {
       
       // Hide the save button
       $('#homebox-save-link').hide();
+      $('#minimize-to-save').show();
     
       // Disable the checkbox under "Edit content"
       $('input#homebox_toggle_' + $(portlet).attr('id')).attr('disabled', 'disabled');

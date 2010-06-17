@@ -193,6 +193,12 @@ div.homebox-colors {
   margin-right: 2px;
   padding: 4px 6px;
 }
+#minimize-to-save {
+  font-size: 90%;
+  color: #999;
+  font-style: italic;
+  display: none;
+}
 .homebox-delete-custom-link {
   font-size: 85%;
   border: none;
@@ -228,11 +234,10 @@ textarea#homebox-add-form-content {
  * 
  * Until Drupal get's an updated jQuery UI
  * and theme support
-
-div.ui-dialog-overlay {
-  background: black;
-  opacity: .2;
-}
  */
 
-.ui-dialog-overlay { background: #aaaaaa url(images/overlay.png) 50% 50% repeat-x; opacity: .30;filter:Alpha(Opacity=30); }
+.ui-dialog-overlay { 
+  background: #aaaaaa url(images/overlay.png) 50% 50% repeat-x; 
+  opacity: .30;
+  filter:Alpha(Opacity=30); 
+}
