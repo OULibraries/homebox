@@ -374,9 +374,11 @@ Drupal.homebox.maximizeBox = function(icon) {
   }
 }
 
+/*
+ * Add a custom block
+ */
 Drupal.homebox.addItem = function() {
   var block = {};
-  var name = $('#homebox').find('input:hidden.name').val();
   var title = $('#homebox-add-form-title').val().stripTags();
   var content = $('#homebox-add-form-content').val();
   
@@ -398,13 +400,23 @@ Drupal.homebox.addItem = function() {
 	
 	// Encode the block
 	block = JSON.stringify(block);
-  
-  // First save current configuration
-  Drupal.homebox.saveBoxes() // @todo: Make sure this was successful
 
   // Show progress message
   $('#homebox-add-form').html('Adding item...');
-    
+
+  // Save current configuration
+  // We pass the custom block in, because it will be added
+  // after the full save is executed, only if successful 
+  Drupal.homebox.saveBoxes(block);
+}
+
+/*
+ * The AJAX call for adding an item
+ * 
+ * This needs to be separate so that .saveBoxes()
+ * can call it after a successful AJAX save
+ */
+Drupal.homebox.addItemAjax = function(name, block) {
   $.ajax({
     url: Drupal.settings.basePath + '?q=homebox/js/add',
     type: "POST",
@@ -417,11 +429,14 @@ Drupal.homebox.addItem = function() {
     },
     error: function() {
       $('#homebox-add-form').html('<span style="color:red;">Save failed. Please refresh page.</span>');
-      console.log(Drupal.t("An error occured while trying to add your block."))
+      console.log(Drupal.t("An error occured while trying to add your block."));
     }
   });
 }
 
+/*
+ * Delete a custom block from the page
+ */
 Drupal.homebox.deleteItem = function(block) {
   var name = $('#homebox').find('input:hidden.name').val();
   
@@ -444,7 +459,16 @@ Drupal.homebox.deleteItem = function(block) {
   });
 }
 
-Drupal.homebox.saveBoxes = function() {
+/*
+ * Save the current state of the homebox
+ * 
+ * @param save
+ *   Optionally, A JSON-encoded custom block object. This is passed in
+ *   because we want to first save the current state, then add the
+ *   custom block so changes are preserved, and that we can only
+ *   add if and when the first ajax call is successful.
+ */
+Drupal.homebox.saveBoxes = function(save) {
   var color = new String();
   var open = new Boolean();
   var block = new String();
@@ -516,6 +540,12 @@ Drupal.homebox.saveBoxes = function() {
     data: {name: name, blocks: blocks},
     success: function() {
       $('#homebox-save-message').dialog('close');
+      
+      if (save) {
+        // If a block was passed in, save it as a
+        // custom block after ajax success.
+        Drupal.homebox.addItemAjax(name, save); 
+      }
     },
     error: function() {
       $('#homebox-save-message').html('<span style="color:red;">Save failed. Please refresh page.</span>');
