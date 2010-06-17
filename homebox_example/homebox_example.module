@@ -12,7 +12,7 @@
  * 
  * --------------------------------------------------
  *   The menu might need to be rebuilt / cache cleared in order for 
- *   pages in code to show on the Home Box admin page and become
+ *   pages in code to show on the Home box admin page and become
  *   accessible via the specified path.
  * 
  *   Once an admin saves settings for a page in code, it resides
@@ -23,7 +23,7 @@ function homebox_example_homebox() {
   $pages = array();
   
   $pages['testbox'] = array(
-    'title' => 'Test Home Box',
+    'title' => 'Test Home box',
     'path' => 'testbox',
     'menu' => 1,
     'enabled' => 1,

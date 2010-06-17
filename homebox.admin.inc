@@ -27,7 +27,7 @@ function homebox_admin_page() {
   
   $form['page']['name'] = array(
     '#type' => 'textfield',
-    '#title' => t('Machine Name'),
+    '#title' => t('Machine name'),
     '#required' => TRUE,
     '#size' => 32,
     '#maxlength' => 64,
@@ -41,7 +41,7 @@ function homebox_admin_page() {
   
   $form['page']['options'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Home Box Options'),
+    '#title' => t('Home box options'),
     '#collapsible' => TRUE,
   );
   
@@ -70,28 +70,28 @@ function homebox_admin_page() {
   
   $form['page']['options']['menu'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Create a Menu Entry'),
+    '#title' => t('Create a menu entry'),
     '#description' => t('If checked, a menu entry will be created for this page.'),
     '#default_value' => $page ? $page->settings['menu'] : 1,
   );
   
   $form['page']['options']['enabled'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Enable the Page'),
+    '#title' => t('Enable the page'),
     '#description' => t('If unchecked, only users with the <i>administer homebox</i> permission will be able to view this page.'),
     '#default_value' => $page ? $page->settings['enabled'] : 1,
   );
   
   $form['page']['options']['full'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Disable Block Regions'),
+    '#title' => t('Disable block regions'),
     '#description' => t('If checked, the theme block regions will be disabled for this page, giving more room for the home box.'),
     '#default_value' => $page ? $page->settings['full'] : 0,
   );
   
   $form['page']['options']['custom'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Allow Custom Items'),
+    '#title' => t('Allow custom items'),
     '#description' => t('If checked, logged in users will be able to add custom blocks to their own page. The blocks contain a user-entered title and content body.'),
     '#default_value' => $page ? $page->settings['custom'] : 0,
   );
@@ -124,14 +124,14 @@ function homebox_admin_page() {
   else {
     $form['page']['import_fieldset'] = array(
       '#type' => 'fieldset',
-      '#title' => 'Import Home Box',
+      '#title' => 'Import Home box',
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
     $form['page']['import_fieldset']['import'] = array(
-      '#title' => t('Import Data'),
+      '#title' => t('Import data'),
       '#type' => 'textarea',
-      '#description' => t('Optionally include an exported Home Box to import settings and block layout. Ensure that the path is currently not in use. The machine name supplied in the import data will be ignored.'),
+      '#description' => t('Optionally include an exported Home box to import settings and block layout. Ensure that the path is currently not in use. The machine name supplied in the import data will be ignored.'),
     );
     $form['page']['submit'] = array(
       '#type' => 'submit',
@@ -817,7 +817,7 @@ function homebox_named_columns($cols) {
 /*
  * Provide form for user profile settings
  * 
- * This allows an admin to specify a Home Box to reside
+ * This allows an admin to specify a Home box to reside
  * as a profile tab
  */
 function homebox_user_settings_page() {
@@ -837,8 +837,8 @@ function homebox_user_settings_page() {
   $form['help'] = array(
     '#type' => 'item',
     '#value' => t('
-      The permissions set in the chosen Home Boxes will be still be checked. 
-      Make sure that users who can view their own profiles can also view the selected Home Box. 
+      The permissions set in the chosen Home boxes will be still be checked. 
+      Make sure that users who can view their own profiles can also view the selected Home box. 
       The tab will only be presented if the current user is viewing their own profile.'
     ),
   );
@@ -850,7 +850,7 @@ function homebox_user_settings_page() {
     '#title' => t('Add a profile tab'),
     '#default_value' => variable_get('homebox_user_tab', 0),
     '#options' => array(0 => '- None -') + $options,
-    '#description' => t('Optionally add a Home Box as a tab to a user profile.'),
+    '#description' => t('Optionally add a Home box as a tab to a user profile.'),
   );
   
   $form['#submit'][] = 'menu_rebuild';

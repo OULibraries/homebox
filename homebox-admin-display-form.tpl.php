@@ -21,7 +21,7 @@
     <tr>
       <th><?php print t('Block'); ?></th>
       <th><?php print t('Region'); ?></th>
-      <th><?php print t('Custom Title'); ?></th>
+      <th><?php print t('Custom title'); ?></th>
       <th><?php print t('Weight'); ?></th>
       <th><?php print t('Visible'); ?></th>
       <th><?php print t('Open'); ?></th>

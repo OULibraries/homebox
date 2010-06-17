@@ -23,7 +23,7 @@ define('HOMEBOX_DEFAULT_REGIONS', 3);
 function homebox_menu() {
   $items = array();
 
-  // Created Home Box pages
+  // Created Home box pages
   $pages = homebox_pages();
   if (is_array($pages) && count($pages) > 0) {
     foreach ($pages as $page) {
@@ -119,11 +119,11 @@ function homebox_menu() {
   );
   // Admin user settings
   $items['admin/user/homebox'] = array(
-    'title' => 'User Profile Home Box',
+    'title' => 'User profile Home box',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('homebox_user_settings_page'),
     'access arguments' => array('administer homebox'),
-    'description' => 'Configure the intergration of Home Box and user profiles.',
+    'description' => 'Configure the intergration of Home box and user profiles.',
     'file' => 'homebox.admin.inc',
   );
   
@@ -276,7 +276,7 @@ function homebox_build($page) {
 
 /*
  * Helper function for performing operations prior to rendering
- * a Home Box that is set as a user profile tab
+ * a Home box that is set as a user profile tab
  * 
  * @param $page
  *   A page object
@@ -288,7 +288,7 @@ function homebox_pre_build_user($page, $user) {
   $output = homebox_build($page);
   
   // Only return if output is available
-  // Certain Home Boxes print instead of return
+  // Certain Home boxes print instead of return
   if ($output) {
     return $output; 
   }
@@ -719,7 +719,7 @@ function homebox_check_path($path, $element = NULL) {
     return FALSE;
   }
   
-  // Check path against existing Home Box paths
+  // Check path against existing Home box paths
   $pages = db_query("SELECT * FROM {homebox_pages}");
   while ($page = db_fetch_object($pages)) {
     $page->settings = unserialize($page->settings);
@@ -1353,7 +1353,7 @@ function _homebox_user_access_view_homebox($page) {
 
 /*
  * Helper function to check access permissions for user 
- * profile Home Box
+ * profile Home box
  * 
  * Only show tab if you're viewing your own account
  */
