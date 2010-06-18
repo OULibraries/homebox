@@ -491,7 +491,7 @@ Drupal.homebox.saveBoxes = function(save) {
       if ($(this).is(':visible')) {
         visible = 1;
       };
-      
+
       // Determine custom color, if any
       attributes = $(this).attr('class').split(' ');
       color = 'default';

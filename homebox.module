@@ -479,7 +479,7 @@ function _homebox_apply_user_settings($page, $blocks) {
       // Blocks that user has in settings but is not a 'default' one (deprecated block)
       foreach (array_diff_key($user_blocks, $blocks) as $key => $block) {
         // Make sure it's not an allowed custom block first
-        if ($page->settings['custom'] && strstr($key, 'homebox_')) {
+        if ($page->settings['custom'] && homebox_block_is_custom($key)) {
           continue; 
         }
         unset($user_blocks[$key]);
@@ -1043,7 +1043,7 @@ function homebox_js_add_item() {
   $id = 0;
   if ($user_blocks) {
     foreach ($user_blocks as $key => $value) {
-      if (strstr($key, 'homebox_')) {
+      if (homebox_block_is_custom($key)) {
         $id++;
       }
     }
@@ -1211,6 +1211,18 @@ function homebox_pages($api = TRUE) {
 }
 
 /*
+ * Determine if a block is a custom block
+ * 
+ * @param @key
+ *   The block key
+ * @return
+ *   TRUE if custom, otherwise FALSE
+ */
+function homebox_block_is_custom($key) {
+  return strstr($key, 'homebox_') ? TRUE : FALSE;
+}
+
+/*
  * Fetch user page settings
  * 
  * @param $page
@@ -1250,7 +1262,10 @@ function _homebox_save_user_settings($page, $blocks) {
     
     // Prevent crafty users from closing unclosable blocks
     if (!$page->settings['blocks'][$key]['closable']) {
-      $blocks[$key]['status'] = 1;
+      // Only matters if it isn't a custom block
+      if (!homebox_block_is_custom($key)) {
+        $blocks[$key]['status'] = 1;
+      }
     }
   }
   
@@ -1258,7 +1273,7 @@ function _homebox_save_user_settings($page, $blocks) {
   // This prevents users from modifying the DOM to return any blocks they want!
   foreach (array_diff_key($blocks, $page->settings['blocks']) as $key => $value) {
     // Make sure it's not an allowed custom block first
-    if ($page->settings['custom'] && strstr($key, 'homebox_')) {
+    if ($page->settings['custom'] && homebox_block_is_custom($key)) {
       continue; 
     }
     unset($blocks[$key]);
