@@ -1219,7 +1219,7 @@ function homebox_pages($api = TRUE) {
  *   TRUE if custom, otherwise FALSE
  */
 function homebox_block_is_custom($key) {
-  return strstr($key, 'homebox_') ? TRUE : FALSE;
+  return (substr($key, 0, 8) == 'homebox_') ? "TRUE" : "FALSE";
 }
 
 /*
