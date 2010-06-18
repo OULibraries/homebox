@@ -219,6 +219,26 @@ Drupal.homebox.initDialogs = function() {
     }
   });
   
+  // Edit item dialog
+  $('#homebox-edit-form').dialog({
+    autoOpen: false,
+	  modal: true,
+    zIndex: 500,
+    width: 500,
+    height: 350,
+    buttons: {
+		  'Submit': function() {
+        Drupal.homebox.editItem($(this).find('input:hidden').val());
+      },
+      Cancel: function() {
+        $('#homebox-edit-form-status').hide();
+        $('#homebox-edit-form-title').val('');
+        $('#homebox-edit-form-content').val('');
+				$(this).dialog('close');
+			}
+    }
+  });
+  
   // Restore to default in-progress dialog
   $('#homebox-restore-inprogress').dialog({
     autoOpen: false,
@@ -272,7 +292,21 @@ Drupal.homebox.initDialogLinks = function() {
       $(this).attr('id').replace('delete-', '')
     );
     $('#homebox-delete-custom-message').dialog('open'); 
-  }); 
+  });
+  
+  // Edit custom item link
+  $('.homebox-edit-custom-link').click(function() {
+    // Place the block ID into the dialog
+    $('#homebox-edit-form input:hidden').val(
+      $(this).attr('id').replace('edit-', '')
+    );
+    // Populate the title field
+    $('#homebox-edit-form-title').val($(this).parents('.homebox-portlet').find('.portlet-title').html());
+    // Populate the content field
+    $('#homebox-edit-form-content').val($(this).parents('.homebox-portlet').find('.portlet-content').html());
+    // Open the dialog
+    $('#homebox-edit-form').dialog('open'); 
+  });
 }
 
 Drupal.homebox.equalizeColumnsHeights = function(columns) {
@@ -390,7 +424,7 @@ Drupal.homebox.addItem = function() {
   }
   
   // Convert content newlines to HTML
-  content = content.replace(/\r?\n|\r/g, "<br />");
+  content = content.newlineToHTML();
   
   // Place data into the custom block object
   block = {
@@ -554,6 +588,43 @@ Drupal.homebox.saveBoxes = function(save) {
   });
 }
 
+/*
+ * Edit a custom item
+ * 
+ * @param block
+ *   The block ID being edited
+ */
+Drupal.homebox.editItem = function(block) {
+  var title = $('#homebox-edit-form-title').val().stripTags();
+  var content = $('#homebox-edit-form-content').val();
+  
+  // Make sure both fields are supplied
+  if (!title || !content) {
+    $('#homebox-edit-form-status').show();
+    $('#homebox-edit-form-status').html('All fields are required.');
+    return;
+  }
+  
+  // Alter block ID to match block class
+  block = block.replace('_', '-');
+  
+  // Convert newlines to HTML
+  content = content.newlineToHTML();
+  
+  // Replace block title with input
+  $('#homebox-block-' + block).find('.portlet-title').html(title);
+  $('#homebox-block-' + block).find('.portlet-content').html(content);
+  
+  // Clear form and close dialog
+  $('#homebox-edit-form-status').hide();
+  $('#homebox-edit-form-title').val('');
+  $('#homebox-edit-form-content').val('');
+	$('#homebox-edit-form').dialog('close');
+  
+  // Equalize columns
+  Drupal.homebox.equalizeColumnsHeights($columns);
+}
+
 Drupal.homebox.convertRgbToHex = function(rgb) {
   if (!jQuery.browser.msie) {
     // Script taken from
@@ -571,6 +642,10 @@ Drupal.homebox.convertRgbToHex = function(rgb) {
   };
 };
 
-String.prototype.stripTags = function () {
+String.prototype.stripTags = function() {
    return this.replace(/<([^>]+)>/g,'');
+}
+
+String.prototype.newlineToHTML = function() {
+  return this.replace(/\r?\n|\r/g, "<br />");
 }

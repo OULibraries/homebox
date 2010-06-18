@@ -20,7 +20,8 @@
         </div>
       <?php endif; ?>
       <?php if ($block->module == 'homebox'): ?>
-        <button id="delete-<?php print $block->module . '_' . $block->delta; ?>" class="homebox-delete-custom-link"><?php print t('Delete this item'); ?></button>
+        <button id="delete-<?php print $block->module . '_' . $block->delta; ?>" class="homebox-delete-custom-link"><?php print t('Delete'); ?></button>
+        <button id="edit-<?php print $block->module . '_' . $block->delta; ?>" class="homebox-edit-custom-link"><?php print t('Edit'); ?></button>
       <?php endif; ?>
       <?php if ($page->settings['color'] || $block->module == 'views' && !is_null($filters)): ?>
         <div class="clear-block"></div>

@@ -59,6 +59,14 @@
     <label for="content">Content</label>
     <textarea name="content" id="homebox-add-form-content" value="" class=""></textarea>
   </form>
+  <form id="homebox-edit-form" title="Edit item" class="form-item">
+    <div id="homebox-edit-form-status"></div>
+    <label for="title">Title</label>
+    <input type="text" name="title" id="homebox-edit-form-title" class="" />
+    <label for="content">Content</label>
+    <textarea name="content" id="homebox-edit-form-content" value="" class=""></textarea>
+    <input type="hidden" value="" />
+  </form>
   <div id="homebox-delete-custom-message" title="Deletion confirmation">
     <?php print t('Are you sure you want to delete this item? This action cannot be undone.'); ?>
     <input type="hidden" value="" />

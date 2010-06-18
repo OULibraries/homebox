@@ -199,7 +199,8 @@ div.homebox-colors {
   font-style: italic;
   display: none;
 }
-.homebox-delete-custom-link {
+.homebox-delete-custom-link,
+.homebox-edit-custom-link {
   font-size: 85%;
   border: none;
   color: #1C94C4;
@@ -208,10 +209,12 @@ div.homebox-colors {
 }
 
 /* Form Components */
-#homebox-add-form {
+#homebox-add-form, 
+#homebox-edit-form {
   margin: 0;
 }
-#homebox-add-form-status {
+#homebox-add-form-status,
+#homebox-edit-form-status {
   background: #FEF1EC;
   border: 1px solid #CD0A0A;
   color: #CD0A0A;
@@ -220,11 +223,13 @@ div.homebox-colors {
   margin-bottom: 5px;
   width: 86%;
 }
-input#homebox-add-form-title {
+#homebox-add-form-title,
+#homebox-edit-form-title {
   margin-bottom: 6px;
   width: 89%;
 }
-textarea#homebox-add-form-content {
+#homebox-add-form-content,
+#homebox-edit-form-content {
   width: 89%;
   height: 135px;
 }
