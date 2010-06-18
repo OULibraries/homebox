@@ -19,6 +19,7 @@ Drupal.behaviors.homebox = function(context) {
       forcePlaceholderSize: true,
       stop: function() {
         Drupal.homebox.equalizeColumnsHeights($columns);
+        $('#homebox-changes-made').show();
       }
     });
     
@@ -56,6 +57,7 @@ Drupal.behaviors.homebox = function(context) {
       $(this).toggleClass("portlet-plus");
       $(this).parents(".homebox-portlet:first").find(".portlet-content").toggle();
       Drupal.homebox.equalizeColumnsHeights($columns);
+      $('#homebox-changes-made').show();
     });
     
     // Attach click event on minus
@@ -81,6 +83,7 @@ Drupal.behaviors.homebox = function(context) {
       $(this).parents(".homebox-portlet:first").find(".portlet-content").toggle();
       
       Drupal.homebox.equalizeColumnsHeights($columns);
+      $('#homebox-changes-made').show();
     });
     
     // Attach click event on settings icon
@@ -96,6 +99,7 @@ Drupal.behaviors.homebox = function(context) {
       dom_id = $(this).parents(".homebox-portlet:first").attr('id');
       $('#homebox_toggle_' + dom_id).attr('checked', false);
       Drupal.homebox.equalizeColumnsHeights($columns);
+      $('#homebox-changes-made').show();
     });
     
     // Add click behaviour to checkboxes that enable/disable blocks
@@ -109,6 +113,7 @@ Drupal.behaviors.homebox = function(context) {
         $('#' + el_id).hide();
       };
       Drupal.homebox.equalizeColumnsHeights($columns);
+      $('#homebox-changes-made').show();
     });
     
     // Add click behaviour to color buttons
@@ -123,6 +128,7 @@ Drupal.behaviors.homebox = function(context) {
       classes = classes.join(" ");
       $(this).parents(".homebox-portlet:first").attr('class', classes);
       $(this).parents(".homebox-portlet:first").addClass("homebox-color-" + Drupal.homebox.convertRgbToHex(color).replace("#", ''));
+      $('#homebox-changes-made').show();
     });
     
     // Initialize popup dialogs
@@ -229,6 +235,7 @@ Drupal.homebox.initDialogs = function() {
     buttons: {
 		  'Submit': function() {
         Drupal.homebox.editItem($(this).find('input:hidden').val());
+        $('#homebox-changes-made').show();
       },
       Cancel: function() {
         $('#homebox-edit-form-status').hide();
@@ -574,6 +581,7 @@ Drupal.homebox.saveBoxes = function(save) {
     data: {name: name, blocks: blocks},
     success: function() {
       $('#homebox-save-message').dialog('close');
+      $('#homebox-changes-made').hide();
       
       if (save) {
         // If a block was passed in, save it as a

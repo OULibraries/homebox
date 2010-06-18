@@ -193,9 +193,15 @@ div.homebox-colors {
   margin-right: 2px;
   padding: 4px 6px;
 }
-#minimize-to-save {
+#homebox-minimize-to-save {
   font-size: 90%;
   color: #999;
+  font-style: italic;
+  display: none;
+}
+#homebox-changes-made {
+  font-size: 80%;
+  color: darkRed;
   font-style: italic;
   display: none;
 }
