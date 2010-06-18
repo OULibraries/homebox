@@ -154,15 +154,16 @@ function theme_homebox_admin_new_page($form) {
   $pages = homebox_pages();
   $output = drupal_render($form);
 
-  $header = array(t('Name'), array('data' => t('Operations'), 'colspan' => 4));
+  $header = array(t('Name'), array('data' => t('Operations'), 'colspan' => 5));
   if (is_array($pages) && !empty($pages)) {
     foreach ($pages as $page) {
       $link = l($page->settings['title'], $page->settings['path']);
       $edit = l(t('Edit'), 'admin/build/homebox/edit/' . $page->name);
       $layout = l(t('Layout'), 'admin/build/homebox/layout/' . $page->name);
       $settings = l(t('Settings'), 'admin/build/homebox/settings/' . $page->name);
+      $flush = l(t('Flush'), 'admin/build/homebox/flush/' . $page->name);
       $export = l(t('Export'), 'admin/build/homebox/export/' . $page->name);
-      $rows[] = array($link, $edit, $layout, $settings, $export);
+      $rows[] = array($link, $edit, $layout, $settings, $flush, $export);
     }
   }
   
@@ -503,6 +504,47 @@ function homebox_admin_display_form_submit($form, &$form_state) {
    
   menu_rebuild();
   drupal_set_message(t('Layout settings have been updated for !page_title.', array('!page_title' => $page->settings['title'])));
+  $form_state['redirect'] = 'admin/build/homebox';
+}
+
+/*
+ * Provide form to flush user settings for a given page
+ */
+function homebox_admin_flush_form(&$form_state, $page) {
+  $form['name'] = array(
+    '#type' => 'value',
+    '#value' => $page->name,
+  );
+
+  $form = confirm_form(
+    $form, 
+    t('Are you sure you want to flush user settings for !name?', array('!name' => $page->name)), 
+    'admin/build/homebox',
+    t('Executing this action will delete all user\'s settings for this page'),
+    t('Flush settings')
+  ); 
+  
+  return $form;
+}
+
+/*
+ * Submit homebox_admin_flush_form()
+ */
+function homebox_admin_flush_form_submit(&$form, &$form_state) {
+  // Load the page
+  $page = homebox_get_page($form_state['values']['name']);
+  if ($page) {
+    if (homebox_flush_settings($page)) {
+      drupal_set_message(t('Settings flushed successfully for !name', array('!name' => $page->name))); 
+    }
+    else {
+      drupal_set_message(t('An error has occurred while trying to flush settings for !name', array('!name' => $page->name)));
+    }
+  }
+  else {
+    drupal_set_message(t('An error occured has occured'), 'error');
+  }
+  
   $form_state['redirect'] = 'admin/build/homebox';
 }
 

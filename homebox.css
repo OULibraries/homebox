@@ -198,6 +198,7 @@ div.homebox-colors {
   color: #999;
   font-style: italic;
   display: none;
+  margin-right: 5px;
 }
 #homebox-changes-made {
   font-size: 80%;

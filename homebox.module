@@ -101,6 +101,15 @@ function homebox_menu() {
     'file' => 'homebox.admin.inc',
     'type' => MENU_CALLBACK,
   );
+  $items['admin/build/homebox/flush/%homebox'] = array(
+    'title' => 'Flush user settings',
+    'description' => 'Clear all user\'s settings for a given home box.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('homebox_admin_flush_form', 4),
+    'access arguments' => array('administer homebox'),
+    'file' => 'homebox.admin.inc',
+    'type' => MENU_CALLBACK,
+  );
   $items['admin/build/homebox/settings/%homebox'] = array(
     'title' => 'Settings',
     'page callback' => 'drupal_get_form',
@@ -1169,6 +1178,22 @@ function _homebox_get_css_classes_for_block($block) {
   }
   
   return implode(" ", $classes);
+}
+
+/*
+ * Flush all user settings for a given page
+ * 
+ * @param $page
+ *   A page object
+ * @return
+ *   TRUE if the operation was successful, otherwise FALSE
+ */
+function homebox_flush_settings($page) {
+  if (db_query("DELETE FROM {homebox_users} WHERE name = '%s'", $page->name)) {
+    return TRUE; 
+  }
+  
+  return FALSE;
 }
 
 /**
