@@ -310,7 +310,7 @@ Drupal.homebox.initDialogLinks = function() {
     // Populate the title field
     $('#homebox-edit-form-title').val($(this).parents('.homebox-portlet').find('.portlet-title').html());
     // Populate the content field
-    $('#homebox-edit-form-content').val($(this).parents('.homebox-portlet').find('.portlet-content').html());
+    $('#homebox-edit-form-content').val($(this).parents('.homebox-portlet').find('.portlet-content').html().HTMLtoNewline());
     // Open the dialog
     $('#homebox-edit-form').dialog('open'); 
   });
@@ -656,4 +656,8 @@ String.prototype.stripTags = function() {
 
 String.prototype.newlineToHTML = function() {
   return this.replace(/\r?\n|\r/g, "<br />");
+}
+
+String.prototype.HTMLtoNewline = function() {
+  return this.replace(/<br>|<br\/>|<br \/>/g, "\n");
 }
