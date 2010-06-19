@@ -17,6 +17,9 @@ Drupal.behaviors.homebox = function(context) {
       connectWith: $columns,
       placeholder: 'homebox-placeholder',
       forcePlaceholderSize: true,
+      over: function() {
+        Drupal.homebox.equalizeColumnsHeights($columns);
+      },
       stop: function() {
         Drupal.homebox.equalizeColumnsHeights($columns);
         $('#homebox-changes-made').show();
