@@ -176,9 +176,9 @@ function homebox_admin_page_validate($form, &$form_state) {
   // No valifation needed on Delete or Revert
   if ($form_state['values']['op'] == t('Delete page') ||
     $form_state['values']['op'] == t('Revert page')) {
-   return; 
+    return; 
   }
-  
+
   // If no imported settings...
   if (!$form_state['values']['import']) {
     // Filter title
@@ -195,7 +195,7 @@ function homebox_admin_page_validate($form, &$form_state) {
     }
     // If so, make sure it's valid
     else {
-      homebox_check_path($form_state['values']['path'], 'path');
+      homebox_check_path($form_state['values']['path'], $form_state['values']['name'], 'path');
     }
     
     // Check machine name

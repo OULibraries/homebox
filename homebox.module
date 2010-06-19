@@ -705,12 +705,14 @@ function homebox_check_name($name, $element = NULL) {
  * 
  * @param $path
  *   The path to be tested for the page
+ * @param $name
+ *   The name of the page we're checking
  * @param $element
  *   Optional, the form element identifier to throw form errors
  * @return
  *   TRUE if path is valid to use, otherwise, FALSE.
  */
-function homebox_check_path($path, $element = NULL) {
+function homebox_check_path($path, $name = NULL, $element = NULL) {
   // Ensure path fits the rules:
   if (preg_match('/[^-a-z0-9_\/]/', $path)) {
     if ($element) {
@@ -732,6 +734,10 @@ function homebox_check_path($path, $element = NULL) {
   $pages = db_query("SELECT * FROM {homebox_pages}");
   while ($page = db_fetch_object($pages)) {
     $page->settings = unserialize($page->settings);
+    // If this is the page we're checking, skip it
+    if ($name && $name == $page->name) {
+      continue; 
+    }
     if ($page->settings['path'] == $path) {
       if ($element) {
         form_set_error($element, t('The chosen path is already in use.'));
@@ -802,7 +808,7 @@ function homebox_check_page_object($data, $name = NULL, $element = NULL) {
           }
           break;
         case 'path':
-          if (!homebox_check_path($value, $element)) {
+          if (!homebox_check_path($value, NULL, $element)) {
             $status = FALSE;
             break 2;  
           }
