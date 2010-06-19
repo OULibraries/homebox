@@ -3,11 +3,9 @@
 /*
 ** Administrative interface
 */
-#homebox-admin-display-form {}
 #homebox-admin-display-form .roles {
   font-size: 86%;
 }
-#homebox {}
 
 /*
 ** Columns/regions
