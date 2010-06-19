@@ -706,7 +706,7 @@ function homebox_check_name($name, $element = NULL) {
  * @param $path
  *   The path to be tested for the page
  * @param $name
- *   The name of the page we're checking
+ *   Optional, the name of the page we're checking
  * @param $element
  *   Optional, the form element identifier to throw form errors
  * @return

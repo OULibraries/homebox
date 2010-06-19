@@ -84,6 +84,10 @@
 #homebox .homebox-draggable .portlet-header:hover {
   cursor: move;
 }
+#homebox .homebox-portlet .portlet-header .portlet-title {
+  width: 100%;
+  display: block;
+}
 #homebox .homebox-portlet .portlet-config {
   display: none;
   border-bottom: 1px solid #ddd;

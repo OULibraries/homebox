@@ -70,7 +70,7 @@ Drupal.behaviors.homebox = function(context) {
     });
     
     // Attach double click event on portlet header
-    $boxes.find('.portlet-header').dblclick(function() {
+    $boxes.find('.portlet-title').dblclick(function() {
       if ($(this).parents(".homebox-portlet:first").find(".portlet-content").is(':visible')) {
         $(this).find('.portlet-minus').toggleClass("portlet-plus");  
         $(this).find('.portlet-minus').toggleClass("portlet-minus");
@@ -174,6 +174,9 @@ Drupal.behaviors.homebox = function(context) {
   }
 };
 
+/*
+ * Declare all dialog windows
+ */
 Drupal.homebox.initDialogs = function() {
   // Put widget selection in a dialog window
   $('#homebox-settings').dialog({
@@ -271,6 +274,10 @@ Drupal.homebox.initDialogs = function() {
   });
 }
 
+/*
+ * Attach click events to all links which handle
+ * dialog windows
+ */
 Drupal.homebox.initDialogLinks = function() {
   // Edit content link
   $('#homebox-edit-link').click(function() {
@@ -316,6 +323,9 @@ Drupal.homebox.initDialogLinks = function() {
   });
 }
 
+/*
+ * Set all column heights equal
+ */
 Drupal.homebox.equalizeColumnsHeights = function(columns) {
   maxHeight = 0;
   $columns.each(function() {
@@ -335,6 +345,10 @@ Drupal.homebox.equalizeColumnsHeights = function(columns) {
   return $columns;
 };
 
+/*
+ * Deletes user's settings via AJAX call, then
+ * reloads the page to restore the defaults
+ */
 Drupal.homebox.restoreBoxes = function() {
   // Show in-progress dialog
   $('#homebox-restore-inprogress').dialog('open');
@@ -650,14 +664,17 @@ Drupal.homebox.convertRgbToHex = function(rgb) {
   };
 };
 
+// Strip all tags from a string
 String.prototype.stripTags = function() {
    return this.replace(/<([^>]+)>/g,'');
 }
 
+// Replace newline characters with HTML breakrules
 String.prototype.newlineToHTML = function() {
   return this.replace(/\r?\n|\r/g, "<br />");
 }
 
+// Replace HTML breakfules with newline characters
 String.prototype.HTMLtoNewline = function() {
-  return this.replace(/<br>|<br\/>|<br \/>/g, "\n");
+  return this.replace(/<br>|<br\/>|<br \/>/gi, "\n");
 }
