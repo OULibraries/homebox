@@ -1,9 +1,16 @@
 // $Id$
-
+ _                          _                  ____  
+| |__   ___  _ __ ___   ___| |__   ___ __  __ |___ \ 
+| '_ \ / _ \| '_ ` _ \ / _ \ '_ \ / _ \\ \/ /   __) |
+| | | | (_) | | | | | |  __/ |_) | (_) |>  <   / __/ 
+|_| |_|\___/|_| |_| |_|\___|_.__/ \___//_/\_\ |_____|
+                                                     
+!!!!!!!!!!
 !!!!!!!!!!!!!!
 THIS DOCUMENT HAS NOT YET BEEN UPDATED FOR VERSION 2.X
 IT WILL BE PREPARED PRIOR TO THE FULL RELEASE
 !!!!!!!!!!!!!!
+!!!!!!!!!!
 
 Welcome to Home box.
 
