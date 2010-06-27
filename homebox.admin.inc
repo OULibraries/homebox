@@ -280,19 +280,27 @@ function homebox_admin_page_submit($form, &$form_state) {
  *   A confirmation form to delete homebox page
  */
 function homebox_admin_page_delete_confirm(&$form_state, $page) {
-  $action = homebox_page_is_api($page->name) ? t('revert') : t('delete');
+  $form['#operation'] = homebox_page_is_api($page->name) ? t('revert') : t('delete');
   $form['#page'] = $page;
+  
   $caption .= '<p>'. t('This action cannot be undone.') .'</p>';
-  return confirm_form($form, t('Are you sure you want to !action homebox page %title?', array('!action' => $action, '%title' => $page->settings['title'])), 'admin/build/homebox', $caption, ucfirst($action));
+  return confirm_form($form, t('Are you sure you want to !operation homebox page %title?', array('!operation' => $form['#operation'], '%title' => $page->settings['title'])), 'admin/build/homebox', $caption, ucfirst($form['#operation']));
 }
 
 /**
  * Submission of the delete/revert confirmation form
  */
 function homebox_admin_page_delete_confirm_submit($form, &$form_state) {
-  // Delete the page
+  // Delete/revert the page
   homebox_delete_page($form['#page']->name);
-  drupal_set_message(t('The page has been deleted.'));
+  
+  if ($form['#operation'] == t('revert')) {
+    drupal_set_message(t('The page has been reverted.'));
+  }
+  else {
+    drupal_set_message(t('The page has been deleted.'));
+  }
+  
   menu_rebuild();
 
   $form_state['redirect'] = 'admin/build/homebox';
