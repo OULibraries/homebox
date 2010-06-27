@@ -126,6 +126,15 @@ function homebox_menu() {
     'type' => MENU_CALLBACK,
     'file' => 'homebox.admin.inc',
   );
+  $items['admin/build/homebox/delete/%homebox'] = array(
+     'title' => 'Delete page',
+     'page callback' => 'drupal_get_form',
+     'page arguments' => array('homebox_admin_page_delete_confirm', 4),
+     'access arguments' => array('administer homebox'),
+     'type' => MENU_CALLBACK,
+     'file' => 'homebox.admin.inc',
+   );
+
   // Admin user settings
   $items['admin/user/homebox'] = array(
     'title' => 'User profile Home box',
