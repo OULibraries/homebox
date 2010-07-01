@@ -20,6 +20,9 @@ define('HOMEBOX_DEFAULT_REGIONS', 3);
 // The version of Home Box
 define('HOMEBOX_VERSION', 2);
 
+// The version of jQuery UI we need
+define('HOMEBOX_JQUERY_UI_VERSION', 1.6);
+
 /**
  * Implementation of hook_menu().
  */
@@ -1442,8 +1445,18 @@ function homebox_requirements($phase) {
           'severity' => REQUIREMENT_ERROR,
         );
       }
+      
+      if (jquery_ui_get_version() != HOMEBOX_JQUERY_UI_VERSION) {
+        $requirements['homebox_jquery'] = array(
+          'title' => t('Home box 2'),
+          'value' => jquery_ui_get_version(),
+          'description' => t('Home box 2 is designed to run with jQuery UI 1.6.'),
+          'severity' => REQUIREMENT_WARNING,
+        );
+      }
+      
     case 'install':
-      $requirements['homebox'] = array(
+      $requirements['homebox_php'] = array(
         'title' => t('Home box 2'),
         'value' => phpversion(),
         'description' => t('Home box 2 requires a PHP version 5.2 or greater.'),
@@ -1463,11 +1476,15 @@ function homebox_requirements($phase) {
  */
 function _homebox_check_php() {
   $version = explode('.', phpversion());
-  if ($version[0] < 5 || ($version[0] >= 5 && $version[1] < 2)) { 
-    return FALSE;
+  if ($version[0] >= 5) {
+    if ($version[0] == 5 && $version[1] < 2) {
+      return FALSE; 
+    }
+     
+    return TRUE;
   }
   
-  return TRUE;
+  return FALSE;
 }
 
 /**

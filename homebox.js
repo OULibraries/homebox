@@ -160,17 +160,17 @@ Drupal.behaviors.homebox = function(context) {
       title: function() {
         switch ($(this).attr('class').replace('portlet-icon portlet-', '')) {
           case 'close':
-            return 'Close';
+            return Drupal.t('Close');
           case 'maximize':
-            return 'Maximize';
+            return Drupal.t('Maximize');
           case 'minimize':
-            return 'Minimize';
+            return Drupal.t('Minimize');
           case 'minus':
-            return 'Collapse';
+            return Drupal.t('Collapse');
           case 'plus':
-            return 'Expand';
+            return Drupal.t('Expand');
           case 'settings':
-            return 'Settings';
+            return Drupal.t('Settings');
         }
       }
     });
@@ -374,7 +374,7 @@ Drupal.homebox.restoreBoxes = function() {
       location.reload(); // Reload page to show defaults
     },
     error: function() {
-      $('#homebox-restore-inprogress').html('<span style="color:red;">Restore failed. Please refresh page.</span>');
+      $('#homebox-restore-inprogress').html('<span style="color:red;">' + Drupal.t('Restore failed. Please refresh page.') + '</span>');
     }
   });
 };  
@@ -447,7 +447,7 @@ Drupal.homebox.addItem = function() {
   // Make sure both fields are supplied
   if (!title || !content) {
     $('#homebox-add-form-status').show();
-    $('#homebox-add-form-status').html('All fields are required.');
+    $('#homebox-add-form-status').html(Drupal.t('All fields are required.'));
     return;
   }
   
@@ -464,7 +464,7 @@ Drupal.homebox.addItem = function() {
 	block = JSON.stringify(block);
 
   // Show progress message
-  $('#homebox-add-form').html('Adding item...');
+  $('#homebox-add-form').html(Drupal.t('Adding item') + '...');
 
   // Save current configuration
   // We pass the custom block in, because it will be added
@@ -486,11 +486,11 @@ Drupal.homebox.addItemAjax = function(name, block) {
     dataType: "json",
     data: {name: name, block: block},
     success: function() {
-      $('#homebox-add-form').html('Refreshing page...');
+      $('#homebox-add-form').html(Drupal.t('Refreshing page') + '...');
       location.reload(); // Reload page
     },
     error: function() {
-      $('#homebox-add-form').html('<span style="color:red;">Save failed. Please refresh page.</span>');
+      $('#homebox-add-form').html('<span style="color:red;">' + Drupal.t('Save failed. Please refresh page.') + '</span>');
     }
   });
 };
@@ -501,7 +501,7 @@ Drupal.homebox.addItemAjax = function(name, block) {
 Drupal.homebox.deleteItem = function(block) {
   var name = $('#homebox').find('input:hidden.name').val();
   
-  $('#homebox-delete-custom-message').html('Deleting item...');
+  $('#homebox-delete-custom-message').html(Drupal.t('Deleting item') + '...');
   
   $.ajax({
     url: Drupal.settings.basePath + '?q=homebox/js/delete',
@@ -510,11 +510,11 @@ Drupal.homebox.deleteItem = function(block) {
     dataType: "json",
     data: {name: name, block: block},
     success: function() {
-      $('#homebox-delete-custom-message').html('Refreshing page...');
+      $('#homebox-delete-custom-message').html(Drupal.t('Refreshing page') + '...');
       location.reload(); // Reload page
     },
     error: function() {
-      $('#homebox-delete-custom-message').html('<span style="color:red;">Deletion failed. Please refresh page.</span>');
+      $('#homebox-delete-custom-message').html('<span style="color:red;">' + Drupal.t('Deletion failed. Please refresh page.') + '</span>');
     }
   });
 };
@@ -609,7 +609,7 @@ Drupal.homebox.saveBoxes = function(save) {
       }
     },
     error: function() {
-      $('#homebox-save-message').html('<span style="color:red;">Save failed. Please refresh page.</span>');
+      $('#homebox-save-message').html('<span style="color:red;">' + Drupal.t('Save failed. Please refresh page.') + '</span>');
     }
   });
 };
@@ -627,7 +627,7 @@ Drupal.homebox.editItem = function(block) {
   // Make sure both fields are supplied
   if (!title || !content) {
     $('#homebox-edit-form-status').show();
-    $('#homebox-edit-form-status').html('All fields are required.');
+    $('#homebox-edit-form-status').html(Drupal.t('All fields are required.'));
     return;
   }
   

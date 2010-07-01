@@ -17,8 +17,8 @@
       <?php endif; ?>
       <button id="homebox-restore-link"><?php print t('Restore to defaults'); ?></button>
       <button id="homebox-save-link"><?php print t('Save settings'); ?></button>
-      <span id="homebox-minimize-to-save">Minimize to save</span>
-      <span id="homebox-changes-made">* Unsaved</span>
+      <span id="homebox-minimize-to-save"><?php print t('Minimize to save'); ?></span>
+      <span id="homebox-changes-made">* <?php print t('Unsaved'); ?></span>
     <?php endif; ?>
   </div>
   
@@ -47,36 +47,36 @@
   <?php endfor ?>
 
   <!-- Used by jQuery UI to provide popups -->
-  <div id="homebox-save-message">Saving settings...</div>
-  <div id="homebox-restore-confirmation" title="Are you sure you want to restore to defaults?">
-    <div style="width:400px;">Completing this action will purge your custom settings and items and restore the page to the default configuration.
-    This action cannot be undone.</div>
+  <div id="homebox-save-message"><?php print t('Saving settings') . '...'; ?></div>
+  <div id="homebox-restore-confirmation" title="<?php print t('Are you sure you want to restore to defaults?'); ?>">
+    <div style="width:400px;"><?php print t('Completing this action will purge your custom settings and items and restore the page to the default configuration.
+    This action cannot be undone.'); ?></div>
   </div>
-  <div id="homebox-restore-inprogress">Restoring default settings...</div>
-  <div id="homebox-add-form" title="Add a new item">
+  <div id="homebox-restore-inprogress"><?php print t('Restoring default settings') . '...'; ?></div>
+  <div id="homebox-add-form" title="<?php print t('Add a new item'); ?>">
     <form class="form-item" action="">
       <div id="homebox-add-form-status"></div>
       <div>
-        <label>Title</label>
+        <label><?php print t('Title'); ?></label>
         <input type="text" name="title" id="homebox-add-form-title" class="" />
-        <label>Content</label>
+        <label><?php print t('Content') ?></label>
         <textarea name="content" id="homebox-add-form-content" class="" rows="5" cols="5"></textarea>
       </div>
     </form>
   </div>
-  <div id="homebox-edit-form" title="Edit item">
+  <div id="homebox-edit-form" title="<?php print t('Edit item'); ?>">
     <form class="form-item" action="">
       <div id="homebox-edit-form-status"></div>
       <div>
-        <label>Title</label>
+        <label><?php print t('Title'); ?></label>
         <input type="text" name="title" id="homebox-edit-form-title" class="" />
-        <label>Content</label>
+        <label><?php print t('Content'); ?></label>
         <textarea name="content" id="homebox-edit-form-content" class="" rows="5" cols="5"></textarea>
         <input type="hidden" value="" />
       </div>
     </form>
   </div>
-  <div id="homebox-delete-custom-message" title="Deletion confirmation">
+  <div id="homebox-delete-custom-message" title="<?php print t('Deletion confirmation'); ?>">
     <?php print t('Are you sure you want to delete this item? This action cannot be undone.'); ?>
     <input type="hidden" value="" />
   </div>
