@@ -49,8 +49,8 @@
   <!-- Used by jQuery UI to provide popups -->
   <div id="homebox-save-message">Saving settings...</div>
   <div id="homebox-restore-confirmation" title="Are you sure you want to restore to defaults?">
-    Completing this action will purge your custom settings and items and restore the page to the default configuration.
-    This action cannot be undone.
+    <div style="width:400px;">Completing this action will purge your custom settings and items and restore the page to the default configuration.
+    This action cannot be undone.</div>
   </div>
   <div id="homebox-restore-inprogress">Restoring default settings...</div>
   <div id="homebox-add-form" title="Add a new item">
