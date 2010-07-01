@@ -79,12 +79,12 @@ Drupal.behaviors.homebox = function(context) {
     // Attach double click event on portlet header
     $boxes.find('.portlet-title').dblclick(function() {
       if ($(this).parents(".homebox-portlet:first").find(".portlet-content").is(':visible')) {
-        $(this).prev('.portlet-minus').toggleClass("portlet-plus");  
-        $(this).prev('.portlet-minus').toggleClass("portlet-minus");
+        $(this).parent('.portlet-header').find('.portlet-minus').toggleClass("portlet-plus");  
+        $(this).parent('.portlet-header').find('.portlet-minus').toggleClass("portlet-minus");
       }
       else {
-        $(this).prev('.portlet-plus').toggleClass("portlet-minus");
-        $(this).prev('.portlet-plus').toggleClass("portlet-plus"); 
+        $(this).parent('.portlet-header').find('.portlet-plus').toggleClass("portlet-minus");
+        $(this).parent('.portlet-header').find('.portlet-plus').toggleClass("portlet-plus"); 
       }
       
       $(this).parents(".homebox-portlet:first").find(".portlet-content").toggle();

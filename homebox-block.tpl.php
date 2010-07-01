@@ -15,7 +15,7 @@
         <div class="homebox-colors">
           <span class="homebox-color-message"><?php print t('Select a color') . ':'; ?></span>
           <?php for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++): ?>
-            <span href="#" class="homebox-color-selector" style="background-color: <?php print $page->settings['colors'][$i] ?>;">&nbsp;</span>
+            <span class="homebox-color-selector" style="background-color: <?php print $page->settings['colors'][$i] ?>;">&nbsp;</span>
           <?php endfor ?>
         </div>
       <?php endif; ?>
