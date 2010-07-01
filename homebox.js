@@ -3,6 +3,9 @@ Drupal.homebox = {};
 Drupal.behaviors.homebox = function(context) {
   $homebox = $('#homebox:not(.homebox-processed)', context).addClass('homebox-processed');
   
+  // Prevent double-clicks from causing a selection
+  $(".portlet-header").disableSelection();
+  
   if ($homebox.length > 0) {
     // Find all columns
     $columns = $homebox.find('div.homebox-column');
