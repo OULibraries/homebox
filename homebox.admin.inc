@@ -152,15 +152,14 @@ function homebox_admin_page() {
  */
 function theme_homebox_admin_new_page($form) {
   // Check PHP version
-  $version = explode('.', phpversion());
-  if ($version[0] < 5 || ($version[0] >= 5 && $version[1] < 2)) {
-    drupal_set_message(t('Home Box 2 requires PHP version 5.2 or higher. You are currently running PHP !version.', array('!version' => phpversion())), 'error');
+  if (!_homebox_check_php()) {
+    drupal_set_message(t('Home box 2 requires PHP version 5.2 or higher. You are currently running PHP !version.', array('!version' => phpversion())), 'error');
   }
   
   // Make sure that Home Box 2 was installed clean since
   // there is no upgrade path between 1.x and 2.x
   if (variable_get('homebox_version', 0) != HOMEBOX_VERSION) {
-    drupal_set_message(t('Home Box 2 was not properly installed. You must completely uninstall and install Home Box 2 now.'), 'error'); 
+    drupal_set_message(t('Home box 2 was not properly installed. You must completely uninstall and install Home box 2 now.'), 'error'); 
   }
   
   $pages = homebox_pages();

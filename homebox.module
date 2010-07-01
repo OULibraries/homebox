@@ -1426,6 +1426,50 @@ function _homebox_user_access_view_user_homebox($page, $profile) {
   }
 }
 
+/*
+ * Implementation of hook_requirements()
+ */
+function homebox_requirements($phase) {
+  $requirements = array();
+  
+  switch ($phase) {
+    case 'runtime':
+      if (variable_get('homebox_version', 0) != HOMEBOX_VERSION) {
+        $requirements['homebox_upgrade'] = array(
+          'title' => t('Home box 2'),
+          'value' => t('Corrupt'),
+          'description' => t('There is no upgrade path between Home box 1.x and 2.x. You must completely uninstall and reinstall Home box.'),
+          'severity' => REQUIREMENT_ERROR,
+        );
+      }
+    case 'install':
+      $requirements['homebox'] = array(
+        'title' => t('Home box 2'),
+        'value' => phpversion(),
+        'description' => t('Home box 2 requires a PHP version 5.2 or greater.'),
+        'severity' => _homebox_check_php() ? REQUIREMENT_OK : REQUIREMENT_ERROR,
+      );
+  }
+  
+  return $requirements;
+}
+
+/*
+ * Check if PHP version is usable. Home Box requires
+ * PHP of at least 5.2
+ * 
+ * @return
+ *   TRUE if PHP is usable, otherwise FALSE
+ */
+function _homebox_check_php() {
+  $version = explode('.', phpversion());
+  if ($version[0] < 5 || ($version[0] >= 5 && $version[1] < 2)) { 
+    return FALSE;
+  }
+  
+  return TRUE;
+}
+
 /**
  * Implementation of hook_features_api().
  */
