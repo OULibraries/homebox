@@ -1468,7 +1468,7 @@ function homebox_requirements($phase) {
 }
 
 /*
- * Check if PHP version is usable. Home Box requires
+ * Check if PHP version is usable. Home box 2 requires
  * PHP of at least 5.2
  * 
  * @return

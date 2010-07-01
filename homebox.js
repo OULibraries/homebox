@@ -20,7 +20,6 @@ Drupal.behaviors.homebox = function(context) {
       connectWith: $columns,
       placeholder: 'homebox-placeholder',
       forcePlaceholderSize: true,
-      containment: '#homebox',
       over: function() {
         Drupal.homebox.equalizeColumnsHeights($columns);
       },
@@ -34,18 +33,18 @@ Drupal.behaviors.homebox = function(context) {
     $boxes = $homebox.find('.homebox-portlet');
     $boxes.find('.portlet-config').each(function() {
       if (jQuery.trim($(this).html()) != '') {
-        $(this).prev('.portlet-header').prepend('<span class="portlet-icon portlet-settings"></span>').end();
+        $(this).prev('.portlet-header').prepend('<div class="portlet-icon portlet-settings"></div>').end();
       };
     });
-    $boxes.find('.portlet-header').prepend('<span class="portlet-icon portlet-minus"></span>')
-        .prepend('<span class="portlet-icon portlet-close"></span>')
+    $boxes.find('.portlet-header').prepend('<div class="portlet-icon portlet-minus"></div>')
+        .prepend('<div class="portlet-icon portlet-close"></div>')
         .end();
         
     // Remove close tool for unclosable blocks
-    $homebox.find('.homebox-unclosable span.portlet-close').remove();
+    $homebox.find('.homebox-unclosable div.portlet-close').remove();
     
     // Add maximize link to every portlet
-    $boxes.find('.portlet-header .portlet-minus').before('<span class="portlet-icon portlet-maximize"></span>');
+    $boxes.find('.portlet-header .portlet-minus').before('<div class="portlet-icon portlet-maximize"></div>');
     
     // Add region to place maximized portlets
     $homebox.find('.homebox-column-wrapper:first').before('<div class=\'homebox-maximized\'></div>');
@@ -155,7 +154,7 @@ Drupal.behaviors.homebox = function(context) {
     });
     
     // Add tooltips to icons
-    $('span.portlet-icon').tipsy({
+    $('.portlet-icon').tipsy({
       gravity: 's',
       title: function() {
         switch ($(this).attr('class').replace('portlet-icon portlet-', '')) {
