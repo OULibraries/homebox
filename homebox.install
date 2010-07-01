@@ -10,6 +10,17 @@
  * Implementation of hook_install().
  */
 function homebox_install() {
+  // Make sure the tables from 1.x are gone first
+  $tables = db_query("SHOW TABLES LIKE 'homebox_%'");
+  while($table = db_result($tables)) {
+    db_query("DROP TABLE %s", $table);
+  }
+  
+  // Since there will be no upgrade path from 1.x to 2.x,
+  // we need to make sure that hook_install ran and that
+  // this wasn't simply enabled
+  variable_set('homebox_version', 2);
+  
   drupal_install_schema('homebox');
 }
 
@@ -39,6 +50,8 @@ function homebox_schema() {
 function homebox_uninstall() {
   // Remove variables
   variable_del('homebox_user_tab');
+  variable_del('homebox_version');
+  
   // Remove schema
   drupal_uninstall_schema('homebox');
 }
