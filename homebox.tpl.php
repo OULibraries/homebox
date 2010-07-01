@@ -47,27 +47,35 @@
   <?php endfor ?>
 
   <!-- Used by jQuery UI to provide popups -->
+  <div id="homebox-save-message">Saving settings...</div>
   <div id="homebox-restore-confirmation" title="Are you sure you want to restore to defaults?">
     Completing this action will purge your custom settings and items and restore the page to the default configuration.
     This action cannot be undone.
   </div>
   <div id="homebox-restore-inprogress">Restoring default settings...</div>
-  <div id="homebox-save-message">Saving settings...</div>
-  <form id="homebox-add-form" title="Add a new item" class="form-item">
-    <div id="homebox-add-form-status"></div>
-    <label for="title">Title</label>
-    <input type="text" name="title" id="homebox-add-form-title" class="" />
-    <label for="content">Content</label>
-    <textarea name="content" id="homebox-add-form-content" value="" class=""></textarea>
-  </form>
-  <form id="homebox-edit-form" title="Edit item" class="form-item">
-    <div id="homebox-edit-form-status"></div>
-    <label for="title">Title</label>
-    <input type="text" name="title" id="homebox-edit-form-title" class="" />
-    <label for="content">Content</label>
-    <textarea name="content" id="homebox-edit-form-content" value="" class=""></textarea>
-    <input type="hidden" value="" />
-  </form>
+  <div id="homebox-add-form" title="Add a new item">
+    <form class="form-item" action="">
+      <div id="homebox-add-form-status"></div>
+      <div>
+        <label>Title</label>
+        <input type="text" name="title" id="homebox-add-form-title" class="" />
+        <label>Content</label>
+        <textarea name="content" id="homebox-add-form-content" class="" rows="5" cols="5"></textarea>
+      </div>
+    </form>
+  </div>
+  <div id="homebox-edit-form" title="Edit item">
+    <form class="form-item" action="">
+      <div id="homebox-edit-form-status"></div>
+      <div>
+        <label>Title</label>
+        <input type="text" name="title" id="homebox-edit-form-title" class="" />
+        <label>Content</label>
+        <textarea name="content" id="homebox-edit-form-content" class="" rows="5" cols="5"></textarea>
+        <input type="hidden" value="" />
+      </div>
+    </form>
+  </div>
   <div id="homebox-delete-custom-message" title="Deletion confirmation">
     <?php print t('Are you sure you want to delete this item? This action cannot be undone.'); ?>
     <input type="hidden" value="" />

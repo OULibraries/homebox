@@ -218,8 +218,8 @@ div.homebox-colors {
 }
 
 /* Form Components */
-#homebox-add-form, 
-#homebox-edit-form {
+#homebox-add-form form, 
+#homebox-edit-form form {
   margin: 0;
 }
 #homebox-add-form-status,
@@ -230,16 +230,16 @@ div.homebox-colors {
   padding: 8px;
   display: none;
   margin-bottom: 5px;
-  width: 86%;
+  width: 450px;
 }
 #homebox-add-form-title,
 #homebox-edit-form-title {
   margin-bottom: 6px;
-  width: 89%;
+  width: 450px;
 }
 #homebox-add-form-content,
 #homebox-edit-form-content {
-  width: 89%;
+  width: 450px;
   height: 135px;
 }
 
