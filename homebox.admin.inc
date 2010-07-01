@@ -104,7 +104,7 @@ function homebox_admin_page() {
   $form['page']['options']['roles'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Allow only certain roles to access the page'),
-    '#default_value' => count($page->settings['roles']) ? $page->settings['roles'] : array(),
+    '#default_value' => count($page->settings['roles']) ? $page->settings['roles'] : array('authenticated user'),
     '#options' => $role_options,
     '#description' => t('Select which roles can view the page.'),
   );
@@ -159,7 +159,7 @@ function theme_homebox_admin_new_page($form) {
   
   // Make sure that Home Box 2 was installed clean since
   // there is no upgrade path between 1.x and 2.x
-  if (variable_get('homebox_version', 0) != 2) {
+  if (variable_get('homebox_version', 0) != HOMEBOX_VERSION) {
     drupal_set_message(t('Home Box 2 was not properly installed. You must completely uninstall and install Home Box 2 now.'), 'error'); 
   }
   

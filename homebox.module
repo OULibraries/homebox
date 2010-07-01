@@ -17,6 +17,9 @@ define('HOMEBOX_NUMBER_OF_COLOURS', 6);
 // Default number of regions for new pages
 define('HOMEBOX_DEFAULT_REGIONS', 3);
 
+// The version of Home Box
+define('HOMEBOX_VERSION', 2);
+
 /**
  * Implementation of hook_menu().
  */
