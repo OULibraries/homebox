@@ -17,7 +17,7 @@ define('HOMEBOX_NUMBER_OF_COLOURS', 6);
 // Default number of regions for new pages
 define('HOMEBOX_DEFAULT_REGIONS', 3);
 
-// The version of Home Box
+// The version of Home box
 define('HOMEBOX_VERSION', 2);
 
 // The version of jQuery UI we need
@@ -664,7 +664,7 @@ function homebox_save_page($page, $check = FALSE) {
  *   Boolean status of the operation
  */
 function homebox_delete_page($name) {
-  // Delete the page and cooresponding user settings
+  // Delete the page and corresponding user settings
   if (db_query("DELETE FROM {homebox_pages} WHERE name = '%s'", $name) &&
         db_query("DELETE FROM {homebox_users} WHERE name = '%s'", $name)) {
     return TRUE;

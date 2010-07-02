@@ -13,7 +13,7 @@ function homebox_admin_page() {
   $page = homebox_get_page(arg(4));
   
   if ($page) {
-    drupal_set_title(t('Edit !page_name', array('!page_name' => $page->settings['title'])));
+    drupal_set_title(t('Edit !title', array('!title' => $page->settings['title'])));
   }
   
   if (!$page) {
@@ -926,8 +926,6 @@ function homebox_user_settings_page() {
       The tab will only be presented if the current user is viewing their own profile.'
     ),
   );
-  
-  /* @todo: Should we give option to override user profile pages? */
   
   $form['homebox_user_tab'] = array(
     '#type' => 'select',
