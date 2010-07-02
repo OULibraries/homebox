@@ -801,15 +801,20 @@ function homebox_check_page_object($data, $name = NULL, $element = NULL) {
     // Check individual settings
     foreach ($homebox->settings as $key => $value) {
       switch($key) {
+        case 'regions':
+          // Only allow numbers 1-9
+          if ($value > 9 || $value < 1) {
+            $status = FALSE;
+            break 2;
+          }
         case 'menu':
         case 'enabled':
-        case 'regions':
         case 'cache':
         case 'full':
         case 'custom':
         case 'color':
           // Check that the previous are numeric values
-          if(!is_numeric($value)) {
+          if (!is_numeric($value)) {
             $status = FALSE;
             break 2;
           }

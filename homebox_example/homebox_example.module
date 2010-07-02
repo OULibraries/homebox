@@ -22,19 +22,20 @@
 function homebox_example_homebox() {
   $pages = array();
   
-  $pages['testbox'] = array(
-    'title' => 'Test Home box',
-    'path' => 'testbox',
-    'menu' => 1,
-    'enabled' => 1,
-    'regions' => 3,
-    'cache' => 0,
-    'full' => 0,
-    'roles' => array(
+  $pages['testbox'] = array(        // Keyed with the unique machine-name
+    'title' => 'Test Home box',     // The title of the Home box page
+    'path' => 'testbox',            // The path of the Home box (URL)
+    'menu' => 1,                    // Add a menu entry for this page (Navigation)
+    'enabled' => 1,                 // Enable or disable the page. Only admins can view disabled
+    'regions' => 3,                 // How many regions to create (1-9)
+    'cache' => 0,                   // Use the block cache, when available
+    'full' => 0,                    // Disable theme regions so page can go full-width
+    'custom' => 1,                  // Allow users to add custom items to the page
+    'roles' => array(               // Which roles can view the page. If none specified, no one can view
       0 => 'authenticated user',
     ),
-    'color' => 1,
-    'colors' => array(
+    'color' => 1,                   // Allow users to change the color of blocks
+    'colors' => array(              // Which colors are available (Must be 6 options)
       0 => '#e4f0f8',
       1 => '#c4d5b4',
       2 => '#ecc189',
@@ -42,22 +43,22 @@ function homebox_example_homebox() {
       4 => '#6b6b70',
       5 => '#4b97e5',
     ),
-    'widths' => array(
+    'widths' => array(              // (Optional) The width percentage of each region
       1 => 25,
       2 => 50,
       3 => 25,
     ),
-    'blocks' => array(
-      'node_0' => array(
-        'module' => 'node',
-        'delta' => '0',
-        'region' => 1,
-        'movable' => 1,
-        'status' => 1,
-        'open' => 1,
-        'closable' => 1,
-        'title' => '',
-        'weight' => -8,
+    'blocks' => array(              // The available blocks on the page
+      'node_0' => array(            // The block key; Format = module_delta
+        'module' => 'node',         // The module this block belongs to
+        'delta' => '0',             // The block delta
+        'region' => 1,              // Which region to place this block in
+        'movable' => 1,             // Can this block be dragged?
+        'status' => 1,              // Is this block visible by default (if not, it can be toggled)?
+        'open' => 1,                // Is this block expanded by default?
+        'closable' => 1,            // Can users close this block?
+        'title' => '',              // Blank if default block title should be used, if not, use a custom one
+        'weight' => -8,             // The weight of the block (smaller numbers raise to the top)
       ),
       'user_2' => array(
         'module' => 'user',
