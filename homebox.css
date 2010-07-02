@@ -83,7 +83,8 @@
   cursor: move;
 }
 #homebox .homebox-portlet .portlet-header .portlet-title {
-  
+  z-index: 9; /* IE is terrible */
+  position: relative; /* IE is terrible */
 }
 #homebox .homebox-portlet .portlet-config {
   display: none;
@@ -107,6 +108,8 @@
   height: 16px;
   width: 16px;
   cursor: pointer;
+  z-index: 10; /* IE is terrible */
+  position: relative; /* IE is terrible */
 }
 .portlet-settings {
   background: url(images/settings.gif);

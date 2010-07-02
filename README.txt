@@ -56,6 +56,13 @@ In order for Home box 2 to work correctly, you must completely uninstall any pre
 and cleanly install this version.
 
 
+NEW FEATURES
+------------
+
+Home box 2 is loaded with new features and improvements. To get the most out of this module,
+please quickly read the list of changes in CHANGELOG.txt, under the 2.x section.
+
+
 CONTROLLING ACCESS TO HOME BOX PAGES
 ------------------------------------
 
