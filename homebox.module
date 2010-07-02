@@ -1131,31 +1131,6 @@ function homebox_js_delete_item() {
 }
 
 /**
- * Generates CSS classes from defined colors
- */
-function _homebox_get_css_color_classes($page) {
-  $start = '<style type="text/css" media="screen">';
-  $closure = '</style>';
-  $data = array();
-
-  for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++) {
-    $color = $page->settings['colors'][$i];
-    if ($color) {
-      $color = drupal_strtolower($color);
-      $rules  = "#homebox .homebox-portlet.homebox-color-". ltrim($color, '#') ." .homebox-portlet-inner { border: 1px solid ". $color ."; }\n";
-      $rules .= "#homebox .homebox-portlet.homebox-color-". ltrim($color, '#') ." .portlet-header { background-color: ". $color ."; }\n";
-      $classes[] = $rules;
-    }
-  }
-  if (count($classes) > 0) {
-    return $start . implode("\n", $classes) . $closure;
-  }
-  else {
-    return NULL;
-  }
-}
-
-/**
  * Helper function which adds CSS classes to block, for jQuery to work properly
  * 
  * @param $block
