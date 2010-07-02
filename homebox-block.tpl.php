@@ -27,7 +27,7 @@
         <div class="clear-block"></div>
       <?php endif ?>
     </div>
-    <div class="portlet-content"><?php print $block->content; ?></div>
+    <div class="portlet-content content"><?php print $block->content; ?></div>
     <?php print $block->hidden; ?>
   </div>
 </div>
