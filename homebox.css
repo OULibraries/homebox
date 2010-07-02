@@ -177,8 +177,13 @@ div.homebox-colors {
 
 /* Page configure UI */
 #homebox-settings {
-  padding: 3px;
   background: url(images/stripe.png) repeat;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+}
+#homebox-settings ul {
+  padding: 3px;
 }
 #homebox-settings li {
   display: block;

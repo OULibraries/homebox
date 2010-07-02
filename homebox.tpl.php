@@ -22,15 +22,17 @@
     <?php endif; ?>
   </div>
   
-  <ul id="homebox-settings" title="Toggle available widgets">
-    <?php foreach ($available_blocks as $key => $block): ?>
-      <?php if ($block['closable']): ?>
-        <li>
-          <input type="checkbox" class="homebox_toggle_box" <?php print $block['checked']; ?> id="homebox_toggle_<?php print $block['dom_id']; ?>" /> <?php print $block['subject']; ?>
-        </li>
-      <?php endif; ?>
-    <?php endforeach ?>
-  </ul>
+  <div id="homebox-settings" title="Toggle available widgets">
+    <ul>
+      <?php foreach ($available_blocks as $key => $block): ?>
+        <?php if ($block['closable']): ?>
+          <li>
+            <input type="checkbox" class="homebox_toggle_box" <?php print $block['checked']; ?> id="homebox_toggle_<?php print $block['dom_id']; ?>" /> <?php print $block['subject']; ?>
+          </li>
+        <?php endif; ?>
+      <?php endforeach ?>
+    </ul>
+  </div>
 
   <?php for ($i = 1; $i <= count($regions); $i++): ?>
    <div class="homebox-column-wrapper homebox-column-wrapper-<?php print $i; ?>"<?php print count($page->settings['widths']) ? ' style="width: ' . $page->settings['widths'][$i] . '%;"' : ''; ?>>
