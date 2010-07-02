@@ -205,7 +205,7 @@ function homebox_theme($blocks) {
   return array(
     // Set hook name: see template_preprocess_homebox()
     'homebox' => array(
-      'arguments' => array('regions' => $regions, 'available_blocks' => $available_blocks, 'color_css_classes' => $color_css_classes, 'column_count' => $column_count, 'page' => $page),
+      'arguments' => array('regions' => $regions, 'available_blocks' => $available_blocks, 'column_count' => $column_count, 'page' => $page),
       'template' => 'homebox', // Set template to homebox.tpl.php
     ),
     'homebox_block' => array(
@@ -269,19 +269,11 @@ function homebox_build($page) {
   // Get the list of available blocks to activate/deactivate
   $available_blocks = homebox_list_available_blocks($regions);
 
-  // Is color support enabled?
-  if ($page->settings['color']) {
-    $color_css_classes = _homebox_get_css_color_classes($page);
-  }
-  else {
-    $color_css_classes = NULL;
-  }
-
   // Determine the amount of columns/regions
   $column_count = $page->settings['regions'];
 
   // Build output
-  $output = theme('homebox', $regions, $available_blocks, $color_css_classes, $column_count, $page);
+  $output = theme('homebox', $regions, $available_blocks, $column_count, $page);
     
   // Build the page
   if ($page->settings['full']) {

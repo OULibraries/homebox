@@ -9,7 +9,7 @@
 ?>
 <div id="homebox-block-<?php print $block->module .'-'. $block->delta; ?>" class="<?php print $block->homebox_classes ?> clear-block block block-<?php print $block->module ?>">
   <div class="homebox-portlet-inner">
-    <h3 class="portlet-header"><div class="portlet-title"><?php print $block->subject ?></div></h3>
+    <h3 class="portlet-header"><span class="portlet-title"><?php print $block->subject ?></span></h3>
     <div class="portlet-config">
       <?php if ($page->settings['color']): ?>
         <div class="homebox-colors">

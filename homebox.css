@@ -83,6 +83,7 @@
   cursor: move;
 }
 #homebox .homebox-portlet .portlet-header .portlet-title {
+  display: block;
   z-index: 9; /* IE is terrible */
   position: relative; /* IE is terrible */
 }

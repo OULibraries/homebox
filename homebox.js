@@ -123,6 +123,17 @@ Drupal.behaviors.homebox = function(context) {
       $('#homebox-changes-made').show();
     });
     
+    // Apply custom colors to blocks
+    $boxes.each(function() {
+      var attributes = $(this).attr('class').split(' ');
+      for (a in attributes) {
+        if (attributes[a].substr(0, 14) == 'homebox-color-') {
+          $(this).find('.portlet-header').attr("style", "background: #" + attributes[a].substr(14));
+          $(this).find('.homebox-portlet-inner').attr("style", "border: 1px solid #" + attributes[a].substr(14));
+        }
+      }
+    });
+    
     // Add click behaviour to color buttons
     $boxes.find('.homebox-color-selector').click(function() {
       color = $(this).css('background-color');
@@ -133,8 +144,16 @@ Drupal.behaviors.homebox = function(context) {
         };
       });
       classes = classes.join(" ");
+      
+      // Add color classes to blocks
+      // This is used when we save so we know what color it is
       $(this).parents(".homebox-portlet:first").attr('class', classes);
       $(this).parents(".homebox-portlet:first").addClass("homebox-color-" + Drupal.homebox.convertRgbToHex(color).replace("#", ''));
+      
+      // Apply the colors via style attributes
+      // This avoid dynamic CSS
+      $(this).parents(".homebox-portlet:first").find('.portlet-header').attr("style", "background: " + Drupal.homebox.convertRgbToHex(color));
+      $(this).parents(".homebox-portlet:first").find('.homebox-portlet-inner').attr("style", "border: 1px solid " + Drupal.homebox.convertRgbToHex(color));
       $('#homebox-changes-made').show();
     });
     

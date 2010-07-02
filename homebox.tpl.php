@@ -85,8 +85,4 @@
   <input type="hidden" class="name" value="<?php print $page->name; ?>" />
 </div>
 
-<?php
-// Print CSS classes based on colors
-print $color_css_classes;
-?>
 <!-- End Homebox -->
