@@ -4,6 +4,6 @@ HOME BOX API:
 ====================
 
 Home Box features a simple API that allows modules to ship with 
-fully-functional Home Box pages that live in code.
+fully-functional Home box pages that live in code.
 
 * See homebox_example.module for documentation and a code example

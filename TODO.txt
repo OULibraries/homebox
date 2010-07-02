@@ -3,8 +3,4 @@
 TO DO: [Continued development of the 2.x version]
 ================================================
 
-Admin option to flush user settings per page
-Message if user is not logged in
 Improved caching
-Clean up code
-Update help doc

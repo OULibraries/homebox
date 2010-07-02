@@ -179,10 +179,6 @@ function homebox_help($path, $arg) {
       $output = '<p>'. theme('advanced_help_topic', 'homebox', 'introduction') .'&nbsp;';
       $output .= t("Home box pages are listed below. Each page is accessible from a single url on your site that you specify during page creation. You can create as many pages as you need. Be sure to review all available layout options and settings.</p>");
       break;
-    case 'admin/build/homebox/edit':
-      $output = '<p>'. theme('advanced_help_topic', 'homebox', 'new-page') .'&nbsp;';
-      $output .= t("You can rename or delete a Home box page.") .'</p>';
-      break;
     case 'admin/build/homebox/layout/%':
       $output = '<p>'. theme('advanced_help_topic', 'homebox', 'default-layout') .'&nbsp;';
       $output .= t("This page behave the same way as Drupal block administration page. Drag blocks to whatever column you want to enable it for your users. Note that you can change the number of columns in the <a href='!settings_url'>settings page</a>", array('!settings_url' => url('admin/build/homebox/settings/'. arg(4)))) .'.</p>';
