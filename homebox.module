@@ -339,7 +339,7 @@ function homebox_load_blocks_in_regions($page) {
     $block->open = $block_settings['open'] ? TRUE : FALSE;
     $block->closable = ($block_settings['closable'] === 0) ? FALSE : TRUE;
     $block->homebox_classes = _homebox_get_css_classes_for_block($block_settings);
-    
+
     // Check block permissions
     if(!_homebox_can_view_block($block, $user)) {
       // Permission denied, skip to the next block
@@ -347,28 +347,38 @@ function homebox_load_blocks_in_regions($page) {
     }
 
     // Attempt to find a block in the cache table
-    if ($is_cache_enabled == TRUE && !count(module_implements('node_grants')) && $_SERVER['REQUEST_METHOD'] == 'GET' && ($cid = _block_get_cache_id($block)) && ($cache = cache_get($cid, 'cache_block'))) {
-      $array = $cache->data;
-    }
-    else {
-      // No cache, fetch the blocks from modules
-      $array = module_invoke($block->module, 'block', 'view', $block->delta);
-      if (isset($cid)) {
-        cache_set($cid, $array, 'cache_block', CACHE_TEMPORARY);
+    // No reason to render block content if the module is homebox
+    // because it's a custom item
+    if ($block->module != 'homebox') {
+      if ($is_cache_enabled == TRUE && !count(module_implements('node_grants')) && $_SERVER['REQUEST_METHOD'] == 'GET' && ($cid = _block_get_cache_id($block)) && ($cache = cache_get($cid, 'cache_block'))) {
+        $array = $cache->data;
+      }
+      else {
+        // No cache, fetch the blocks from modules
+        $array = module_invoke($block->module, 'block', 'view', $block->delta);
+        
+        // Block.module will return 'n/a' if a custom block has been deleted
+        if ($array['content'] == 'n/a') {
+          // If this is the case, skip this block
+          continue; 
+        }
+        if (isset($cid)) {
+          cache_set($cid, $array, 'cache_block', CACHE_TEMPORARY);
+        }
+      }
+
+      // Render block content
+      if (isset($array) && is_array($array)) {
+        foreach ($array as $k => $v) {
+          // If block has custom title, leave it
+          if($k == 'subject' && !empty($block->subject)) {
+            continue;
+          }
+          $block->$k = $v;
+        } 
       }
     }
-
-    // Render block content
-    if (isset($array) && is_array($array)) {
-      foreach ($array as $k => $v) {
-        // If block has custom title, leave it
-        if($k == 'subject' && !empty($block->subject)) {
-          continue;
-        }
-        $block->$k = $v;
-      } 
-    }
-
+    
     // We don't continue to assign this block
     // since Drupal didn't returned any content
     // which could be permissions rules applied by any module

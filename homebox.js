@@ -47,7 +47,7 @@ Drupal.behaviors.homebox = function(context) {
     $boxes.find('.portlet-header .portlet-minus').before('<div class="portlet-icon portlet-maximize"></div>');
     
     // Add region to place maximized portlets
-    $homebox.find('.homebox-column-wrapper:first').before('<div class=\'homebox-maximized\'></div>');
+    $homebox.find('.homebox-column-wrapper:first').before('<div class="homebox-maximized"></div>');
     
     // Attach click event to maximize icon
     $boxes.find('.portlet-header .portlet-maximize').click(function() {
@@ -434,7 +434,7 @@ Drupal.homebox.maximizeBox = function(icon) {
       // Add the portlet to maximized content place and create a placeholder 
       // (for minimizing back to its place)
       $(portlet)
-        .before('<div class=\'homebox-maximized-placeholder\'></div>')
+        .before('<div class="homebox-maximized-placeholder"></div>')
         .appendTo($(icon).parents('#homebox').find('.homebox-maximized'))
         .toggleClass('portlet-maximized');
            
