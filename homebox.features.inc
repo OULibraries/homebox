@@ -12,9 +12,9 @@
 function _homebox_features_api() {
   return array(
     'homebox' => array(
-      'name' => t('Home Box'),
+      'name' => t('Home box'),
       'default_hook' => 'homebox',
-      'default_file' => FEATURES_DEFAULTS_INCLUDED,
+      'default_file' => FEATURES_DEFAULTS_INCLUDED_COMMON,
       'features_source' => TRUE,
       'file' => drupal_get_path('module', 'homebox') .'/homebox.features.inc',
     ),
@@ -55,7 +55,6 @@ function homebox_features_export($data, &$export, $module_name = '') {
  */
 function homebox_features_export_render($module = 'foo', $data) {
   $code = array();
-  $info = array();
 
   // Begin code
   $code[] = '  $homeboxes = array();' . "\n";
