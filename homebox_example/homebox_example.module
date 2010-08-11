@@ -12,7 +12,7 @@
  * 
  * --------------------------------------------------
  *   The menu might need to be rebuilt / cache cleared in order for 
- *   pages in code to show on the Home box admin page and become
+ *   pages in code to show on the Homebox admin page and become
  *   accessible via the specified path.
  * 
  *   Once an admin saves settings for a page in code, it resides
@@ -23,8 +23,8 @@ function homebox_example_homebox() {
   $pages = array();
   
   $pages['testbox'] = array(        // Keyed with the unique machine-name
-    'title' => 'Test Home box',     // The title of the Home box page
-    'path' => 'testbox',            // The path of the Home box (URL)
+    'title' => 'Test Homebox',     // The title of the Homebox page
+    'path' => 'testbox',            // The path of the Homebox (URL)
     'menu' => 1,                    // Add a menu entry for this page (Navigation)
     'enabled' => 1,                 // Enable or disable the page. Only admins can view disabled
     'regions' => 3,                 // How many regions to create (1-9)

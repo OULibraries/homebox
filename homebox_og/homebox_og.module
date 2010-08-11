@@ -1,7 +1,7 @@
 <?php
 // $Id$
 
-// Organic Groups integration for Home box
+// Organic Groups integration for Homebox
 
 /*
  * Implementation of hook_menu()
@@ -11,14 +11,14 @@ function homebox_og_menu() {
   
   // Admin OG/Homebox settings
   $items['admin/og/homebox'] = array(
-    'title' => 'Organic groups Home box',
-    'description' => 'Choose a home box to act as a group home page',
+    'title' => 'Organic groups Homebox',
+    'description' => 'Choose a homebox to act as a group home page',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('homebox_og_group_settings_page'),
     'access callback' => '_homebox_og_user_access_group_settings',
   );
   
-  // Optionally register Home box page as node tab
+  // Optionally register Homebox page as node tab
   if ($name = variable_get('homebox_og_tab', '')) {
     $page = homebox_get_page($name);
     if ($page) {
@@ -40,7 +40,7 @@ function homebox_og_menu() {
 /*
  * Implementation of hook_menu_alter()
  * 
- * Give Home box the opportunity to override group homepage nodes
+ * Give Homebox the opportunity to override group homepage nodes
  */
 function homebox_og_menu_alter(&$items) {
   $items['node/%node']['page callback'] = 'homebox_og_override_group';
@@ -54,11 +54,11 @@ function homebox_og_override_group($node) {
     if ($name = variable_get('homebox_og_home', '')) {
       // Make sure the page exists
       if ($page = homebox_get_page($name)) {
-        // Make sure the user has permission to view the home box
+        // Make sure the user has permission to view the homebox
         if (_homebox_user_access_view_homebox($page)) {
           // Force group name as title
           drupal_set_title($node->title);
-          // Return the designated home box
+          // Return the designated homebox
           return homebox_build($page);
         }
       }
@@ -80,11 +80,11 @@ function _homebox_og_user_access_group_settings() {
   }
 }
 
-// Determine if a user can access the Home box
+// Determine if a user can access the Homebox
 function _homebox_og_user_access_view_homebox($page, $node) {
   // If this a group node?
   // Can the user access the node?
-  // Can the user view the Home box?
+  // Can the user view the Homebox?
   if (og_is_group_type($node->type) 
     && (node_access('view', $node))
     && _homebox_user_access_view_homebox($page)) {
@@ -105,7 +105,7 @@ function _homebox_og_user_access_view_homebox($page, $node) {
   }
 }
 
-// OG Home box settings form
+// OG Homebox settings form
 function homebox_og_group_settings_page() {
   $form = array();
   
@@ -120,7 +120,7 @@ function homebox_og_group_settings_page() {
   
   $form['help'] = array(
     '#type' => 'item',
-    '#value' => t('The permissions set in the chosen Home boxes will be still be checked. Make sure that the users who are viewing OG components can also view the Home boxes.'),
+    '#value' => t('The permissions set in the chosen Homeboxes will be still be checked. Make sure that the users who are viewing OG components can also view the Homeboxes.'),
   );
   
   $form['home'] = array(
@@ -134,8 +134,8 @@ function homebox_og_group_settings_page() {
     '#default_value' => variable_get('homebox_og_home', 0),
     '#options' => array(0 => '- None -') + $options,
     '#description' => t('
-      If chosen, organic group home pages will be replaced by the specified Home box. 
-      It is recommended that the chosen Home box does not have a menu entry because 
+      If chosen, organic group home pages will be replaced by the specified Homebox. 
+      It is recommended that the chosen Homebox does not have a menu entry because 
       user settings will persist, if available.
     '),
   );
@@ -150,7 +150,7 @@ function homebox_og_group_settings_page() {
     '#title' => t('Add a group tab'),
     '#default_value' => variable_get('homebox_og_tab', 0),
     '#options' => array(0 => '- None -') + $options,
-    '#description' => t('Optionally add a Home box as a tab to an organic group home page.'),
+    '#description' => t('Optionally add a Homebox as a tab to an organic group home page.'),
   );
   
   $form['tab']['homebox_og_tab_membersonly'] = array(

@@ -1,6 +1,6 @@
 // $Id$
 
-CHANGELOG for Home box for Drupal
+CHANGELOG for Homebox for Drupal
 
 6.x-1.x-dev - 2009/05/18
   o Fixed warning during install
@@ -78,22 +78,22 @@ CHANGELOG for Home box for Drupal
   o New #794728: "Save setting" button introduced
   o New #794728: "Restore to defaults" button introduced
   o New #794728: Improved code inefficiencies, bad practicies, validations, etc
-  o New #794728: Import/export home boxes
+  o New #794728: Import/export homeboxes
   o New #794728: Option to make blocks unclosable
   o New #794728: Optional block title overrides
   o New #794728: Added JSON2
-  o New #794728: Option to enable/disable home boxes
+  o New #794728: Option to enable/disable homeboxes
   o New #794728: Maximizing widget feature
   o New #794728: Move permissions from hook_perm into page config
   o New #794728: Increase drag speed
   o New #794728: Double-clicking a widget header collapses/expands the block
   o New #794728: Added CSS support for up to 9 regions
   o New #794728: Fixed cache issue with changing region amount
-  o New #794728: Option to disable theme block regions so home box can go full-width
-  o New #794728: Allow home boxes to live in code via hook_homebox() - included sample module displaying this
+  o New #794728: Option to disable theme block regions so homebox can go full-width
+  o New #794728: Allow homeboxes to live in code via hook_homebox() - included sample module displaying this
   o New #794728: Features integration
   o New #794728: Organic Groups integration
-  o New #794728: Offer Home Box as a profile tab
+  o New #794728: Offer Homebox as a profile tab
   o New #794728: Region width overrides
   o New #794728: Custom user-entered blocks
   o New #794728: Indication of unsaved changes on the page

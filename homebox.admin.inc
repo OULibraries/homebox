@@ -3,9 +3,9 @@
 
 /**
  * @file
- * Home box admin file, takes care admin interface for homebox
+ * Homebox admin file, takes care admin interface for homebox
  *
- * Defines home box pages, default layout, settings
+ * Defines homebox pages, default layout, settings
  */
 
 function homebox_admin_page() {
@@ -41,7 +41,7 @@ function homebox_admin_page() {
   
   $form['page']['options'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Home box options'),
+    '#title' => t('Homebox options'),
     '#collapsible' => TRUE,
   );
   
@@ -85,7 +85,7 @@ function homebox_admin_page() {
   $form['page']['options']['full'] = array(
     '#type' => 'checkbox',
     '#title' => t('Disable block regions'),
-    '#description' => t('If checked, the theme block regions will be disabled for this page, giving more room for the home box.'),
+    '#description' => t('If checked, the theme block regions will be disabled for this page, giving more room for the homebox.'),
     '#default_value' => $page ? $page->settings['full'] : 0,
   );
   
@@ -124,14 +124,14 @@ function homebox_admin_page() {
   else {
     $form['page']['import_fieldset'] = array(
       '#type' => 'fieldset',
-      '#title' => 'Import Home box',
+      '#title' => 'Import Homebox',
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
     );
     $form['page']['import_fieldset']['import'] = array(
       '#title' => t('Import data'),
       '#type' => 'textarea',
-      '#description' => t('Optionally include an exported Home box to import settings and block layout. Ensure that the path is currently not in use. The machine name supplied in the import data will be ignored.'),
+      '#description' => t('Optionally include an exported Homebox to import settings and block layout. Ensure that the path is currently not in use. The machine name supplied in the import data will be ignored.'),
     );
     $form['page']['submit'] = array(
       '#type' => 'submit',
@@ -153,13 +153,13 @@ function homebox_admin_page() {
 function theme_homebox_admin_new_page($form) {
   // Check PHP version
   if (!_homebox_check_php()) {
-    drupal_set_message(t('Home box 2 requires PHP version 5.2 or higher. You are currently running PHP !version.', array('!version' => phpversion())), 'error');
+    drupal_set_message(t('Homebox 2 requires PHP version 5.2 or higher. You are currently running PHP !version.', array('!version' => phpversion())), 'error');
   }
   
-  // Make sure that Home Box 2 was installed clean since
+  // Make sure that Homebox 2 was installed clean since
   // there is no upgrade path between 1.x and 2.x
   if (variable_get('homebox_version', 0) != HOMEBOX_VERSION) {
-    drupal_set_message(t('Home box 2 was not properly installed. You must completely uninstall and install Home box 2 now.'), 'error'); 
+    drupal_set_message(t('Homebox 2 was not properly installed. You must completely uninstall and install Homebox 2 now.'), 'error'); 
   }
   
   $pages = homebox_pages();
@@ -660,7 +660,7 @@ function homebox_configure_form(&$form_state, $page) {
     '#title' => t('Number of columns'),
     '#default_value' => $page->settings['regions'],
     '#options' => array('1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5, '6' => 6, '7' => 7, '8' => 8, '9' => 9),
-    '#description' => t('Set the number of columns you want to activate for this Home box page.'),
+    '#description' => t('Set the number of columns you want to activate for this Homebox page.'),
   );
 
   $form['cache'] = array(
@@ -901,7 +901,7 @@ function homebox_named_columns($cols) {
 /*
  * Provide form for user profile settings
  * 
- * This allows an admin to specify a Home box to reside
+ * This allows an admin to specify a Homebox to reside
  * as a profile tab
  */
 function homebox_user_settings_page() {
@@ -921,8 +921,8 @@ function homebox_user_settings_page() {
   $form['help'] = array(
     '#type' => 'item',
     '#value' => t('
-      The permissions set in the chosen Home boxes will be still be checked. 
-      Make sure that users who can view their own profiles can also view the selected Home box. 
+      The permissions set in the chosen Homeboxes will be still be checked. 
+      Make sure that users who can view their own profiles can also view the selected Homebox. 
       The tab will only be presented if the current user is viewing their own profile.'
     ),
   );
@@ -932,7 +932,7 @@ function homebox_user_settings_page() {
     '#title' => t('Add a profile tab'),
     '#default_value' => variable_get('homebox_user_tab', 0),
     '#options' => array(0 => '- None -') + $options,
-    '#description' => t('Optionally add a Home box as a tab to a user profile.'),
+    '#description' => t('Optionally add a Homebox as a tab to a user profile.'),
   );
   
   $form['#submit'][] = 'menu_rebuild';

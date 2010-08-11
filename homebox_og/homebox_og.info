@@ -1,7 +1,7 @@
 ; $Id$
-name = Home box OG
-description = Provides integration with Organic Groups and Home Box
+name = Homebox OG
+description = Provides integration with Organic Groups and Homebox
 dependencies[] = homebox
 dependencies[] = og
-package = Home Box
+package = Homebox
 core = 6.x

@@ -1,6 +1,6 @@
 ; $Id$
-name = Home box Example
-description = An example implementation of the Home Box API
+name = Homebox example
+description = An example implementation of the Homebox API
 dependencies[] = homebox
-package = Home Box
+package = Homebox
 core = 6.x

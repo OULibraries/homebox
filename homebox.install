@@ -3,7 +3,7 @@
 
 /**
  * @file
- * The install file for Home box allows the module to install (and uninstall) itself. This is required as this module uses its own table.
+ * The install file for Homebox allows the module to install (and uninstall) itself. This is required as this module uses its own table.
  */
 
 /**
@@ -19,7 +19,7 @@ function homebox_install() {
 }
 
 function homebox_schema() {
-  // Schema for home box pages
+  // Schema for homebox pages
   $schema['homebox_pages'] = array(
     'fields' => array(
       'name' => array('type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => ''),

@@ -3,7 +3,7 @@
 
 /**
  * @file
- * Home box main file, takes care of global functions settings constants, etc.
+ * Homebox main file, takes care of global functions settings constants, etc.
  *
  * Defines menu elements, callbacks, permissions, hooks,
  * preprocess functions, utility functions
@@ -17,7 +17,7 @@ define('HOMEBOX_NUMBER_OF_COLOURS', 6);
 // Default number of regions for new pages
 define('HOMEBOX_DEFAULT_REGIONS', 3);
 
-// The version of Home box
+// The version of Homebox
 define('HOMEBOX_VERSION', 2);
 
 // The version of jQuery UI we need
@@ -29,7 +29,7 @@ define('HOMEBOX_JQUERY_UI_VERSION', 1.6);
 function homebox_menu() {
   $items = array();
 
-  // Created Home box pages
+  // Created Homebox pages
   $pages = homebox_pages();
   if (is_array($pages) && count($pages) > 0) {
     foreach ($pages as $page) {
@@ -84,8 +84,8 @@ function homebox_menu() {
 
   // Admin related tasks
   $items['admin/build/homebox'] = array(
-    'title' => 'Home box',
-    'description' => 'List, edit, or add home box pages.',
+    'title' => 'Homebox',
+    'description' => 'List, edit, or add homebox pages.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('homebox_admin_new_page'),
     'access arguments' => array('administer homebox'),
@@ -109,7 +109,7 @@ function homebox_menu() {
   );
   $items['admin/build/homebox/flush/%homebox'] = array(
     'title' => 'Flush user settings',
-    'description' => 'Clear all user\'s settings for a given home box.',
+    'description' => 'Clear all user\'s settings for a given homebox.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('homebox_admin_flush_form', 4),
     'access arguments' => array('administer homebox'),
@@ -143,11 +143,11 @@ function homebox_menu() {
 
   // Admin user settings
   $items['admin/user/homebox'] = array(
-    'title' => 'User profile Home box',
+    'title' => 'User profile Homebox',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('homebox_user_settings_page'),
     'access arguments' => array('administer homebox'),
-    'description' => 'Configure the intergration of Home box and user profiles.',
+    'description' => 'Configure the intergration of Homebox and user profiles.',
     'file' => 'homebox.admin.inc',
   );
   
@@ -177,7 +177,7 @@ function homebox_help($path, $arg) {
   switch ($path) {
     case 'admin/build/homebox':
       $output = '<p>'. theme('advanced_help_topic', 'homebox', 'introduction') .'&nbsp;';
-      $output .= t("Home box pages are listed below. Each page is accessible from a single url on your site that you specify during page creation. You can create as many pages as you need. Be sure to review all available layout options and settings.</p>");
+      $output .= t("Homebox pages are listed below. Each page is accessible from a single url on your site that you specify during page creation. You can create as many pages as you need. Be sure to review all available layout options and settings.</p>");
       break;
     case 'admin/build/homebox/layout/%':
       $output = '<p>'. theme('advanced_help_topic', 'homebox', 'default-layout') .'&nbsp;';
@@ -185,7 +185,7 @@ function homebox_help($path, $arg) {
       break;
     case 'admin/build/homebox/settings/%':
       $output = '<p>'. theme('advanced_help_topic', 'homebox', 'settings') .'&nbsp;';
-      $output .= t('Home box configuration page.');
+      $output .= t('Homebox configuration page.');
       break;
   }
   return $output;
@@ -236,12 +236,12 @@ function template_preprocess_homebox(&$variables) {
   // Add required jQuery UI files
   jquery_ui_add(array('ui.draggable', 'ui.droppable', 'ui.sortable', 'ui.dialog'));
 
-  // Add Home box JavaScript files
+  // Add Homebox JavaScript files
   drupal_add_js($data = drupal_get_path('module', 'homebox') .'/homebox.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
   drupal_add_js($data = drupal_get_path('module', 'homebox') .'/includes/json2.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
   drupal_add_js($data = drupal_get_path('module', 'homebox') .'/includes/tipsy/jquery.tipsy.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
  
-  // Add CSS for home box
+  // Add CSS for homebox
   drupal_add_css($path = drupal_get_path('module', 'homebox') .'/homebox.css', $type = 'module', $media = 'all', $preprocess = TRUE);
   drupal_add_css($path = drupal_get_path('module', 'homebox') .'/includes/tipsy/tipsy.css', $type = 'module', $media = 'all', $preprocess = TRUE);
   drupal_add_css($path = drupal_get_path('module', 'jquery_ui') .'/jquery.ui/themes/default/ui.all.css', $type = 'module', $media = 'all', $preprocess = TRUE);
@@ -288,7 +288,7 @@ function homebox_build($page) {
 
 /*
  * Helper function for performing operations prior to rendering
- * a Home box that is set as a user profile tab
+ * a Homebox that is set as a user profile tab
  * 
  * @param $page
  *   A page object
@@ -300,7 +300,7 @@ function homebox_pre_build_user($page, $user) {
   $output = homebox_build($page);
   
   // Only return if output is available
-  // Certain Home boxes print instead of return
+  // Certain Homeboxes print instead of return
   if ($output) {
     return $output; 
   }
@@ -743,7 +743,7 @@ function homebox_check_path($path, $name = NULL, $element = NULL) {
     return FALSE;
   }
   
-  // Check path against existing Home box paths
+  // Check path against existing Homebox paths
   $pages = db_query("SELECT * FROM {homebox_pages}");
   while ($page = db_fetch_object($pages)) {
     $page->settings = unserialize($page->settings);
@@ -1392,7 +1392,7 @@ function _homebox_user_access_view_homebox($page) {
 
 /*
  * Helper function to check access permissions for user 
- * profile Home box
+ * profile Homebox
  * 
  * Only show tab if you're viewing your own account
  */
@@ -1417,27 +1417,27 @@ function homebox_requirements($phase) {
     case 'runtime':
       if (variable_get('homebox_version', 0) != HOMEBOX_VERSION) {
         $requirements['homebox_upgrade'] = array(
-          'title' => t('Home box 2'),
+          'title' => t('Homebox 2'),
           'value' => t('Corrupt'),
-          'description' => t('There is no upgrade path between Home box 1.x and 2.x. You must completely uninstall and reinstall Home box.'),
+          'description' => t('There is no upgrade path between Homebox 1.x and 2.x. You must completely uninstall and reinstall Homebox.'),
           'severity' => REQUIREMENT_ERROR,
         );
       }
       
       if (jquery_ui_get_version() != HOMEBOX_JQUERY_UI_VERSION) {
         $requirements['homebox_jquery'] = array(
-          'title' => t('Home box 2'),
+          'title' => t('Homebox 2'),
           'value' => jquery_ui_get_version(),
-          'description' => t('Home box 2 is designed to run with jQuery UI 1.6.'),
+          'description' => t('Homebox 2 is designed to run with jQuery UI 1.6.'),
           'severity' => REQUIREMENT_WARNING,
         );
       }
       
     case 'install':
       $requirements['homebox_php'] = array(
-        'title' => t('Home box 2'),
+        'title' => t('Homebox 2'),
         'value' => phpversion(),
-        'description' => t('Home box 2 requires a PHP version 5.2 or greater.'),
+        'description' => t('Homebox 2 requires a PHP version 5.2 or greater.'),
         'severity' => _homebox_check_php() ? REQUIREMENT_OK : REQUIREMENT_ERROR,
       );
   }
@@ -1446,7 +1446,7 @@ function homebox_requirements($phase) {
 }
 
 /*
- * Check if PHP version is usable. Home box 2 requires
+ * Check if PHP version is usable. Homebox 2 requires
  * PHP of at least 5.2
  * 
  * @return

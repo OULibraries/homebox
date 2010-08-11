@@ -12,7 +12,7 @@
 function _homebox_features_api() {
   return array(
     'homebox' => array(
-      'name' => t('Home box'),
+      'name' => t('Homebox'),
       'default_hook' => 'homebox',
       'default_file' => FEATURES_DEFAULTS_INCLUDED_COMMON,
       'features_source' => TRUE,
@@ -83,7 +83,7 @@ function homebox_features_export_render($module = 'foo', $data) {
  * Implementation of hook_features_revert().
  */
 function homebox_features_revert($module = NULL) {
-  // Get home box pages from feature
+  // Get homebox pages from feature
   if (module_hook($module, 'homebox')) {
     $pages = module_invoke($module, 'homebox');
 

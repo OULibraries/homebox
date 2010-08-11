@@ -6,7 +6,7 @@
 |_| |_|\___/|_| |_| |_|\___|_.__/ \___//_/\_\ |_____|
                                                      
 
-Welcome to Home box 2.
+Welcome to Homebox 2.
 
 
 REQUIREMENTS
@@ -42,32 +42,32 @@ INSTALLATION
    --- IMPORTANT ---- End
 
  * Enable optional modules if you want (see list above)
- * Enable Home box module
- * Visit the Status Report page and make sure there are no Home box errors
- * Go to Administer > Site building > Home box
+ * Enable Homebox module
+ * Visit the Status Report page and make sure there are no Homebox errors
+ * Go to Administer > Site building > Homebox
  * Create an new page
 
 
 UPGRADING FROM 1.x TO 2.x
 -------------------------
 
-Sorry, but there is no upgrade path between the 1.x version of Home box and the 2.x version.
-In order for Home box 2 to work correctly, you must completely uninstall any previous versions
+Sorry, but there is no upgrade path between the 1.x version of Homebox and the 2.x version.
+In order for Homebox 2 to work correctly, you must completely uninstall any previous versions
 and cleanly install this version.
 
 
 NEW FEATURES
 ------------
 
-Home box 2 is loaded with new features and improvements. To get the most out of this module,
+Homebox 2 is loaded with new features and improvements. To get the most out of this module,
 please quickly read the list of changes in CHANGELOG.txt, under the 2.x section.
 
 
 CONTROLLING ACCESS TO HOME BOX PAGES
 ------------------------------------
 
-Access controls for Home box pages (not the admin interface) are no longer located in the standard
-Drupal permissions table. When creating/editing each Home box page, you can choose which roles are
+Access controls for Homebox pages (not the admin interface) are no longer located in the standard
+Drupal permissions table. When creating/editing each Homebox page, you can choose which roles are
 allowed to view the page. Unlike other Drupal components, if you do not choose any roles, then only 
 admins can view the page. So, choose at least one role. For obvious reasons, anonymous users will
 not be able to save pages or add custom items.
@@ -76,8 +76,8 @@ not be able to save pages or add custom items.
 CREATING PANELS-LIKE HOME BOX LAYOUTS
 -------------------------------------
 
-One of Home box 2's new features, is the ability to easily create panels-like layouts. After creating
-a new Home box page, click the 'Settings' link. Under the 'Custom column widths' fieldset, you can 
+One of Homebox 2's new features, is the ability to easily create panels-like layouts. After creating
+a new Homebox page, click the 'Settings' link. Under the 'Custom column widths' fieldset, you can 
 specify the width percentage of each region. If you wanted to create a layout like:
 
 [-----top----]
@@ -90,8 +90,8 @@ You'd use widths of 100, 50, 50, and 100.
 "CUSTOM ITEMS"
 --------------
 
-Another new feature in Home box 2 is the ability for users to enter custom items into their Home box.
-Each Home box page has the option to turn this on or off. If set on, users can enter as many custom
+Another new feature in Homebox 2 is the ability for users to enter custom items into their Homebox.
+Each Homebox page has the option to turn this on or off. If set on, users can enter as many custom
 blocks as they like - supplying a block title and body (full HTML allowed). This is useful if they want
 to paste code for an external widget.
 
@@ -99,29 +99,29 @@ to paste code for an external widget.
 PROFILE INTEGRATION
 -------------------
 
-Home box 2 integrates with Drupal's core profile module. After creating a page, you can navigate
-to admin/user/homebox and choose any available Home box page to reside as a tab on user's profiles.
-User's can only view their own Home box profile tab.
+Homebox 2 integrates with Drupal's core profile module. After creating a page, you can navigate
+to admin/user/homebox and choose any available Homebox page to reside as a tab on user's profiles.
+User's can only view their own Homebox profile tab.
 
 
 ORGANIC GROUPS INTEGRATION
 --------------------------
 
-Similar to the previously mentioned, Home box integrates with the Organic Groups module. You have the option
-to have a Home box page reside as a group homepage tab, or become the new group homepage itself. You must
+Similar to the previously mentioned, Homebox integrates with the Organic Groups module. You have the option
+to have a Homebox page reside as a group homepage tab, or become the new group homepage itself. You must
 enable the homebox_og module then navigate to admin/og/homebox.
 
 
 FEATURES INTEGRATION
 --------------------
 
-Home box 2 has the ability to import and export pages, as well as have them live in code. Because of this,
-Home box has been made to integrate with the Features.module. For more information about Features, please
+Homebox 2 has the ability to import and export pages, as well as have them live in code. Because of this,
+Homebox has been made to integrate with the Features.module. For more information about Features, please
 visit http://drupal.org/project/features.
 
 
 API
 ---
 
-Modules can now ship with a Home box completely in code. See homebox_example.module for an example and
+Modules can now ship with a Homebox completely in code. See homebox_example.module for an example and
 documentation.
