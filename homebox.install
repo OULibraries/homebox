@@ -34,6 +34,7 @@ function homebox_schema() {
       'name' => array('type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => ''),
       'settings' => array('type' => 'text', 'size' => 'big', 'not null' => TRUE, 'serialize' => TRUE, 'object default' => array()),
     ),
+    'primary key' => array('uid', 'name'),
   );
   return $schema;
 }
@@ -48,4 +49,15 @@ function homebox_uninstall() {
   
   // Remove schema
   drupal_uninstall_schema('homebox');
+}
+
+/**
+ * Add {homebox_users} primary key.
+ */
+function homebox_update_6000() {
+  $return = array();
+
+  db_add_primary_key($return, 'homebox_users', array('uid', 'name'));
+
+  return $return;
 }

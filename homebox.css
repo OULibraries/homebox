@@ -134,7 +134,7 @@
 /*
 ** Closed box/portlet class
 */
-.homebox-portlet-closed {
+#homebox .homebox-portlet-closed {
   display: none;
 }
 

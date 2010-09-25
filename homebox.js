@@ -1,111 +1,31 @@
 // $Id$
-Drupal.homebox = {};
+Drupal.homebox = {
+  config: {}
+};
 Drupal.behaviors.homebox = function(context) {
   $homebox = $('#homebox:not(.homebox-processed)', context).addClass('homebox-processed');
   
-  // Prevent double-clicks from causing a selection
-  $(".portlet-header").disableSelection();
-  
   if ($homebox.length > 0) {
     // Find all columns
-    $columns = $homebox.find('div.homebox-column');
+    Drupal.homebox.$columns = $homebox.find('div.homebox-column');
     
     // Equilize columns height
-    $columns = Drupal.homebox.equalizeColumnsHeights($columns);
+    Drupal.homebox.equalizeColumnsHeights();
     
     // Make columns sortable
-    $columns.sortable({
+    Drupal.homebox.$columns.sortable({
       items: '.homebox-portlet.homebox-draggable',
       handle: '.portlet-header',
-      connectWith: $columns,
+      connectWith: Drupal.homebox.$columns,
       placeholder: 'homebox-placeholder',
       forcePlaceholderSize: true,
       over: function() {
-        Drupal.homebox.equalizeColumnsHeights($columns);
+        Drupal.homebox.equalizeColumnsHeights();
       },
       stop: function() {
-        Drupal.homebox.equalizeColumnsHeights($columns);
+        Drupal.homebox.equalizeColumnsHeights();
         $('#homebox-changes-made').show();
       }
-    });
-    
-    // Add tools links
-    $boxes = $homebox.find('.homebox-portlet');
-    $boxes.find('.portlet-config').each(function() {
-      if (jQuery.trim($(this).html()) != '') {
-        $(this).prev('.portlet-header').prepend('<div class="portlet-icon portlet-settings"></div>').end();
-      };
-    });
-    $boxes.find('.portlet-header').prepend('<div class="portlet-icon portlet-minus"></div>')
-        .prepend('<div class="portlet-icon portlet-close"></div>')
-        .end();
-        
-    // Remove close tool for unclosable blocks
-    $homebox.find('.homebox-unclosable div.portlet-close').remove();
-    
-    // Add maximize link to every portlet
-    $boxes.find('.portlet-header .portlet-minus').before('<div class="portlet-icon portlet-maximize"></div>');
-    
-    // Add region to place maximized portlets
-    $homebox.find('.homebox-column-wrapper:first').before('<div class="homebox-maximized"></div>');
-    
-    // Attach click event to maximize icon
-    $boxes.find('.portlet-header .portlet-maximize').click(function() {
-      $(this).toggleClass("portlet-maximize");
-      $(this).toggleClass("portlet-minimize");
-      Drupal.homebox.maximizeBox(this);
-      Drupal.homebox.equalizeColumnsHeights($columns);
-    });  
-    
-    // Attach click event on minus
-    $boxes.find('.portlet-header .portlet-minus').click(function() {
-      $(this).toggleClass("portlet-minus");
-      $(this).toggleClass("portlet-plus");
-      $(this).parents(".homebox-portlet:first").find(".portlet-content").toggle();
-      Drupal.homebox.equalizeColumnsHeights($columns);
-      $('#homebox-changes-made').show();
-    });
-    
-    // Attach click event on minus
-    $boxes.find('.portlet-header .portlet-minus').each(function() {
-      if (!$(this).parents(".homebox-portlet:first").find(".portlet-content").is(':visible')) {
-        $(this).toggleClass("portlet-minus");
-        $(this).toggleClass("portlet-plus");
-        Drupal.homebox.equalizeColumnsHeights($columns);
-      };
-    });
-    
-    // Attach double click event on portlet header
-    $boxes.find('.portlet-title').dblclick(function() {
-      if ($(this).parents(".homebox-portlet:first").find(".portlet-content").is(':visible')) {
-        $(this).parent('.portlet-header').find('.portlet-minus').toggleClass("portlet-plus");  
-        $(this).parent('.portlet-header').find('.portlet-minus').toggleClass("portlet-minus");
-      }
-      else {
-        $(this).parent('.portlet-header').find('.portlet-plus').toggleClass("portlet-minus");
-        $(this).parent('.portlet-header').find('.portlet-plus').toggleClass("portlet-plus"); 
-      }
-      
-      $(this).parents(".homebox-portlet:first").find(".portlet-content").toggle();
-      
-      Drupal.homebox.equalizeColumnsHeights($columns);
-      $('#homebox-changes-made').show();
-    });
-    
-    // Attach click event on settings icon
-    $boxes.find('.portlet-header .portlet-settings').click(function() {
-      $(this).parents(".homebox-portlet:first").find(".portlet-config").toggle();
-      Drupal.homebox.equalizeColumnsHeights($columns);
-    });
-    
-    // Attach click event on close
-    $boxes.find('.portlet-header .portlet-close').click(function() {
-      $(this).parents(".homebox-portlet:first").hide();
-      // Uncheck input settings
-      dom_id = $(this).parents(".homebox-portlet:first").attr('id');
-      $('#homebox_toggle_' + dom_id).attr('checked', false);
-      Drupal.homebox.equalizeColumnsHeights($columns);
-      $('#homebox-changes-made').show();
     });
     
     // Add click behaviour to checkboxes that enable/disable blocks
@@ -119,43 +39,12 @@ Drupal.behaviors.homebox = function(context) {
         el_id = $(this).attr('id').replace('homebox_toggle_', '');
         $('#' + el_id).hide();
       };
-      Drupal.homebox.equalizeColumnsHeights($columns);
+      Drupal.homebox.equalizeColumnsHeights();
       $('#homebox-changes-made').show();
     });
     
-    // Apply custom colors to blocks
-    $boxes.each(function() {
-      var attributes = $(this).attr('class').split(' ');
-      for (a in attributes) {
-        if (attributes[a].substr(0, 14) == 'homebox-color-') {
-          $(this).find('.portlet-header').attr("style", "background: #" + attributes[a].substr(14));
-          $(this).find('.homebox-portlet-inner').attr("style", "border: 1px solid #" + attributes[a].substr(14));
-        }
-      }
-    });
-    
-    // Add click behaviour to color buttons
-    $boxes.find('.homebox-color-selector').click(function() {
-      color = $(this).css('background-color');
-      classes = $(this).parents(".homebox-portlet:first").attr('class').split(" ");
-      jQuery.each(classes, function(key, value) {
-        if (value.indexOf('homebox-color-') == 0) {
-          classes[key] = "";
-        };
-      });
-      classes = classes.join(" ");
-      
-      // Add color classes to blocks
-      // This is used when we save so we know what color it is
-      $(this).parents(".homebox-portlet:first").attr('class', classes);
-      $(this).parents(".homebox-portlet:first").addClass("homebox-color-" + Drupal.homebox.convertRgbToHex(color).replace("#", ''));
-      
-      // Apply the colors via style attributes
-      // This avoid dynamic CSS
-      $(this).parents(".homebox-portlet:first").find('.portlet-header').attr("style", "background: " + Drupal.homebox.convertRgbToHex(color));
-      $(this).parents(".homebox-portlet:first").find('.homebox-portlet-inner').attr("style", "border: 1px solid " + Drupal.homebox.convertRgbToHex(color));
-      $('#homebox-changes-made').show();
-    });
+    // Add region to place maximized portlets
+    $homebox.find('.homebox-column-wrapper:first').before('<div class="homebox-maximized"></div>');
     
     // Initialize popup dialogs
     Drupal.homebox.initDialogs();
@@ -169,38 +58,12 @@ Drupal.behaviors.homebox = function(context) {
     
     // Equalize column heights after AJAX calls
     $homebox.ajaxStop(function(){
-      Drupal.homebox.equalizeColumnsHeights($columns);
-    });
-    
-    // Add tooltips to icons
-    $('.portlet-icon').tipsy({
-      gravity: 's',
-      title: function() {
-        switch ($(this).attr('class').replace('portlet-icon portlet-', '')) {
-          case 'close':
-            return Drupal.t('Close');
-          case 'maximize':
-            return Drupal.t('Maximize');
-          case 'minimize':
-            return Drupal.t('Minimize');
-          case 'minus':
-            return Drupal.t('Collapse');
-          case 'plus':
-            return Drupal.t('Expand');
-          case 'settings':
-            return Drupal.t('Settings');
-        }
-      }
-    });
-    
-    // Remove tooltips on header clicks
-    $boxes.find('.portlet-header').click(function() {
-      $('.tipsy').remove();
+      Drupal.homebox.equalizeColumnsHeights();
     });
   }
 };
 
-/*
+/**
  * Declare all dialog windows
  */
 Drupal.homebox.initDialogs = function() {
@@ -254,27 +117,6 @@ Drupal.homebox.initDialogs = function() {
     }
   });
   
-  // Edit item dialog
-  $('#homebox-edit-form').dialog({
-    autoOpen: false,
-	  modal: true,
-    zIndex: 500,
-    width: 500,
-    height: 350,
-    buttons: {
-		  'Submit': function() {
-        Drupal.homebox.editItem($(this).find('input:hidden').val());
-        $('#homebox-changes-made').show();
-      },
-      Cancel: function() {
-        $('#homebox-edit-form-status').hide();
-        $('#homebox-edit-form-title').val('');
-        $('#homebox-edit-form-content').val('');
-				$(this).dialog('close');
-			}
-    }
-  });
-  
   // Restore to default in-progress dialog
   $('#homebox-restore-inprogress').dialog({
     autoOpen: false,
@@ -300,7 +142,7 @@ Drupal.homebox.initDialogs = function() {
   });
 };
 
-/*
+/**
  * Attach click events to all links which handle
  * dialog windows
  */
@@ -324,37 +166,14 @@ Drupal.homebox.initDialogLinks = function() {
   $('#homebox-add-link').click(function() {
     $('#homebox-add-form').dialog('open');
   });
-    
-  // Delete custom item link
-  $('.homebox-delete-custom-link').click(function() {
-    // Place the block ID into the dialog
-    $('#homebox-delete-custom-message input').val(
-      $(this).attr('id').replace('delete-', '')
-    );
-    $('#homebox-delete-custom-message').dialog('open'); 
-  });
-  
-  // Edit custom item link
-  $('.homebox-edit-custom-link').click(function() {
-    // Place the block ID into the dialog
-    $('#homebox-edit-form input:hidden').val(
-      $(this).attr('id').replace('edit-', '')
-    );
-    // Populate the title field
-    $('#homebox-edit-form-title').val($(this).parents('.homebox-portlet').find('.portlet-title').html());
-    // Populate the content field
-    $('#homebox-edit-form-content').val($(this).parents('.homebox-portlet').find('.portlet-content').html().HTMLtoNewline());
-    // Open the dialog
-    $('#homebox-edit-form').dialog('open'); 
-  });
 };
 
-/*
+/**
  * Set all column heights equal
  */
-Drupal.homebox.equalizeColumnsHeights = function(columns) {
+Drupal.homebox.equalizeColumnsHeights = function() {
   maxHeight = 0;
-  $columns.each(function() {
+  Drupal.homebox.$columns.each(function() {
     if ($(this).parent('.homebox-column-wrapper').attr('style') != 'width: 100%;') {
       $(this).height('auto');
       currentHeight = $(this).height();
@@ -367,11 +186,9 @@ Drupal.homebox.equalizeColumnsHeights = function(columns) {
       $(this).height(maxHeight);
     }
   });
-  
-  return $columns;
 };
 
-/*
+/**
  * Deletes user's settings via AJAX call, then
  * reloads the page to restore the defaults
  */
@@ -384,9 +201,9 @@ Drupal.homebox.restoreBoxes = function() {
   
   $.ajax({
     url: Drupal.settings.basePath + '?q=homebox/js/restore',
-    type: "POST",
-    cache: "false",
-    dataType: "json",
+    type: 'POST',
+    cache: 'false',
+    dataType: 'json',
     data: {name: name},
     success: function() {
       location.reload(); // Reload page to show defaults
@@ -454,12 +271,12 @@ Drupal.homebox.maximizeBox = function(icon) {
   }
 };
 
-/*
+/**
  * Add a custom block
  */
 Drupal.homebox.addItem = function() {
   var block = {};
-  var title = $('#homebox-add-form-title').val().stripTags();
+  var title = $('#homebox-add-form-title').val();
   var content = $('#homebox-add-form-content').val();
   
   // Make sure both fields are supplied
@@ -468,9 +285,6 @@ Drupal.homebox.addItem = function() {
     $('#homebox-add-form-status').html(Drupal.t('All fields are required.'));
     return;
   }
-  
-  // Convert content newlines to HTML
-  content = content.newlineToHTML();
   
   // Place data into the custom block object
   block = {
@@ -490,7 +304,7 @@ Drupal.homebox.addItem = function() {
   Drupal.homebox.saveBoxes(block);
 };
 
-/*
+/**
  * The AJAX call for adding an item
  * 
  * This needs to be separate so that .saveBoxes()
@@ -499,9 +313,9 @@ Drupal.homebox.addItem = function() {
 Drupal.homebox.addItemAjax = function(name, block) {
   $.ajax({
     url: Drupal.settings.basePath + '?q=homebox/js/add',
-    type: "POST",
-    cache: "false",
-    dataType: "json",
+    type: 'POST',
+    cache: 'false',
+    dataType: 'json',
     data: {name: name, block: block},
     success: function() {
       $('#homebox-add-form').html(Drupal.t('Refreshing page') + '...');
@@ -513,7 +327,7 @@ Drupal.homebox.addItemAjax = function(name, block) {
   });
 };
 
-/*
+/**
  * Delete a custom block from the page
  */
 Drupal.homebox.deleteItem = function(block) {
@@ -523,9 +337,9 @@ Drupal.homebox.deleteItem = function(block) {
   
   $.ajax({
     url: Drupal.settings.basePath + '?q=homebox/js/delete',
-    type: "POST",
-    cache: "false",
-    dataType: "json",
+    type: 'POST',
+    cache: 'false',
+    dataType: 'json',
     data: {name: name, block: block},
     success: function() {
       $('#homebox-delete-custom-message').html(Drupal.t('Refreshing page') + '...');
@@ -537,7 +351,7 @@ Drupal.homebox.deleteItem = function(block) {
   });
 };
 
-/*
+/**
  * Save the current state of the homebox
  * 
  * @param save
@@ -548,7 +362,6 @@ Drupal.homebox.deleteItem = function(block) {
  */
 Drupal.homebox.saveBoxes = function(save) {
   var color = new String();
-  var open = new Boolean();
   var block = new String();
   var name = $('#homebox').find('input:hidden.name').val();
   var blocks = {};
@@ -556,11 +369,11 @@ Drupal.homebox.saveBoxes = function(save) {
   // Show progress dialog
   $('#homebox-save-message').dialog('open');
 
-  $columns = Drupal.homebox.equalizeColumnsHeights($columns);
-  $columns.each(function(colIndex) {
+  Drupal.homebox.equalizeColumnsHeights();
+  Drupal.homebox.$columns.each(function(colIndex) {
     // Determine region
     var colIndex = colIndex + 1;
-    $(this).find('>.homebox-portlet').each(function(boxIndex) {
+    $(this).find('.homebox-portlet').each(function(boxIndex) {
       // Determine block name
       block = $(this).find('input:hidden.homebox').val();
       
@@ -579,30 +392,12 @@ Drupal.homebox.saveBoxes = function(save) {
         }
       }
       
-      // Determine state (open/closed)
-      open = $(this).find(".portlet-content").is(':visible');
-
       // Build blocks object
-      if (block.search('homebox_') != -1) {
-        // If block is custom, we need more data
-        blocks[block] = {
-          region: colIndex,
-          status: visible,
-          color: color,
-          open: open,
-          title: $(this).find('.portlet-title').html().stripTags(),
-          content: $(this).find('.portlet-content').html(),
-          module: 'homebox',
-          delta: block.replace('homebox_', '')
-        }
-      }
-      else {
-        blocks[block] = {
-          region: colIndex,
-          status: visible,
-          color: color,
-          open: open
-        }
+      blocks[block] = {
+        region: colIndex,
+        status: visible,
+        color: color,
+        open: $(this).find('.portlet-content').is(':visible')
       }
     });
   });
@@ -612,9 +407,9 @@ Drupal.homebox.saveBoxes = function(save) {
   
   $.ajax({
     url: Drupal.settings.basePath + '?q=homebox/js/save',
-    type: "POST",
-    cache: "false",
-    dataType: "json",
+    type: 'POST',
+    cache: 'false',
+    dataType: 'json',
     data: {name: name, blocks: blocks},
     success: function() {
       $('#homebox-save-message').dialog('close');
@@ -632,43 +427,6 @@ Drupal.homebox.saveBoxes = function(save) {
   });
 };
 
-/*
- * Edit a custom item
- * 
- * @param block
- *   The block ID being edited
- */
-Drupal.homebox.editItem = function(block) {
-  var title = $('#homebox-edit-form-title').val().stripTags();
-  var content = $('#homebox-edit-form-content').val();
-  
-  // Make sure both fields are supplied
-  if (!title || !content) {
-    $('#homebox-edit-form-status').show();
-    $('#homebox-edit-form-status').html(Drupal.t('All fields are required.'));
-    return;
-  }
-  
-  // Alter block ID to match block class
-  block = block.replace('_', '-');
-  
-  // Convert newlines to HTML
-  content = content.newlineToHTML();
-  
-  // Replace block title with input
-  $('#homebox-block-' + block).find('.portlet-title').html(title);
-  $('#homebox-block-' + block).find('.portlet-content').html(content);
-  
-  // Clear form and close dialog
-  $('#homebox-edit-form-status').hide();
-  $('#homebox-edit-form-title').val('');
-  $('#homebox-edit-form-content').val('');
-	$('#homebox-edit-form').dialog('close');
-  
-  // Equalize columns
-  Drupal.homebox.equalizeColumnsHeights($columns);
-};
-
 Drupal.homebox.convertRgbToHex = function(rgb) {
   if (!jQuery.browser.msie) {
     // Script taken from
@@ -680,23 +438,155 @@ Drupal.homebox.convertRgbToHex = function(rgb) {
       parts[i] = parseInt(parts[i]).toString(16);
       if (parts[i].length == 1) parts[i] = '0' + parts[i];
     }
-    return "#" + parts.join(''); // "0070ff"
+    return '#' + parts.join(''); // '0070ff'
   } else {
     return rgb;
   };
 };
 
-// Strip all tags from a string
-String.prototype.stripTags = function() {
-   return this.replace(/<([^>]+)>/g,'');
-};
+Drupal.behaviors.homeboxPortlet = function (context) {
+  $('.homebox-portlet:not(.homebox-processed)', context).addClass('homebox-processed').each(function () {
+    var $portlet = $(this),
+      $portletHeader = $portlet.find('.portlet-header'),
+      $portletSettings = $portletHeader.find('.portlet-settings'),
+      $portletConfig = $portlet.find('.portlet-config');
 
-// Replace newline characters with HTML breakrules
-String.prototype.newlineToHTML = function() {
-  return this.replace(/\r?\n|\r/g, "<br />");
-};
+    // Restore classes saved before AHAH, they back some page-wide
+    // settings.
+    if (Drupal.homebox.config[$portlet.attr('id')] !== undefined) {
+      $portlet.attr('class', Drupal.homebox.config[$portlet.attr('id')]);
+    }
 
-// Replace HTML breakfules with newline characters
-String.prototype.HTMLtoNewline = function() {
-  return this.replace(/<br>|<br\/>|<br \/>/gi, "\n");
-};
+    // Prevent double-clicks from causing a selection
+    $portletHeader.disableSelection();
+
+    // Attach click event to maximize icon
+    $portletHeader.find('.portlet-maximize').click(function() {
+      $(this).toggleClass('portlet-maximize');
+      $(this).toggleClass('portlet-minimize');
+      Drupal.homebox.maximizeBox(this);
+      Drupal.homebox.equalizeColumnsHeights();
+    });  
+    
+    // Attach click event on minus
+    $portletHeader.find('.portlet-minus').click(function() {
+      $(this).toggleClass('portlet-minus');
+      $(this).toggleClass('portlet-plus');
+      $portlet.find('.portlet-content').toggle();
+      Drupal.homebox.equalizeColumnsHeights();
+      $('#homebox-changes-made').show();
+    });
+    
+    // Attach click event on minus
+    $portletHeader.find('.portlet-minus').each(function() {
+      if (!$portlet.find('.portlet-content').is(':visible')) {
+        $(this).toggleClass('portlet-minus');
+        $(this).toggleClass('portlet-plus');
+        Drupal.homebox.equalizeColumnsHeights();
+      };
+    });
+    
+    // Attach double click event on portlet header
+    $portlet.find('.portlet-title').dblclick(function() {
+      if ($portlet.find('.portlet-content').is(':visible')) {
+        $portletHeader.find('.portlet-minus').toggleClass('portlet-plus');  
+        $portletHeader.find('.portlet-minus').toggleClass('portlet-minus');
+      }
+      else {
+        $portletHeader.find('.portlet-plus').toggleClass('portlet-minus');
+        $portletHeader.find('.portlet-plus').toggleClass('portlet-plus'); 
+      }
+      
+      $portlet.find('.portlet-content').toggle();
+      
+      Drupal.homebox.equalizeColumnsHeights();
+      $('#homebox-changes-made').show();
+    });
+    
+    // Attach click event on settings icon
+    $portletSettings.click(function() {
+      $portletConfig.toggle();
+      Drupal.homebox.equalizeColumnsHeights();
+    });
+    // Show settings if there are error messages
+    if ($portletConfig.find('>.messages').length) {
+      $portletSettings.trigger('click');
+    }
+    // Save classes on submit
+    $portletConfig.find('.form-submit').click(function () {
+      Drupal.homebox.config[$portlet.attr('id')] = $portlet.attr('class');
+    });
+    
+    // Attach click event on close
+    $portletHeader.find('.portlet-close').click(function() {
+      $portlet.hide();
+      // Uncheck input settings
+      $('#homebox_toggle_' + $portlet.attr('id')).attr('checked', false);
+      Drupal.homebox.equalizeColumnsHeights();
+      $('#homebox-changes-made').show();
+    });
+
+    var attributes = $portlet.attr('class').split(' ');
+    for (a in attributes) {
+      if (attributes[a].substr(0, 14) == 'homebox-color-') {
+        $portletHeader.attr('style', 'background: #' + attributes[a].substr(14));
+        $portlet.find('.homebox-portlet-inner').attr('style', 'border: 1px solid #' + attributes[a].substr(14));
+      }
+    }
+    
+    // Add click behaviour to color buttons
+    $portlet.find('.homebox-color-selector').click(function () {
+      color = $(this).css('background-color');
+      $.each($portlet.attr('class').split(' '), function (key, value) {
+        if (value.indexOf('homebox-color-') === 0) {
+          $portlet.removeClass(value);
+        };
+      });
+      
+      // Add color classes to blocks
+      // This is used when we save so we know what color it is
+      $portlet.addClass('homebox-color-' + Drupal.homebox.convertRgbToHex(color).replace('#', ''));
+      
+      // Apply the colors via style attributes
+      // This avoid dynamic CSS
+      $portletHeader.attr('style', 'background: ' + Drupal.homebox.convertRgbToHex(color));
+      $portlet.find('.homebox-portlet-inner').attr('style', 'border: 1px solid ' + Drupal.homebox.convertRgbToHex(color));
+      $('#homebox-changes-made').show();
+    });
+    
+    // Add tooltips to icons
+    $portlet.find('.portlet-icon').tipsy({
+      gravity: 's',
+      title: function() {
+        switch ($(this).attr('class').replace('portlet-icon portlet-', '')) {
+          case 'close':
+            return Drupal.t('Close');
+          case 'maximize':
+            return Drupal.t('Maximize');
+          case 'minimize':
+            return Drupal.t('Minimize');
+          case 'minus':
+            return Drupal.t('Collapse');
+          case 'plus':
+            return Drupal.t('Expand');
+          case 'settings':
+            return Drupal.t('Settings');
+        }
+      }
+    });
+    
+    // Remove tooltips on header clicks
+    $portletHeader.click(function() {
+      $('.tipsy').remove();
+    });
+
+    // Delete custom item link
+    $('.homebox-delete-custom-link').click(function() {
+      // Place the block ID into the dialog
+      $('#homebox-delete-custom-message input').val(
+        $(this).attr('id').replace('delete-', '')
+      );
+      $('#homebox-delete-custom-message').dialog('open');
+    });
+  });
+}

@@ -41,6 +41,14 @@ function homebox_menu() {
         'access arguments' => array($page),
         'type' => $page->settings['menu'] ? MENU_NORMAL_ITEM : MENU_CALLBACK,
       );
+      $items[$page->settings['path'] . '/block/%'] = array(
+        'title' => $page->settings['title'],
+        'page callback' => 'homebox_build_block',
+        'page arguments' => array($page, count(explode('/', $page->settings['path'])) + 1),
+        'access callback' => '_homebox_user_access_view_homebox',
+        'access arguments' => array($page),
+        'type' => $page->settings['menu'] ? MENU_NORMAL_ITEM : MENU_CALLBACK,
+      );
     }
   }
 
@@ -56,6 +64,13 @@ function homebox_menu() {
         'access arguments' => array($page, 1),
         'weight' => 1,
         'type' => MENU_LOCAL_TASK,
+      );
+      $items['user/%user/' . $page->settings['path'] . '/block/%'] = array(
+        'page callback' => 'homebox_build_block',
+        'page arguments' => array($page, 4),
+        'access callback' => '_homebox_user_access_view_user_homebox',
+        'access arguments' => array($page, 1),
+        'type' => MENU_CALLBACK,
       );
     }
   }
@@ -165,9 +180,14 @@ function homebox_load($name) {
 /**
  * Implementation of hook_forms().
  */
-function homebox_forms() {
-  $forms['homebox_admin_new_page']['callback'] = 'homebox_admin_page';
-  return $forms;
+function homebox_forms($form_id, $args) {
+  switch ($form_id) {
+    case 'homebox_admin_new_page':
+      return array('homebox_admin_new_page' => array('callback' => 'homebox_admin_page'));
+
+    case isset($args[1]) && is_object($args[1]) ? 'homebox_block_edit_' . $args[1]->module . '_' . $args[1]->delta . '_form' : NULL:
+      return array($form_id => array('callback' => 'homebox_block_edit_form_builder'));
+  }
 }
 
 /**
@@ -176,19 +196,14 @@ function homebox_forms() {
 function homebox_help($path, $arg) {
   switch ($path) {
     case 'admin/build/homebox':
-      $output = '<p>'. theme('advanced_help_topic', 'homebox', 'introduction') .'&nbsp;';
-      $output .= t("Homebox pages are listed below. Each page is accessible from a single url on your site that you specify during page creation. You can create as many pages as you need. Be sure to review all available layout options and settings.</p>");
-      break;
+      return '<p>'. theme('advanced_help_topic', 'homebox', 'introduction') .'&nbsp;' . t("Homebox pages are listed below. Each page is accessible from a single url on your site that you specify during page creation. You can create as many pages as you need. Be sure to review all available layout options and settings.</p>");
+
     case 'admin/build/homebox/layout/%':
-      $output = '<p>'. theme('advanced_help_topic', 'homebox', 'default-layout') .'&nbsp;';
-      $output .= t("This page behave the same way as Drupal block administration page. Drag blocks to whatever column you want to enable it for your users. Note that you can change the number of columns in the <a href='!settings_url'>settings page</a>", array('!settings_url' => url('admin/build/homebox/settings/'. arg(4)))) .'.</p>';
-      break;
+      return '<p>'. theme('advanced_help_topic', 'homebox', 'default-layout') .'&nbsp;' . t("This page behave the same way as Drupal block administration page. Drag blocks to whatever column you want to enable it for your users. Note that you can change the number of columns in the <a href='!settings_url'>settings page</a>", array('!settings_url' => url('admin/build/homebox/settings/'. arg(4)))) .'.</p>';
+
     case 'admin/build/homebox/settings/%':
-      $output = '<p>'. theme('advanced_help_topic', 'homebox', 'settings') .'&nbsp;';
-      $output .= t('Homebox configuration page.');
-      break;
+      return '<p>'. theme('advanced_help_topic', 'homebox', 'settings') .'&nbsp;' . t('Homebox configuration page.');
   }
-  return $output;
 }
 
 /**
@@ -205,11 +220,11 @@ function homebox_theme($blocks) {
   return array(
     // Set hook name: see template_preprocess_homebox()
     'homebox' => array(
-      'arguments' => array('regions' => $regions, 'available_blocks' => $available_blocks, 'column_count' => $column_count, 'page' => $page),
+      'arguments' => array('regions' => NULL, 'available_blocks' => NULL, 'column_count' => NULL, 'page' => NULL),
       'template' => 'homebox', // Set template to homebox.tpl.php
     ),
     'homebox_block' => array(
-      'arguments' => array('block' => $block, 'page' => $page),
+      'arguments' => array('block' => NULL, 'page' => NULL),
       'template' => 'homebox-block', // Set template to homebox-block.tpl.php
     ),
     'homebox_admin_display_form' => array(
@@ -286,7 +301,7 @@ function homebox_build($page) {
   }
 }
 
-/*
+/**
  * Helper function for performing operations prior to rendering
  * a Homebox that is set as a user profile tab
  * 
@@ -311,130 +326,263 @@ function homebox_pre_build_user($page, $user) {
  *
  * @param $page
  *  A page object
+ *
  * @return
- *  An array of regions/columns containing blocks ordered by region / weight (see home-box.tpl.php)
+ *  An array of regions/columns containing blocks ordered by region / weight.
+ *
+ * @see home-box.tpl.php
  */
 function homebox_load_blocks_in_regions($page) {
-  global $user;
-
-  $regions = array();
   $column_count = $page->settings['regions'];
-  $blocks = $page->settings['blocks'];
-  $is_cache_enabled = (bool) $page->settings['cache'];
+  $regions = array_fill(1, $column_count, array());
 
-  // Apply customization from user, if any
-  $blocks = _homebox_apply_user_settings($page, $blocks);
+  // Extract blocks from the page
+  $blocks = $page->settings['blocks'];
+
+  // Get user settings, so custom blocks are placed in regions.
+  $user_blocks = _homebox_get_user_settings($page);
+  if ($user_blocks !== FALSE) {
+    // Add custom blocks.
+    foreach (array_diff_key($user_blocks, $blocks) as $key => $block) {
+      if ($page->settings['custom'] && homebox_block_is_custom($key)) {
+        $blocks[$key] = $user_blocks[$key];
+      }
+    }
+  }
 
   // Preparing blocks object for theming
   foreach ($blocks as $key => $block_settings) {
-    // Build block
-    $block = new stdClass;
-    $block->subject = $block_settings['title'];
-    $block->content = $block_settings['content'];
-    $block->module = $block_settings['module'];
-    $block->delta = $block_settings['delta'];
-    $block->region = (int) $block_settings['region'];
-    $block->weight = (int) $block_settings['weight'];
-    $block->status = $block_settings['status'] ? TRUE : FALSE;
-    $block->open = $block_settings['open'] ? TRUE : FALSE;
-    $block->closable = ($block_settings['closable'] === 0) ? FALSE : TRUE;
-    $block->homebox_classes = _homebox_get_css_classes_for_block($block_settings);
-
-    // Check block permissions
-    if(!_homebox_can_view_block($block, $user)) {
-      // Permission denied, skip to the next block
-      continue; 
-    }
-
-    // Attempt to find a block in the cache table
-    // No reason to render block content if the module is homebox
-    // because it's a custom item
-    if ($block->module != 'homebox') {
-      if ($is_cache_enabled == TRUE && !count(module_implements('node_grants')) && $_SERVER['REQUEST_METHOD'] == 'GET' && ($cid = _block_get_cache_id($block)) && ($cache = cache_get($cid, 'cache_block'))) {
-        $array = $cache->data;
-      }
-      else {
-        // No cache, fetch the blocks from modules
-        $array = module_invoke($block->module, 'block', 'view', $block->delta);
-        
-        // Block.module will return 'n/a' if a custom block has been deleted
-        if ($array['content'] == 'n/a') {
-          // If this is the case, skip this block
-          continue; 
-        }
-        if (isset($cid)) {
-          cache_set($cid, $array, 'cache_block', CACHE_TEMPORARY);
-        }
-      }
-
-      // Render block content
-      if (isset($array) && is_array($array)) {
-        foreach ($array as $k => $v) {
-          // If block has custom title, leave it
-          if($k == 'subject' && !empty($block->subject)) {
-            continue;
-          }
-          $block->$k = $v;
-        } 
-      }
-    }
-    
-    // We don't continue to assign this block
-    // since Drupal didn't returned any content
-    // which could be permissions rules applied by any module
-    if ($block->content && trim($block->content) != '' || $can_access_view) {
-      // If no title provided we try to get one from blocks table
-      if (!$block->subject) {
-        $block->subject = db_result(db_query("SELECT title FROM {blocks} WHERE bid = %d", $block->bid));
-      }
-      if (!$block->subject && $block->module == 'views') {
-        $block->subject = _homebox_get_view_name($block);
-      }
-      if (!$block->subject) {
-        $module_blocks = module_invoke($block->module, 'block', 'list');
-        $block->subject = $module_blocks[$block->delta]['info'];
-      }
-      // Fail safe
-      if (!$block->subject) {
-        // Is this still necessary?
-        $block->subject = t('<em>No title defined</em>');
-      }
-
-      // Mostly ugly for now, but we need this for performance issue when saving blocks ordering this prevent many queries!
-      $block->hidden .= '<input type="hidden" class="homebox" value="' . $key . '" />';
-
-      // If user defined region is greater than
-      // real column count put block in the last column/region
-      if ($block->region > $column_count) {
-        $block->region = $column_count;
-      }
-
-      // Adds block to its regions
-      $regions[$block->region][$block->weight][] = $block;
+    // Adds block to its regions
+    $block = homebox_prepare_block($key, $page);
+    if (!is_null($block)) {
+      // If user defined region is greater than real column count put block in
+      // the last column/region.
+      $regions[min($block->region, $column_count)][$block->weight][] = $block;
     }
   }
 
   // Sort each region/column based on key value
   for ($i = 1; $i <= count($regions); $i++) {
-    if (is_array($regions[$i]) && count($regions[$i]) > 0) {
-      ksort($regions[$i]);
-    }
+    ksort($regions[$i]);
   }
-
-  // Fill region array to match defined column count
-  for ($i=1; $i <= $column_count; $i++) {
-    if (!isset($regions[$i])) {
-      $regions[$i] = array();
-    }
-  }
-  
-  // Sorts region/column
-  ksort($regions);
 
   return $regions;
 }
 
-/*
+/**
+ * Prepare a block for rendering with theme('homebox_block').
+ *
+ * @param $block_key
+ *   A string identifying the block. Should match an array key in
+ *   $page->settings['blocks'], except for a user's custom block.
+ * @param $page
+ *   A homebox page object, as loaded by homebox_get_page().
+ *
+ * @return
+ *   A block object that can be passed to theme('homebox_block', $block).
+ */
+function homebox_prepare_block($block_key, $page) {
+  global $user;
+
+  // Load block settings.
+  $user_settings = _homebox_get_user_settings($page);
+  if (homebox_block_is_custom($block_key) && $user_settings !== FALSE) {
+    // Custom blocks only exist in user settings.
+    $block_settings = $user_settings[$block_key];
+  }
+  else {
+    // Otherwise, start with the page defaults.
+    $block_settings = $page->settings['blocks'][$block_key];
+    if ($user_settings !== FALSE && isset($user_settings[$block_key])) {
+      $block_settings = homebox_merge_settings($block_settings, $user_settings[$block_key]);
+    }
+  }
+
+  $block = new stdClass;
+
+  // Get the edit form early, in case it changes the block.
+  if (module_hook($block_settings['module'], 'homebox_block_edit_form')) {
+    $block->edit_form = drupal_get_form('homebox_block_edit_' . $block_settings['module'] . '_' . $block_settings['delta'] . '_form', $page, (object) $block_settings);
+    // Prepend messages the form may have generated.
+    $block->edit_form = theme('status_messages', 'error') . $block->edit_form;
+
+    // Apply user settings, they may have changed from the form submission.
+    if (isset($_POST['form_id']) && $user_settings = _homebox_get_user_settings($page)) {
+      $block_settings = homebox_merge_settings($block_settings, $user_settings[$block_key]);
+    }
+  }
+
+  // Build the $block object.
+  $block->subject = $block_settings['title'];
+  $block->content = isset($block_settings['content']) ? $block_settings['content'] : '';
+  $block->module = $block_settings['module'];
+  $block->delta = $block_settings['delta'];
+  $block->region = (int) $block_settings['region'];
+  $block->weight = (int) $block_settings['weight'];
+  $block->status = (bool) $block_settings['status'];
+  $block->open = (bool) $block_settings['open'];
+  $block->closable = (bool) $block_settings['closable'];
+  $block->homebox_classes = _homebox_get_css_classes_for_block($block_settings);
+  if (module_hook($block->module, 'homebox_block_keys')) {
+    foreach (module_invoke($block->module, 'homebox_block_keys', $block) as $key) {
+      $block->$key = isset($block_settings[$key]) ? $block_settings[$key] : NULL;
+    }
+  }
+
+  // Check block permissions
+  if(!_homebox_can_view_block($block, $user)) {
+    // Permission denied, skip to the next block
+    return NULL; 
+  }
+
+  if ($block->module === 'homebox') {
+    $block->subject = strip_tags($block->subject);
+    $block->content = filter_xss_admin(_filter_autop($block->content));
+  }
+  else {
+    // Attempt to find a block in the cache table No reason to render block
+    // content if the module is homebox because it's a custom item.
+    if ((bool) $page->settings['cache'] && !count(module_implements('node_grants')) && $_SERVER['REQUEST_METHOD'] == 'GET' && ($cid = _block_get_cache_id($block)) && ($cache = cache_get($cid, 'cache_block'))) {
+      $array = $cache->data;
+    }
+    else {
+      // No cache, fetch the blocks from modules
+      $array = module_invoke($block->module, 'block', 'view', $block->delta, array('homebox' => $block));
+
+      // Block.module will return 'n/a' if a custom block has been deleted
+      if ($array['content'] == 'n/a') {
+        // If this is the case, skip this block
+        return NULL; 
+      }
+      if (isset($cid)) {
+        cache_set($cid, $array, 'cache_block', CACHE_TEMPORARY);
+      }
+    }
+
+    // Render block content
+    if (isset($array) && is_array($array)) {
+      foreach ($array as $k => $v) {
+        // If block has custom title, leave it
+        if($k == 'subject' && !empty($block->subject)) {
+          continue;
+        }
+        $block->$k = $v;
+      } 
+    }
+  }
+
+  // We don't continue to assign this block since Drupal didn't returned any
+  // content which could be permissions rules applied by any module.
+  if (!isset($block->content) || trim($block->content) === '') {
+    return NULL;
+  }
+
+  // If no title provided we try to get one from blocks table
+  if (!$block->subject) {
+    $block->subject = db_result(db_query("SELECT title FROM {blocks} WHERE bid = %d", $block->bid));
+  }
+  if (!$block->subject && $block->module == 'views') {
+    $block->subject = _homebox_get_view_name($block);
+  }
+  if (!$block->subject) {
+    $module_blocks = module_invoke($block->module, 'block', 'list');
+    $block->subject = $module_blocks[$block->delta]['info'];
+  }
+  // Fail safe
+  if (!$block->subject) {
+    $block->subject = t('<em>No title defined</em>');
+  }
+
+  // Mostly ugly for now, but we need this for performance issue when saving blocks ordering this prevent many queries!
+  $block->hidden .= '<input type="hidden" class="homebox" value="' . $block_key . '" />';
+
+  return $block;
+}
+
+/**
+ * Get an edit form from the implementing module and add the standard buttons
+ * and submit handling.
+ */
+function homebox_block_edit_form_builder(&$form_state, $page, $block) {
+  $form = module_invoke($block->module, 'homebox_block_edit_form', $block);
+
+  $form['#attributes']['class'] = 'clear-block';
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#id' => 'save-' . $block->module . '-' . $block->delta,
+    '#value' => t('Save'),
+    '#ahah' => array(
+      'path' => $_GET['q'] . '/block/' . $block->module .'_'. $block->delta,
+      'event' => 'click',
+      'wrapper' => 'homebox-block-' . $block->module .'-'. $block->delta,
+      'method' => 'replaceWith',
+    ),
+  );
+  $form['#submit'][] = 'homebox_block_edit_form_builder_submit';
+
+  return $form;
+}
+
+/**
+ * Save settings for the block and render a replacement with the updated settings.
+ */
+function homebox_block_edit_form_builder_submit($form, &$form_state) {
+  $page = $form['#parameters'][2];
+  $block = $form['#parameters'][3];
+  $user_blocks = _homebox_get_user_settings($page);
+  if ($user_blocks === FALSE) {
+    // This is the first customization, save everything to get everything
+    // initially populated.
+    _homebox_save_user_settings($page, $page->settings['blocks']);
+    $user_blocks = _homebox_get_user_settings($page);
+  }
+  $key = $block->module . '_' . $block->delta;
+
+  // Make sure needed keys exist.
+  $user_blocks[$key] = array_merge(array_flip(module_invoke($block->module, 'homebox_block_keys', $block)), $user_blocks[$key]);
+
+  // Replace user settings with form values, when keys match.
+  $user_blocks[$key] = array_merge($user_blocks[$key], array_intersect_key($form_state['values'], $user_blocks[$key]));
+  _homebox_save_user_settings($page, $user_blocks);
+
+  $form_state['redirect'] = FALSE;
+}
+
+/**
+ * Render a single block, for AHAH callbacks.
+ */
+function homebox_build_block($page, $key) {
+  drupal_json(array(
+    'status' => TRUE,
+    'data' => theme('homebox_block', homebox_prepare_block($key, $page), $page),
+  ));
+}
+
+function homebox_homebox_block_keys() {
+  return array('title', 'content');
+}
+
+function homebox_homebox_block_edit_form($block) {
+  $form = array();
+
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Title'),
+    '#size' => 25,
+    '#default_value' => $block->title,
+    '#required' => TRUE,
+  );
+  $form['content'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Content'),
+    '#default_value' => $block->content,
+    '#required' => TRUE,
+  );
+
+  return $form;
+}
+
+/**
  * Determine if user has access to view a block
  *
  * @param $block
@@ -481,42 +629,6 @@ function _homebox_can_view_block($block, $user = NULL) {
 }
 
 /**
- * Apply user defined page settings
- * 
- * @param $page
- *  A page object
- * @param $blocks
- *  An array of blocks
- * @return
- *  The same array, but sorted with user defined settings, if any
- */
-function _homebox_apply_user_settings($page, $blocks) {
-  global $user;
-
-  if ($user->uid) {
-    // Blocks that the user already had in his settings
-    $user_blocks = _homebox_get_user_settings($page, $user);
-  
-    if ($user_blocks) {
-      // Blocks that user has in settings but is not a 'default' one (deprecated block)
-      foreach (array_diff_key($user_blocks, $blocks) as $key => $block) {
-        // Make sure it's not an allowed custom block first
-        if ($page->settings['custom'] && homebox_block_is_custom($key)) {
-          continue; 
-        }
-        unset($user_blocks[$key]);
-      }
-
-      // Merge default blocks settings with user defined settings
-      // That adds non-user settings such as module, delta, movable
-      $blocks = homebox_merge_settings($blocks, $user_blocks);
-    }
-  }
-
-  return $blocks;
-}
-
-/*
  * Merge default page and user settings
  * 
  * @param $default_blocks
@@ -762,7 +874,7 @@ function homebox_check_path($path, $name = NULL, $element = NULL) {
   return TRUE; 
 }
 
-/*
+/**
  * Validation helper to check a page object
  * 
  * @param $data
@@ -970,7 +1082,7 @@ function _homebox_compare_block_subject($a, $b) {
   return ($a['subject'] < $b['subject']) ? -1 : 1;
 }
 
-/*
+/**
  * Get the name of the view based on the block
  * 
  * @param $block
@@ -1009,7 +1121,7 @@ function _homebox_get_view_name($block) {
   return $name;
 }
 
-/*
+/**
  * Javascript callback
  * 
  * Save a users page settings
@@ -1033,7 +1145,7 @@ function homebox_js_save_user_settings() {
   _homebox_save_user_settings($page, $user_blocks);
 }
 
-/*
+/**
  * Javascript Callback
  * 
  * Restore a given page to system defaults
@@ -1048,7 +1160,7 @@ function homebox_js_restore_defaults() {
   _homebox_delete_user_settings($name);
 }
 
-/*
+/**
  * Javascript callback
  * 
  * Add a custom block to a user's page
@@ -1084,7 +1196,7 @@ function homebox_js_add_item() {
 
   // Build custom block
   $block = array(
-    'title' => strip_tags(trim($block['title'])),
+    'title' => trim($block['title']),
     'content' => trim($block['body']),
     'open' => 1,
     'color' => 'default',
@@ -1172,14 +1284,14 @@ function _homebox_get_css_classes_for_block($block) {
   }
 
   // Adds color css class
-  if ($block['color'] && $block['color'] != 'default') {
+  if (isset($block['color']) && $block['color'] != 'default') {
     $classes[] = 'homebox-color-' . drupal_strtolower($block['color']);
   }
   
   return implode(" ", $classes);
 }
 
-/*
+/**
  * Flush all user settings for a given page
  * 
  * @param $page
@@ -1234,7 +1346,7 @@ function homebox_pages($api = TRUE) {
   return empty($pages) ? NULL : $pages;
 }
 
-/*
+/**
  * Determine if a block is a custom block
  * 
  * @param @key
@@ -1243,30 +1355,42 @@ function homebox_pages($api = TRUE) {
  *   TRUE if custom, otherwise FALSE
  */
 function homebox_block_is_custom($key) {
-  return (substr($key, 0, 8) == 'homebox_') ? "TRUE" : "FALSE";
+  return (substr($key, 0, 8) === 'homebox_');
 }
 
-/*
- * Fetch user page settings
+/**
+ * Fetch user page settings, if they exist.
  * 
  * @param $page
  *   A page object
+ * @param $user
+ *   Optional user object, defaults to current global $user.
+ * @param $_reset
+ *   Reload settings from the database.
+ *
  * @return
- *   An object representing the user's page settings
+ *   An object representing the user's page settings, or FALSE.
  */
-function _homebox_get_user_settings($page, $user = NULL) {
+function _homebox_get_user_settings($page, $user = NULL, $_reset = FALSE) {
   if (!$user) {
     global $user;
   }
+  static $cache = array();
+  $key = $user->uid . ':' . $page->name;
   
-  // Get user settings
-  $settings = db_result(db_query("SELECT settings FROM {homebox_users} 
-    WHERE uid = %d AND name = '%s'", $user->uid, $page->name)); 
-    
-  return $settings ? unserialize($settings) : FALSE; 
+  if ($_reset) {
+    unset($cache[$key]);
+  }
+
+  if (!isset($cache[$key])) {
+    $settings = db_result(db_query("SELECT settings FROM {homebox_users} WHERE uid = %d AND name = '%s'", $user->uid, $page->name));
+    $cache[$key] = $settings ? unserialize($settings) : FALSE;
+  }
+
+  return $cache[$key];
 }
 
-/*
+/**
  * Save the user's page settings
  * 
  * @param $page
@@ -1278,18 +1402,21 @@ function _homebox_save_user_settings($page, $blocks) {
   // This function is only called after user status
   // and perms were checked
   global $user;
+  $user_blocks = _homebox_get_user_settings($page);
   
   $i = 0;
   foreach ($blocks as $key => $value) {
     // Add weights to blocks
     $blocks[$key]['weight'] = ++$i;
-    
+
     // Prevent crafty users from closing unclosable blocks
-    if (!$page->settings['blocks'][$key]['closable']) {
-      // Only matters if it isn't a custom block
-      if (!homebox_block_is_custom($key)) {
-        $blocks[$key]['status'] = 1;
-      }
+    if (!homebox_block_is_custom($key) && !$page->settings['blocks'][$key]['closable']) {
+      $blocks[$key]['status'] = 1;
+    }
+
+    // Carry over existing settings
+    if ($user_blocks !== FALSE && isset($user_blocks[$key])) {
+      $blocks[$key] = homebox_merge_settings($user_blocks[$key], $blocks[$key]);
     }
   }
   
@@ -1311,9 +1438,10 @@ function _homebox_save_user_settings($page, $blocks) {
   $data->name = $page->name;
   $data->settings = $blocks;
   drupal_write_record('homebox_users', $data);
+  _homebox_get_user_settings($page, $user, TRUE);
 }
 
-/*
+/**
  * Purge user settings for a given page. Used to restore a
  * page to default settings.
  * 
@@ -1337,7 +1465,7 @@ function _homebox_user_access_save_homebox() {
   global $user;
   
   // Only authenticated users can save
-  if ($user->uid) {
+  if ($user->uid && isset($_POST['name'])) {
     // Get current page
     $page = homebox_get_page(filter_xss(trim($_POST['name'])));
     // Make sure the page exists
@@ -1390,7 +1518,7 @@ function _homebox_user_access_view_homebox($page) {
   }
 }
 
-/*
+/**
  * Helper function to check access permissions for user 
  * profile Homebox
  * 
@@ -1407,7 +1535,7 @@ function _homebox_user_access_view_user_homebox($page, $profile) {
   }
 }
 
-/*
+/**
  * Implementation of hook_requirements()
  */
 function homebox_requirements($phase) {
@@ -1445,7 +1573,7 @@ function homebox_requirements($phase) {
   return $requirements;
 }
 
-/*
+/**
  * Check if PHP version is usable. Homebox 2 requires
  * PHP of at least 5.2
  * 

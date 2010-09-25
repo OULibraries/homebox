@@ -66,18 +66,6 @@
       </div>
     </form>
   </div>
-  <div id="homebox-edit-form" title="<?php print t('Edit item'); ?>">
-    <form class="form-item" action="">
-      <div id="homebox-edit-form-status"></div>
-      <div>
-        <label><?php print t('Title'); ?></label>
-        <input type="text" name="title" id="homebox-edit-form-title" class="" />
-        <label><?php print t('Content'); ?></label>
-        <textarea name="content" id="homebox-edit-form-content" class="" rows="5" cols="5"></textarea>
-        <input type="hidden" value="" />
-      </div>
-    </form>
-  </div>
   <div id="homebox-delete-custom-message" title="<?php print t('Deletion confirmation'); ?>">
     <?php print t('Are you sure you want to delete this item? This action cannot be undone.'); ?>
     <input type="hidden" value="" />
