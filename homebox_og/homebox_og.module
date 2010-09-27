@@ -1,7 +1,10 @@
 <?php
 // $Id$
 
-// Organic Groups integration for Homebox
+/**
+ * @file
+ *   Organic Groups integration for Homebox
+ */
 
 /*
  * Implementation of hook_menu()
@@ -43,10 +46,16 @@ function homebox_og_menu() {
  * Give Homebox the opportunity to override group homepage nodes
  */
 function homebox_og_menu_alter(&$items) {
-  $items['node/%node']['page callback'] = 'homebox_og_override_group';
+  if ($name = variable_get('homebox_og_home', '')) {
+    $items['node/%node']['page callback'] = 'homebox_og_override_group';
+  }
 }
 
-// Override a group's homepage with a homebox
+/**
+ * Override a group's homepage with a homebox
+ * 
+ * @see homebox_og_menu_alter()
+ */
 function homebox_og_override_group($node) {
   // Check if this is a group homepage
   if (og_is_group_type($node->type)) {
@@ -69,7 +78,9 @@ function homebox_og_override_group($node) {
   return node_page_view($node);
 }
 
-// Determine if a user can access the OG settings page
+/**
+ * Determine if a user can access the OG settings page
+ */
 function _homebox_og_user_access_group_settings() {
   if (user_access('administer homebox') 
     && user_access('administer organic groups')) {
@@ -80,7 +91,9 @@ function _homebox_og_user_access_group_settings() {
   }
 }
 
-// Determine if a user can access the Homebox
+/**
+ * Determine if a user can access the Homebox
+ */
 function _homebox_og_user_access_view_homebox($page, $node) {
   // If this a group node?
   // Can the user access the node?
@@ -105,7 +118,9 @@ function _homebox_og_user_access_view_homebox($page, $node) {
   }
 }
 
-// OG Homebox settings form
+/**
+ * OG Homebox settings form
+ */
 function homebox_og_group_settings_page() {
   $form = array();
   
@@ -165,7 +180,9 @@ function homebox_og_group_settings_page() {
   return system_settings_form($form);
 }
 
-// Act on settings form submission
+/**
+ * Act on settings form submission
+ */
 function homebox_og_group_settings_page_submit($form, &$form_state) {
   // Rebuild the menu
   menu_rebuild();
