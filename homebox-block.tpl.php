@@ -7,7 +7,7 @@
  * Default theme implementation each homebox block.
  */
 ?>
-<div id="homebox-block-<?php print $block->module .'-'. $block->delta; ?>" class="<?php print $block->homebox_classes ?> clear-block block block-<?php print $block->module ?>">
+<div id="homebox-block-<?php print $block->key; ?>" class="<?php print $block->homebox_classes ?> clear-block block block-<?php print $block->module ?>">
   <div class="homebox-portlet-inner">
     <h3 class="portlet-header">
       <?php if ($block->closable): ?>
@@ -30,11 +30,10 @@
         </div></div>
       <?php endif; ?>
       <?php if ($block->module == 'homebox'): ?>
-        <button id="delete-<?php print $block->module . '_' . $block->delta; ?>" class="homebox-delete-custom-link"><?php print t('Delete'); ?></button>
+        <button id="delete-<?php print $block->key; ?>" class="homebox-delete-custom-link"><?php print t('Delete'); ?></button>
       <?php endif; ?>
       <?php if (isset($block->edit_form)): print $block->edit_form; endif; ?>
     </div>
     <div class="portlet-content content"><?php print $block->content; ?></div>
-    <?php print $block->hidden; ?>
   </div>
 </div>

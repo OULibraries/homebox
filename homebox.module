@@ -397,6 +397,7 @@ function homebox_prepare_block($block_key, $page) {
       $block_settings = homebox_merge_settings($block_settings, $user_settings[$block_key]);
     }
   }
+  $block_settings['key'] = $block_key;
 
   $block = new stdClass;
 
@@ -413,6 +414,7 @@ function homebox_prepare_block($block_key, $page) {
   }
 
   // Build the $block object.
+  $block->key = $block_key;
   $block->subject = $block_settings['title'];
   $block->content = isset($block_settings['content']) ? $block_settings['content'] : '';
   $block->module = $block_settings['module'];
@@ -493,9 +495,6 @@ function homebox_prepare_block($block_key, $page) {
     $block->subject = t('<em>No title defined</em>');
   }
 
-  // Mostly ugly for now, but we need this for performance issue when saving blocks ordering this prevent many queries!
-  $block->hidden .= '<input type="hidden" class="homebox" value="' . $block_key . '" />';
-
   return $block;
 }
 
@@ -509,12 +508,12 @@ function homebox_block_edit_form_builder(&$form_state, $page, $block) {
   $form['#attributes']['class'] = 'clear-block';
   $form['save'] = array(
     '#type' => 'submit',
-    '#id' => 'save-' . $block->module . '-' . $block->delta,
+    '#id' => 'save-' . $block->key,
     '#value' => t('Save'),
     '#ahah' => array(
-      'path' => $_GET['q'] . '/block/' . $block->module .'_'. $block->delta,
+      'path' => $_GET['q'] . '/block/' . $block->key,
       'event' => 'click',
-      'wrapper' => 'homebox-block-' . $block->module .'-'. $block->delta,
+      'wrapper' => 'homebox-block-' . $block->key,
       'method' => 'replaceWith',
     ),
   );
@@ -536,13 +535,12 @@ function homebox_block_edit_form_builder_submit($form, &$form_state) {
     _homebox_save_user_settings($page, $page->settings['blocks']);
     $user_blocks = _homebox_get_user_settings($page);
   }
-  $key = $block->module . '_' . $block->delta;
 
   // Make sure needed keys exist.
-  $user_blocks[$key] = array_merge(array_flip(module_invoke($block->module, 'homebox_block_keys', $block)), $user_blocks[$key]);
+  $user_blocks[$block->key] = array_merge(array_flip(module_invoke($block->module, 'homebox_block_keys', $block)), $user_blocks[$block->key]);
 
   // Replace user settings with form values, when keys match.
-  $user_blocks[$key] = array_merge($user_blocks[$key], array_intersect_key($form_state['values'], $user_blocks[$key]));
+  $user_blocks[$block->key] = array_merge($user_blocks[$block->key], array_intersect_key($form_state['values'], $user_blocks[$block->key]));
   _homebox_save_user_settings($page, $user_blocks);
 
   $form_state['redirect'] = FALSE;
@@ -678,11 +676,10 @@ function homebox_merge_settings($default_blocks, $user_blocks) {
  * @param $regions
  *  contains every regions/blocks
  * @return
- *  An array of blocks containing information like subject/dom_id/status/checked
+ *  An array of blocks containing information like subject/key/status/checked
  */
 function homebox_list_available_blocks($regions) {
   $blocks = array();
-  $i = 0;
   foreach ($regions as $column) {
     foreach ($column as $weight) {
       foreach ($weight as $block) {
@@ -691,12 +688,13 @@ function homebox_list_available_blocks($regions) {
           continue;
         }
 
-        $blocks[$i]['subject']  = $block->subject;
-        $blocks[$i]['dom_id']   = 'homebox-block-'. $block->module .'-'. $block->delta;
-        $blocks[$i]['status']   = $block->status;
-        $blocks[$i]['checked']  = $block->status ? 'checked="checked"' : NULL;
-        $blocks[$i]['closable'] = $block->closable;
-        $i++;
+        $blocks[] = array(
+          'subject'  => $block->subject,
+          'key'      => $block->key,
+          'status'   => $block->status,
+          'checked'  => $block->status ? 'checked="checked"' : NULL,
+          'closable' => $block->closable,
+        );
       }
     }
   }

@@ -10,6 +10,9 @@ Drupal.behaviors.homebox = function (context) {
 
     // Find all columns
     Drupal.homebox.$columns = $homebox.find('div.homebox-column');
+    Drupal.homebox.name = $.grep($homebox.attr('class').split(' '), function (c) {
+      return c.match(/^homebox-(?!processed)/);
+    })[0].replace(/^homebox-/, '');
 
     // Equilize columns height
     Drupal.homebox.equalizeColumnsHeights();
@@ -33,20 +36,17 @@ Drupal.behaviors.homebox = function (context) {
     // Add click behaviour to checkboxes that enable/disable blocks
     $togglers.click(function () {
       var $this = $(this),
-        el_id = $this.attr('id').replace('homebox_toggle_', '');
+        $block = $($this.attr('id').replace('homebox_toggle_', '#homebox-block-'));
 
       if ($this.attr('checked')) {
-        $('#' + el_id).show();
+        $block.show();
       }
       else {
-        $('#' + el_id).hide();
+        $block.hide();
       }
       Drupal.homebox.equalizeColumnsHeights();
       $('#homebox-changes-made').show();
     });
-
-    // Add region to place maximized portlets
-    $homebox.find('.homebox-column-wrapper:first').before('<div class="homebox-maximized"></div>');
 
     // Initialize popup dialogs
     Drupal.homebox.initDialogs();
@@ -192,8 +192,6 @@ Drupal.homebox.equalizeColumnsHeights = function () {
  * reloads the page to restore the defaults
  */
 Drupal.homebox.restoreBoxes = function () {
-  var name = $('#homebox').find('input:hidden.name').val(); // Determine page name
-
   // Show in-progress dialog
   $('#homebox-restore-inprogress').dialog('open');
 
@@ -202,7 +200,7 @@ Drupal.homebox.restoreBoxes = function () {
     type: 'POST',
     cache: 'false',
     dataType: 'json',
-    data: {name: name},
+    data: {name: Drupal.homebox.name},
     success: function () {
       location.reload(); // Reload page to show defaults
     },
@@ -329,8 +327,6 @@ Drupal.homebox.addItemAjax = function (name, block) {
  * Delete a custom block from the page
  */
 Drupal.homebox.deleteItem = function (block) {
-  var name = $('#homebox').find('input:hidden.name').val();
-
   $('#homebox-delete-custom-message').html(Drupal.t('Deleting item') + '...');
 
   $.ajax({
@@ -338,7 +334,7 @@ Drupal.homebox.deleteItem = function (block) {
     type: 'POST',
     cache: 'false',
     dataType: 'json',
-    data: {name: name, block: block},
+    data: {name: Drupal.homebox.name, block: block},
     success: function () {
       $('#homebox-delete-custom-message').html(Drupal.t('Refreshing page') + '...');
       location.reload(); // Reload page
@@ -359,7 +355,6 @@ Drupal.homebox.deleteItem = function (block) {
  *   add if and when the first ajax call is successful.
  */
 Drupal.homebox.saveBoxes = function (save) {
-  var name = $('#homebox').find('input:hidden.name').val();
   var blocks = {};
 
   // Show progress dialog
@@ -370,21 +365,22 @@ Drupal.homebox.saveBoxes = function (save) {
     // Determine region
     colIndex = colIndex + 1;
     $(this).find('.homebox-portlet').each(function (boxIndex) {
-      var color = 'default';
+      var $this = $(this),
+        color = 'default';
 
       // Determine custom color, if any
-      $.each($(this).attr('class').split(' '), function (key, a) {
+      $.each($this.attr('class').split(' '), function (key, a) {
         if (a.substr(0, 14) === 'homebox-color-') {
           color = a.substr(14);
         }
       });
 
       // Build blocks object
-      blocks[$(this).find('input:hidden.homebox').val()] = {
+      blocks[$this.attr('id').replace(/^homebox-block-/, '')] = {
         region: colIndex,
-        status: $(this).is(':visible'),
+        status: $this.is(':visible'),
         color: color,
-        open: $(this).find('.portlet-content').is(':visible')
+        open: $this.find('.portlet-content').is(':visible')
       };
     });
   });
@@ -397,7 +393,7 @@ Drupal.homebox.saveBoxes = function (save) {
     type: 'POST',
     cache: 'false',
     dataType: 'json',
-    data: {name: name, blocks: blocks},
+    data: {name: Drupal.homebox.name, blocks: blocks},
     success: function () {
       $('#homebox-save-message').dialog('close');
       $('#homebox-changes-made').hide();
@@ -405,7 +401,7 @@ Drupal.homebox.saveBoxes = function (save) {
       if (save) {
         // If a block was passed in, save it as a
         // custom block after ajax success.
-        Drupal.homebox.addItemAjax(name, save);
+        Drupal.homebox.addItemAjax(Drupal.homebox.name, save);
       }
     },
     error: function () {

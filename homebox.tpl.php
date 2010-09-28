@@ -27,25 +27,26 @@
       <?php foreach ($available_blocks as $key => $block): ?>
         <?php if ($block['closable']): ?>
           <li>
-            <input type="checkbox" class="homebox_toggle_box" <?php print $block['checked']; ?> id="homebox_toggle_<?php print $block['dom_id']; ?>" /> <?php print $block['subject']; ?>
+            <input type="checkbox" class="homebox_toggle_box" <?php print $block['checked']; ?> id="homebox_toggle_<?php print $block['key']; ?>" /> <?php print $block['subject']; ?>
           </li>
         <?php endif; ?>
       <?php endforeach ?>
     </ul>
   </div>
 
+  <div class="homebox-maximized"></div>
   <?php for ($i = 1; $i <= count($regions); $i++): ?>
-   <div class="homebox-column-wrapper homebox-column-wrapper-<?php print $i; ?>"<?php print count($page->settings['widths']) ? ' style="width: ' . $page->settings['widths'][$i] . '%;"' : ''; ?>>
-    <div class="homebox-column" id="homebox-column-<?php print $i; ?>">
-      <?php foreach ($regions[$i] as $key => $weight): ?>
-        <?php foreach ($weight as $block): ?>
-          <?php if ($block->content): ?>
-            <?php print theme('homebox_block', $block, $page); ?>
-          <?php endif ?>
+    <div class="homebox-column-wrapper homebox-column-wrapper-<?php print $i; ?>"<?php print count($page->settings['widths']) ? ' style="width: ' . $page->settings['widths'][$i] . '%;"' : ''; ?>>
+      <div class="homebox-column" id="homebox-column-<?php print $i; ?>">
+        <?php foreach ($regions[$i] as $key => $weight): ?>
+          <?php foreach ($weight as $block): ?>
+            <?php if ($block->content): ?>
+              <?php print theme('homebox_block', $block, $page); ?>
+            <?php endif ?>
+          <?php endforeach ?>
         <?php endforeach ?>
-      <?php endforeach ?>
+      </div>
     </div>
-   </div>
   <?php endfor ?>
 
   <!-- Used by jQuery UI to provide popups -->
@@ -71,8 +72,6 @@
     <input type="hidden" value="" />
   </div>
   <div class="clear-block"></div>
-  <!-- Used by jQuery to determine page ID -->
-  <input type="hidden" class="name" value="<?php print $page->name; ?>" />
 </div>
 
 <!-- End Homebox -->
