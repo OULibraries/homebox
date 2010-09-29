@@ -82,7 +82,7 @@ function homebox_update_6001() {
 
         // Move title.
         $block['title_custom'] = $block['title'];
-        unset($block['title']);
+        $block['title'] = '';
 
         // Move block to new key.
         unset($row->settings[$key]);
