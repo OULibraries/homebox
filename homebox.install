@@ -61,3 +61,37 @@ function homebox_update_6000() {
 
   return $return;
 }
+
+/**
+ * Use 'custom' delta for homebox blocks.
+ */
+function homebox_update_6001() {
+  $return = array();
+
+  $result = db_query("SELECT uid, name, settings FROM {homebox_users}");
+  while ($row = db_fetch_object($result)) {
+    $row->settings = unserialize($row->settings);
+
+    foreach ($row->settings as $key => $block) {
+      if (isset($block['module']) && $block['module'] === 'homebox') {
+        // Save the new key for later.
+        $new_key = 'homebox_custom-' . $block['delta'];
+
+        // Set delta to standard.
+        $block['delta'] = 'custom';
+
+        // Move title.
+        $block['title_custom'] = $block['title'];
+        unset($block['title']);
+
+        // Move block to new key.
+        unset($row->settings[$key]);
+        $row->settings[$new_key] = $block;
+      }
+    }
+
+    drupal_write_record('homebox_users', $row, array('uid', 'name'));
+  }
+
+  return $return;
+}

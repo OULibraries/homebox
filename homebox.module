@@ -421,7 +421,6 @@ function homebox_prepare_block($block_key, $page) {
   // Build the $block object.
   $block->key = $block_key;
   $block->subject = $block_settings['title'];
-  $block->content = isset($block_settings['content']) ? $block_settings['content'] : '';
   $block->module = $block_settings['module'];
   $block->delta = $block_settings['delta'];
   $block->region = (int) $block_settings['region'];
@@ -442,40 +441,34 @@ function homebox_prepare_block($block_key, $page) {
     return NULL; 
   }
 
-  if ($block->module === 'homebox') {
-    $block->subject = strip_tags($block->subject);
-    $block->content = filter_xss_admin(_filter_autop($block->content));
+  // Attempt to find a block in the cache table No reason to render block
+  // content if the module is homebox because it's a custom item.
+  if ((bool) $page->settings['cache'] && !count(module_implements('node_grants')) && $_SERVER['REQUEST_METHOD'] == 'GET' && ($cid = _block_get_cache_id($block)) && ($cache = cache_get($cid, 'cache_block'))) {
+    $array = $cache->data;
   }
   else {
-    // Attempt to find a block in the cache table No reason to render block
-    // content if the module is homebox because it's a custom item.
-    if ((bool) $page->settings['cache'] && !count(module_implements('node_grants')) && $_SERVER['REQUEST_METHOD'] == 'GET' && ($cid = _block_get_cache_id($block)) && ($cache = cache_get($cid, 'cache_block'))) {
-      $array = $cache->data;
-    }
-    else {
-      // No cache, fetch the blocks from modules
-      $array = module_invoke($block->module, 'block', 'view', $block->delta, array('homebox' => $block));
+    // No cache, fetch the blocks from modules
+    $array = module_invoke($block->module, 'block', 'view', $block->delta, array('homebox' => $block));
 
-      // Block.module will return 'n/a' if a custom block has been deleted
-      if ($array['content'] == 'n/a') {
-        // If this is the case, skip this block
-        return NULL; 
-      }
-      if (isset($cid)) {
-        cache_set($cid, $array, 'cache_block', CACHE_TEMPORARY);
-      }
+    // Block.module will return 'n/a' if a custom block has been deleted
+    if ($array['content'] == 'n/a') {
+      // If this is the case, skip this block
+      return NULL; 
     }
+    if (isset($cid)) {
+      cache_set($cid, $array, 'cache_block', CACHE_TEMPORARY);
+    }
+  }
 
-    // Render block content
-    if (isset($array) && is_array($array)) {
-      foreach ($array as $k => $v) {
-        // If block has custom title, leave it
-        if($k == 'subject' && !empty($block->subject)) {
-          continue;
-        }
-        $block->$k = $v;
-      } 
-    }
+  // Render block content
+  if (isset($array) && is_array($array)) {
+    foreach ($array as $k => $v) {
+      // If block has custom title, leave it
+      if($k == 'subject' && !empty($block->subject)) {
+        continue;
+      }
+      $block->$k = $v;
+    } 
   }
 
   // We don't continue to assign this block since Drupal didn't returned any
@@ -561,18 +554,31 @@ function homebox_build_block($page, $key) {
   ));
 }
 
+function homebox_block($op, $delta, $edit) {
+  switch ($op) {
+    case 'view':
+      switch ($delta) {
+        case 'custom':
+          return array(
+            'subject' => strip_tags($edit['homebox']->title_custom),
+            'content' => filter_xss_admin(_filter_autop($edit['homebox']->content)),
+          );
+      }
+  }
+}
+
 function homebox_homebox_block_keys() {
-  return array('title', 'content');
+  return array('title_custom', 'content');
 }
 
 function homebox_homebox_block_edit_form($block) {
   $form = array();
 
-  $form['title'] = array(
+  $form['title_custom'] = array(
     '#type' => 'textfield',
     '#title' => t('Title'),
     '#size' => 25,
-    '#default_value' => $block->title,
+    '#default_value' => $block->title_custom,
     '#required' => TRUE,
   );
   $form['content'] = array(
@@ -1199,20 +1205,21 @@ function homebox_js_add_item() {
 
   // Build custom block
   $block = array(
-    'title' => trim($block['title']),
+    'title' => '',
+    'title_custom' => trim($block['title']),
     'content' => trim($block['body']),
     'open' => 1,
     'color' => 'default',
     'status' => 1,
     'region' => 1,
     'module' => 'homebox',
-    'delta' => $id,
+    'delta' => 'custom',
     'movable' => 1,
     'closable' => 1,
   );
   
   // Add custom block to user's blocks
-  $user_blocks['homebox_' . $id] = $block;
+  $user_blocks['homebox_custom-' . $id] = $block;
   
   // Save again
   _homebox_save_user_settings($page, $user_blocks);
