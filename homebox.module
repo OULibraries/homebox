@@ -413,6 +413,11 @@ function homebox_prepare_block($block_key, $page) {
     }
   }
 
+  // Make sure unclosable blocks are not closed.
+  if (!$block_settings['closable']) {
+    $block_settings['status'] = TRUE;
+  }
+
   // Build the $block object.
   $block->key = $block_key;
   $block->subject = $block_settings['title'];
@@ -1407,27 +1412,12 @@ function _homebox_save_user_settings($page, $blocks) {
     // Add weights to blocks
     $blocks[$key]['weight'] = ++$i;
 
-    // Prevent crafty users from closing unclosable blocks
-    if (!homebox_block_is_custom($key) && !$page->settings['blocks'][$key]['closable']) {
-      $blocks[$key]['status'] = 1;
-    }
-
     // Carry over existing settings
     if ($user_blocks !== FALSE && isset($user_blocks[$key])) {
       $blocks[$key] = homebox_merge_settings($user_blocks[$key], $blocks[$key]);
     }
   }
-  
-  // Make sure the blocks provided are part of the defaults
-  // This prevents users from modifying the DOM to return any blocks they want!
-  foreach (array_diff_key($blocks, $page->settings['blocks']) as $key => $value) {
-    // Make sure it's not an allowed custom block first
-    if ($page->settings['custom'] && homebox_block_is_custom($key)) {
-      continue; 
-    }
-    unset($blocks[$key]);
-  }
-  
+
   // Remove any old settings
   db_query("DELETE FROM {homebox_users} WHERE uid = %d AND name = '%s'", $user->uid, $page->name);
   
