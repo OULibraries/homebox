@@ -226,12 +226,10 @@ div.homebox-colors {
 }
 
 /* Form Components */
-#homebox-add-form form, 
-#homebox-edit-form form {
+#homebox-add-form form {
   margin: 0;
 }
-#homebox-add-form-status,
-#homebox-edit-form-status {
+#homebox-add-form-status {
   background: #FEF1EC;
   border: 1px solid #CD0A0A;
   color: #CD0A0A;
@@ -240,13 +238,11 @@ div.homebox-colors {
   margin-bottom: 5px;
   width: 450px;
 }
-#homebox-add-form-title,
-#homebox-edit-form-title {
+#homebox-add-form-title {
   margin-bottom: 6px;
   width: 450px;
 }
-#homebox-add-form-content,
-#homebox-edit-form-content {
+#homebox-add-form-content {
   width: 450px;
   height: 135px;
 }
