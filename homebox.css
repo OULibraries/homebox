@@ -217,8 +217,7 @@ div.homebox-colors {
   font-style: italic;
   display: none;
 }
-.homebox-delete-custom-link,
-.homebox-edit-custom-link {
+.homebox-delete-custom-link {
   font-size: 85%;
   border: none;
   color: #1C94C4;
