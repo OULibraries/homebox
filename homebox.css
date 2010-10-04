@@ -1,8 +1,4 @@
-/* $Id$ */
 
-/*
-** Administrative interface
-*/
 #homebox-admin-display-form .roles {
   font-size: 86%;
 }
@@ -176,27 +172,11 @@ div.homebox-colors {
 }
 
 /* Page configure UI */
-#homebox-settings {
-  background: url(images/stripe.png) repeat;
-  padding: 0;
-  margin: 0;
-  overflow-y: auto;
-}
-#homebox-settings ul {
-  padding: 3px;
-}
-#homebox-settings li {
-  display: block;
-  float: left;
-  border: 1px solid #DDD;
-  margin: 2px;
-  padding: 3px 6px;
-  background: #FFF;
-}
 #homebox-buttons {
   margin: 5px 0;
 }
-#homebox-buttons button {
+#homebox-buttons button,
+#homebox-buttons a {
   background: #F6F6F6;
   border: 1px solid #CCCCCC;
   color: #1C94C4;
@@ -224,27 +204,14 @@ div.homebox-colors {
   cursor: pointer;
   background: #FFF;
 }
-
-/* Form Components */
-#homebox-add-form form {
-  margin: 0;
-}
-#homebox-add-form-status {
-  background: #FEF1EC;
-  border: 1px solid #CD0A0A;
-  color: #CD0A0A;
-  padding: 8px;
+#homebox-add {
   display: none;
-  margin-bottom: 5px;
-  width: 450px;
 }
-#homebox-add-form-title {
-  margin-bottom: 6px;
-  width: 450px;
+#homebox-add a {
+  font-weight: bold;
 }
-#homebox-add-form-content {
-  width: 450px;
-  height: 135px;
+#homebox-add a.used {
+  font-weight: normal;
 }
 
 /* 

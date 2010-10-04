@@ -6,8 +6,6 @@ Drupal.behaviors.homebox = function (context) {
   var $homebox = $('#homebox:not(.homebox-processed)', context).addClass('homebox-processed');
 
   if ($homebox.length > 0) {
-    var $togglers = $homebox.find('#homebox-settings input.homebox_toggle_box');
-
     // Find all columns
     Drupal.homebox.$columns = $homebox.find('div.homebox-column');
     Drupal.homebox.name = $.grep($homebox.attr('class').split(' '), function (c) {
@@ -33,30 +31,15 @@ Drupal.behaviors.homebox = function (context) {
       }
     });
 
-    // Add click behaviour to checkboxes that enable/disable blocks
-    $togglers.click(function () {
-      var $this = $(this),
-        $block = $($this.attr('id').replace('homebox_toggle_', '#homebox-block-'));
-
-      if ($this.attr('checked')) {
-        $block.show();
-      }
-      else {
-        $block.hide();
-      }
-      Drupal.homebox.equalizeColumnsHeights();
-      $('#homebox-changes-made').show();
-    });
-
     // Initialize popup dialogs
     Drupal.homebox.initDialogs();
 
     // Intialize popup links
     Drupal.homebox.initDialogLinks();
 
-    // Clear out add item form components
-    $('#homebox-add-form-title').val('');
-    $('#homebox-add-form-content').val('');
+    $homebox.find('#homebox-add-link').click(function () {
+      $homebox.find('#homebox-add').toggle();
+    });
 
     // Equalize column heights after AJAX calls
     $homebox.ajaxStop(function () {
@@ -69,13 +52,6 @@ Drupal.behaviors.homebox = function (context) {
  * Declare all dialog windows
  */
 Drupal.homebox.initDialogs = function () {
-  // Put widget selection in a dialog window
-  $('#homebox-settings').dialog({
-    modal: true,
-    autoOpen: false,
-    width: 400
-  });
-
   // Save settings progress dialog
   $('#homebox-save-message').dialog({
     modal: true,
@@ -94,26 +70,6 @@ Drupal.homebox.initDialogs = function () {
         Drupal.homebox.deleteItem($(this).find('input').val());
       },
       Cancel: function () {
-        $(this).dialog('close');
-      }
-    }
-  });
-
-  // Add item dialog
-  $('#homebox-add-form').dialog({
-    autoOpen: false,
-    modal: true,
-    zIndex: 500,
-    width: 500,
-    height: 350,
-    buttons: {
-      'Submit': function () {
-        Drupal.homebox.addItem();
-      },
-      Cancel: function () {
-        $('#homebox-add-form-status').hide();
-        $('#homebox-add-form-title').val('');
-        $('#homebox-add-form-content').val('');
         $(this).dialog('close');
       }
     }
@@ -149,11 +105,6 @@ Drupal.homebox.initDialogs = function () {
  * dialog windows
  */
 Drupal.homebox.initDialogLinks = function () {
-  // Edit content link
-  $('#homebox-edit-link').click(function () {
-    $('#homebox-settings').dialog('open');
-  });
-
   // Save settings link
   $('#homebox-save-link').click(function () {
     Drupal.homebox.saveBoxes();
@@ -162,11 +113,6 @@ Drupal.homebox.initDialogLinks = function () {
   // Restore to defaults link
   $('#homebox-restore-link').click(function () {
     $('#homebox-restore-confirmation').dialog('open');
-  });
-
-  // Add items link
-  $('#homebox-add-link').click(function () {
-    $('#homebox-add-form').dialog('open');
   });
 };
 
@@ -268,62 +214,6 @@ Drupal.homebox.maximizeBox = function (icon) {
 };
 
 /**
- * Add a custom block
- */
-Drupal.homebox.addItem = function () {
-  var block = {};
-  var title = $('#homebox-add-form-title').val();
-  var content = $('#homebox-add-form-content').val();
-
-  // Make sure both fields are supplied
-  if (!title || !content) {
-    $('#homebox-add-form-status').show();
-    $('#homebox-add-form-status').html(Drupal.t('All fields are required.'));
-    return;
-  }
-
-  // Place data into the custom block object
-  block = {
-    title: title,
-    body: content
-  };
-
-  // Encode the block
-  block = JSON.stringify(block);
-
-  // Show progress message
-  $('#homebox-add-form').html(Drupal.t('Adding item') + '...');
-
-  // Save current configuration
-  // We pass the custom block in, because it will be added
-  // after the full save is executed, only if successful
-  Drupal.homebox.saveBoxes(block);
-};
-
-/**
- * The AJAX call for adding an item
- *
- * This needs to be separate so that .saveBoxes()
- * can call it after a successful AJAX save
- */
-Drupal.homebox.addItemAjax = function (name, block) {
-  $.ajax({
-    url: Drupal.settings.basePath + '?q=homebox/js/add',
-    type: 'POST',
-    cache: 'false',
-    dataType: 'json',
-    data: {name: name, block: block},
-    success: function () {
-      $('#homebox-add-form').html(Drupal.t('Refreshing page') + '...');
-      location.reload(); // Reload page
-    },
-    error: function () {
-      $('#homebox-add-form').html('<span style="color:red;">' + Drupal.t('Save failed. Please refresh page.') + '</span>');
-    }
-  });
-};
-
-/**
  * Delete a custom block from the page
  */
 Drupal.homebox.deleteItem = function (block) {
@@ -347,14 +237,8 @@ Drupal.homebox.deleteItem = function (block) {
 
 /**
  * Save the current state of the homebox
- *
- * @param save
- *   Optionally, A JSON-encoded custom block object. This is passed in
- *   because we want to first save the current state, then add the
- *   custom block so changes are preserved, and that we can only
- *   add if and when the first ajax call is successful.
  */
-Drupal.homebox.saveBoxes = function (save) {
+Drupal.homebox.saveBoxes = function () {
   var blocks = {};
 
   // Show progress dialog
@@ -397,12 +281,6 @@ Drupal.homebox.saveBoxes = function (save) {
     success: function () {
       $('#homebox-save-message').dialog('close');
       $('#homebox-changes-made').hide();
-
-      if (save) {
-        // If a block was passed in, save it as a
-        // custom block after ajax success.
-        Drupal.homebox.addItemAjax(Drupal.homebox.name, save);
-      }
     },
     error: function () {
       $('#homebox-save-message').html('<span style="color:red;">' + Drupal.t('Save failed. Please refresh page.') + '</span>');
@@ -506,8 +384,6 @@ Drupal.behaviors.homeboxPortlet = function (context) {
     // Attach click event on close
     $portletHeader.find('.portlet-close').click(function () {
       $portlet.hide();
-      // Uncheck input settings
-      $('#homebox_toggle_' + $portlet.attr('id')).attr('checked', false);
       Drupal.homebox.equalizeColumnsHeights();
       $('#homebox-changes-made').show();
     });

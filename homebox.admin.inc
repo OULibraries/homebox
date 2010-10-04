@@ -89,13 +89,6 @@ function homebox_admin_page() {
     '#default_value' => $page ? $page->settings['full'] : 0,
   );
   
-  $form['page']['options']['custom'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Allow custom items'),
-    '#description' => t('If checked, logged in users will be able to add custom blocks to their own page. The blocks contain a user-entered title and content body.'),
-    '#default_value' => $page ? $page->settings['custom'] : 0,
-  );
-  
   $result = db_query('SELECT rid, name FROM {role} ORDER BY name');
   $role_options = array();
   while ($role = db_fetch_object($result)) {
@@ -332,7 +325,6 @@ function homebox_admin_form_to_page(&$page, $form_state) {
   $page->settings['menu'] = (int) $form_state['values']['menu'];
   $page->settings['enabled'] = (int) $form_state['values']['enabled'];
   $page->settings['full'] = (int) $form_state['values']['full'];
-  $page->settings['custom'] = (int) $form_state['values']['custom'];
   $page->settings['roles'] = array();
     
   foreach ($form_state['values']['roles'] as $role) {
