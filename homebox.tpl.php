@@ -15,13 +15,10 @@
         <a href="javascript:void(0)" id="homebox-add-link"><?php print t('Add a block') ?></a>
       <?php endif; ?>
       <button id="homebox-restore-link"><?php print t('Restore to defaults'); ?></button>
-      <button id="homebox-save-link"><?php print t('Save settings'); ?></button>
-      <span id="homebox-minimize-to-save"><?php print t('Minimize to save'); ?></span>
-      <span id="homebox-changes-made">* <?php print t('Unsaved'); ?></span>
+      <?php print $save_form; ?>
     </div>
   
     <!-- Used by jQuery UI to provide popups -->
-    <div id="homebox-save-message"><?php print t('Saving settings') . '...'; ?></div>
     <div id="homebox-restore-confirmation" title="<?php print t('Are you sure you want to restore to defaults?'); ?>">
       <div style="width:400px;"><?php print t('Completing this action will purge your custom settings and items and restore the page to the default configuration.
       This action cannot be undone.'); ?></div>

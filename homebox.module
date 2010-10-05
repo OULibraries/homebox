@@ -74,11 +74,6 @@ function homebox_menu() {
   }
 
   // Ajax Callbacks
-  $items['homebox/js/save'] = array(
-    'page callback' => 'homebox_js_save_user_settings',
-    'access callback' => '_homebox_user_access_save_homebox',
-    'type' => MENU_CALLBACK,
-  );
   $items['homebox/js/restore'] = array(
     'page callback' => 'homebox_js_restore_defaults',
     'access callback' => '_homebox_user_access_save_homebox',
@@ -93,6 +88,13 @@ function homebox_menu() {
     'page callback' => 'homebox_add_block',
     'page arguments' => array(2, 4, 5),
     'access callback' => 'homebox_edit_access',
+    'access arguments' => array(2),
+    'type' => MENU_CALLBACK,
+  );
+  $items['homebox/js/%homebox/save'] = array(
+    'page callback' => 'homebox_js_save_user_settings',
+    'page arguments' => array(2),
+    'access callback' => '_homebox_user_access_view_homebox',
     'access arguments' => array(2),
     'type' => MENU_CALLBACK,
   );
@@ -224,6 +226,7 @@ function homebox_theme($blocks) {
         'regions' => NULL,
         'column_count' => NULL,
         'add_links' => NULL,
+        'save_form' => NULL,
         'page' => NULL,
       ),
       'template' => 'homebox', // Set template to homebox.tpl.php
@@ -258,7 +261,6 @@ function template_preprocess_homebox(&$variables) {
 
   // Add Homebox JavaScript files
   drupal_add_js($data = drupal_get_path('module', 'homebox') .'/homebox.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
-  drupal_add_js($data = drupal_get_path('module', 'homebox') .'/includes/json2.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
   drupal_add_js($data = drupal_get_path('module', 'homebox') .'/includes/tipsy/jquery.tipsy.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
  
   // Add CSS for homebox
@@ -364,13 +366,17 @@ function homebox_build($page) {
       }
     }
     $add_links = theme('item_list', $add_links);
+
+    $save_form = drupal_get_form('homebox_save_form', $page);
   }
   else {
     $add_links = NULL;
+    $save_form = NULL;
   }
 
+
   // Build output
-  $output = theme('homebox', $regions, $page->settings['regions'], $add_links, $page);
+  $output = theme('homebox', $regions, $page->settings['regions'], $add_links, $save_form, $page);
     
   // Build the page
   if ($page->settings['full']) {
@@ -381,6 +387,37 @@ function homebox_build($page) {
     // Simply return the page
     return $output;
   }
+}
+
+function homebox_save_form($form_state, $page) {
+  $form = array();
+
+  $form['blocks'] = array(
+    '#type' => 'hidden',
+  );
+  $form['save'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#ahah' => array(
+      'path' => 'homebox/js/' . $page->name . '/save',
+      'event' => 'click',
+    ),
+  );
+  $form['messages'] = array(
+    '#value' => '<span id="homebox-minimize-to-save">' . t('Minimize to save') . '</span>'
+    . '<span id="homebox-changes-made">* ' . t('Unsaved') . '</span>',
+  );
+
+  return $form;
+}
+
+function homebox_save_form_submit($form, $form_state) {
+  parse_str($form_state['values']['blocks'], $blocks);
+  foreach ($blocks as $key => $value) {
+    parse_str($value, $block);
+    $blocks[$key] = $block;
+  }
+  _homebox_save_user_settings($form['#parameters'][2], $blocks);
 }
 
 /**
@@ -1131,23 +1168,9 @@ function _homebox_get_view_name($block) {
  * 
  * Save a users page settings
  */
-function homebox_js_save_user_settings() {
-  drupal_json(TRUE);
-  
-  // Load page from POST name
-  $page = homebox_get_page(filter_xss(trim($_POST['name'])));
-  
-  // If no page at this step, just exit
-  if (!$page) {
-    drupal_json(TRUE);
-    exit();
-  }
-  
-  // Get user block settings
-  $user_blocks = json_decode($_POST['blocks'], TRUE);
-  
-  // Save user settings
-  _homebox_save_user_settings($page, $user_blocks);
+function homebox_js_save_user_settings($page) {
+  drupal_get_form('homebox_save_form', $page);
+  print drupal_json(array('status' => TRUE, 'data' => ''));
 }
 
 /**
@@ -1346,9 +1369,7 @@ function homebox_pages($api = TRUE) {
  *   An object representing the user's page settings, or FALSE.
  */
 function _homebox_get_user_settings($page, $init = FALSE, $_reset = FALSE) {
-  if (!$user) {
-    global $user;
-  }
+  global $user;
   static $cache = array();
   $key = $user->uid . ':' . $page->name;
   

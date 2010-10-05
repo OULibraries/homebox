@@ -213,6 +213,15 @@ div.homebox-colors {
 #homebox-add a.used {
   font-weight: normal;
 }
+#homebox-buttons form {
+  position: relative;
+  display: inline;
+  white-space: nowrap;
+}
+#homebox-buttons form div {
+  position: absolute;
+  display: inline;
+}
 
 /* 
  * jQuery UI 

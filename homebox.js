@@ -41,6 +41,37 @@ Drupal.behaviors.homebox = function (context) {
       $homebox.find('#homebox-add').toggle();
     });
 
+    // Populate hidden form element with block order and values.
+    $homebox.find('#homebox-save-form input[type=submit]').mousedown(function () {
+      var blocks = {};
+      Drupal.homebox.$columns.each(function (colIndex) {
+        // Determine region
+        colIndex = colIndex + 1;
+        $(this).find('.homebox-portlet').each(function (boxIndex) {
+          var $this = $(this),
+            color = 'default';
+
+          // Determine custom color, if any
+          $.each($this.attr('class').split(' '), function (key, a) {
+            if (a.substr(0, 14) === 'homebox-color-') {
+              color = a.substr(14);
+            }
+          });
+
+          // Build blocks object
+          blocks[$this.attr('id').replace(/^homebox-block-/, '')] = $.param({
+            region: colIndex,
+            status: $this.is(':visible') ? 1 : 0,
+            color: color,
+            open: $this.find('.portlet-content').is(':visible') ? 1 : 0
+          });
+        });
+      });
+
+      $(this).siblings('[name=blocks]').attr('value', $.param(blocks));
+      $('#homebox-changes-made').hide();
+    });
+
     // Equalize column heights after AJAX calls
     $homebox.ajaxStop(function () {
       Drupal.homebox.equalizeColumnsHeights();
@@ -52,13 +83,6 @@ Drupal.behaviors.homebox = function (context) {
  * Declare all dialog windows
  */
 Drupal.homebox.initDialogs = function () {
-  // Save settings progress dialog
-  $('#homebox-save-message').dialog({
-    modal: true,
-    height: 100,
-    autoOpen: false
-  });
-
   // Deletion confirmation dialog
   $('#homebox-delete-custom-message').dialog({
     autoOpen: false,
@@ -105,11 +129,6 @@ Drupal.homebox.initDialogs = function () {
  * dialog windows
  */
 Drupal.homebox.initDialogLinks = function () {
-  // Save settings link
-  $('#homebox-save-link').click(function () {
-    Drupal.homebox.saveBoxes();
-  });
-
   // Restore to defaults link
   $('#homebox-restore-link').click(function () {
     $('#homebox-restore-confirmation').dialog('open');
@@ -237,59 +256,6 @@ Drupal.homebox.deleteItem = function (block) {
 
 Drupal.homebox.pageChanged = function () {
   $('#homebox-changes-made').show();
-};
-
-/**
- * Save the current state of the homebox
- */
-Drupal.homebox.saveBoxes = function () {
-  var blocks = {};
-
-  // Show progress dialog
-  $('#homebox-save-message').dialog('open');
-
-  Drupal.homebox.equalizeColumnsHeights();
-  Drupal.homebox.$columns.each(function (colIndex) {
-    // Determine region
-    colIndex = colIndex + 1;
-    $(this).find('.homebox-portlet').each(function (boxIndex) {
-      var $this = $(this),
-        color = 'default';
-
-      // Determine custom color, if any
-      $.each($this.attr('class').split(' '), function (key, a) {
-        if (a.substr(0, 14) === 'homebox-color-') {
-          color = a.substr(14);
-        }
-      });
-
-      // Build blocks object
-      blocks[$this.attr('id').replace(/^homebox-block-/, '')] = {
-        region: colIndex,
-        status: $this.is(':visible'),
-        color: color,
-        open: $this.find('.portlet-content').is(':visible')
-      };
-    });
-  });
-
-  // Encode JSON
-  blocks = JSON.stringify(blocks);
-
-  $.ajax({
-    url: Drupal.settings.basePath + '?q=homebox/js/save',
-    type: 'POST',
-    cache: 'false',
-    dataType: 'json',
-    data: {name: Drupal.homebox.name, blocks: blocks},
-    success: function () {
-      $('#homebox-save-message').dialog('close');
-      $('#homebox-changes-made').hide();
-    },
-    error: function () {
-      $('#homebox-save-message').html('<span style="color:red;">' + Drupal.t('Save failed. Please refresh page.') + '</span>');
-    }
-  });
 };
 
 Drupal.homebox.convertRgbToHex = function (rgb) {
