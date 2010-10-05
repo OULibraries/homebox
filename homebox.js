@@ -27,7 +27,7 @@ Drupal.behaviors.homebox = function (context) {
       },
       stop: function () {
         Drupal.homebox.equalizeColumnsHeights();
-        $('#homebox-changes-made').show();
+        Drupal.homebox.pageChanged();
       }
     });
 
@@ -235,6 +235,10 @@ Drupal.homebox.deleteItem = function (block) {
   });
 };
 
+Drupal.homebox.pageChanged = function () {
+  $('#homebox-changes-made').show();
+};
+
 /**
  * Save the current state of the homebox
  */
@@ -338,7 +342,7 @@ Drupal.behaviors.homeboxPortlet = function (context) {
       $(this).toggleClass('portlet-plus');
       $portlet.find('.portlet-content').toggle();
       Drupal.homebox.equalizeColumnsHeights();
-      $('#homebox-changes-made').show();
+      Drupal.homebox.pageChanged();
     });
 
     // Attach click event on minus
@@ -364,7 +368,7 @@ Drupal.behaviors.homeboxPortlet = function (context) {
       $portlet.find('.portlet-content').toggle();
 
       Drupal.homebox.equalizeColumnsHeights();
-      $('#homebox-changes-made').show();
+      Drupal.homebox.pageChanged();
     });
 
     // Attach click event on settings icon
@@ -385,7 +389,7 @@ Drupal.behaviors.homeboxPortlet = function (context) {
     $portletHeader.find('.portlet-close').click(function () {
       $portlet.hide();
       Drupal.homebox.equalizeColumnsHeights();
-      $('#homebox-changes-made').show();
+      Drupal.homebox.pageChanged();
     });
 
     $.each($portlet.attr('class').split(' '), function (key, a) {
@@ -413,7 +417,7 @@ Drupal.behaviors.homeboxPortlet = function (context) {
       // This avoid dynamic CSS
       $portletHeader.attr('style', 'background: ' + Drupal.homebox.convertRgbToHex(color));
       $portlet.find('.homebox-portlet-inner').attr('style', 'border: 1px solid ' + Drupal.homebox.convertRgbToHex(color));
-      $('#homebox-changes-made').show();
+      Drupal.homebox.pageChanged();
     });
 
     // Add tooltips to icons
