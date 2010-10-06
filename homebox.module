@@ -328,7 +328,7 @@ function homebox_build($page) {
     }
     $allowed_blocks[$block['module']][$block['delta']] = $info[$block['module']][$block['delta']];
     if (!empty($block['title'])) {
-      $allowed_blocks[$block['module']]['info'] = $block['title'];
+      $allowed_blocks[$block['module']][$block['delta']]['info'] = $block['title'];
     }
   }
 
