@@ -8,7 +8,7 @@
  */
 ?>
 <?php global $user; ?>
-<div id="homebox" class="column-count-<?php print $column_count; ?> homebox-<?php print $page->name; ?>">
+<div id="homebox" class="<?php print $classes ?>">
   <?php if ($user->uid): ?>
     <div id="homebox-buttons">
       <?php if (!empty($add_links)): ?>

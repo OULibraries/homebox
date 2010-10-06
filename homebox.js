@@ -11,6 +11,8 @@ Drupal.behaviors.homebox = function (context) {
     Drupal.homebox.name = $.grep($homebox.attr('class').split(' '), function (c) {
       return c.match(/^homebox-(?!processed)/);
     })[0].replace(/^homebox-/, '');
+    Drupal.homebox.$page = $homebox;
+    Drupal.homebox.$pageSave = $homebox.find('#homebox-save-form input[type=submit]');
 
     // Equilize columns height
     Drupal.homebox.equalizeColumnsHeights();
@@ -42,7 +44,7 @@ Drupal.behaviors.homebox = function (context) {
     });
 
     // Populate hidden form element with block order and values.
-    $homebox.find('#homebox-save-form input[type=submit]').mousedown(function () {
+    Drupal.homebox.$pageSave.mousedown(function () {
       var blocks = {};
       Drupal.homebox.$columns.each(function (colIndex) {
         // Determine region
@@ -255,7 +257,12 @@ Drupal.homebox.deleteItem = function (block) {
 };
 
 Drupal.homebox.pageChanged = function () {
-  $('#homebox-changes-made').show();
+  if (Drupal.homebox.$page.hasClass('homebox-auto-save')) {
+    Drupal.homebox.$pageSave.mousedown().click();
+  }
+  else {
+    $('#homebox-changes-made').show();
+  }
 };
 
 Drupal.homebox.convertRgbToHex = function (rgb) {

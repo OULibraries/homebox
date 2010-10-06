@@ -222,6 +222,9 @@ div.homebox-colors {
   position: absolute;
   display: inline;
 }
+.homebox-auto-save #homebox-save-form {
+  display: none;
+}
 
 /* 
  * jQuery UI 

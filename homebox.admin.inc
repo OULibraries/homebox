@@ -78,8 +78,15 @@ function homebox_admin_page() {
   $form['page']['options']['enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable the page'),
-    '#description' => t('If unchecked, only users with the <i>administer homebox</i> permission will be able to view this page.'),
+    '#description' => t('If unchecked, only users with the <em>administer homebox</em> permission will be able to view this page.'),
     '#default_value' => $page ? $page->settings['enabled'] : 1,
+  );
+
+  $form['page']['options']['auto_save'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Auto-save on changes'),
+    '#description' => t('If checked, changes by users are saved immediately.'),
+    '#default_value' => $page ? $page->settings['auto_save'] : 1,
   );
   
   $form['page']['options']['full'] = array(
@@ -324,6 +331,7 @@ function homebox_admin_form_to_page(&$page, $form_state) {
   $page->settings['path'] = $form_state['values']['path'];
   $page->settings['menu'] = (int) $form_state['values']['menu'];
   $page->settings['enabled'] = (int) $form_state['values']['enabled'];
+  $page->settings['auto_save'] = (int) $form_state['values']['auto_save'];
   $page->settings['full'] = (int) $form_state['values']['full'];
   $page->settings['roles'] = array();
     

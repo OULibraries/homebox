@@ -260,13 +260,22 @@ function template_preprocess_homebox(&$variables) {
   jquery_ui_add(array('ui.draggable', 'ui.droppable', 'ui.sortable', 'ui.dialog'));
 
   // Add Homebox JavaScript files
-  drupal_add_js($data = drupal_get_path('module', 'homebox') .'/homebox.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
-  drupal_add_js($data = drupal_get_path('module', 'homebox') .'/includes/tipsy/jquery.tipsy.js', $type = 'module', $scope = 'header', $defer = FALSE, $cache = TRUE, $preprocess = TRUE);
+  drupal_add_js(drupal_get_path('module', 'homebox') .'/homebox.js', 'module', 'header', FALSE, TRUE, TRUE);
+  drupal_add_js(drupal_get_path('module', 'homebox') .'/includes/tipsy/jquery.tipsy.js', 'module', 'header', FALSE, TRUE, TRUE);
  
   // Add CSS for homebox
-  drupal_add_css($path = drupal_get_path('module', 'homebox') .'/homebox.css', $type = 'module', $media = 'all', $preprocess = TRUE);
-  drupal_add_css($path = drupal_get_path('module', 'homebox') .'/includes/tipsy/tipsy.css', $type = 'module', $media = 'all', $preprocess = TRUE);
-  drupal_add_css($path = drupal_get_path('module', 'jquery_ui') .'/jquery.ui/themes/default/ui.all.css', $type = 'module', $media = 'all', $preprocess = TRUE);
+  drupal_add_css(drupal_get_path('module', 'homebox') .'/homebox.css', 'module', 'all', TRUE);
+  drupal_add_css(drupal_get_path('module', 'homebox') .'/includes/tipsy/tipsy.css', 'module', 'all', TRUE);
+  drupal_add_css(drupal_get_path('module', 'jquery_ui') .'/jquery.ui/themes/default/ui.all.css', 'module', 'all', TRUE);
+
+  $classes = array(
+    'column-count-' . $variables['column_count'],
+    'homebox-' . $variables['page']->name,
+  );
+  if ($variables['page']->settings['auto_save']) {
+    $classes[] = 'homebox-auto-save';
+  }
+  $variables['classes'] = implode(' ', $classes);
 
   return $variables;
 }
@@ -962,6 +971,7 @@ function homebox_check_page_object($data, $name = NULL, $element = NULL) {
           }
         case 'menu':
         case 'enabled':
+        case 'auto_save':
         case 'cache':
         case 'full':
         case 'color':
