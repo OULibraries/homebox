@@ -1216,6 +1216,11 @@ function homebox_add_block($page, $module, $delta) {
     'movable' => 1,
     'closable' => 1,
   );
+  foreach (module_invoke($module, 'homebox_block_keys', (object) $block) as $key) {
+    if (isset($_REQUEST[$key])) {
+      $block[$key] = $_REQUEST[$key];
+    }
+  }
   
   // Add custom block to user's blocks
   $key = $block['module'] . '_' . $block['delta'];
