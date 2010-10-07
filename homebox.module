@@ -367,11 +367,11 @@ function homebox_build($page) {
     $add_links = array();
     foreach ($allowed_blocks as $module => $blocks) {
       foreach ($blocks as $delta => $info) {
-        $options = array('query' => array('token' => homebox_get_token($page)));
+        $options = array();
         if (isset($info['used'])) {
           $options['attributes'] = array('class' => 'used');
         }
-        $add_links[] = l($info['info'], 'homebox/js/' . $page->name . '/add/' . $module . '/' . $delta, $options);
+        $add_links[] = homebox_add_link($info['info'], $page, $module, $delta, $options);
       }
     }
     $add_links = theme('item_list', $add_links);
@@ -396,6 +396,29 @@ function homebox_build($page) {
     // Simply return the page
     return $output;
   }
+}
+
+/**
+ * Construct a link to add a block to a user dashboard.
+ *
+ * @param $text
+ *   Link text.
+ * @param $page
+ *   Homebox page argument.
+ * @param $module
+ *   Module of the block to add.
+ * @param $delta
+ *   $delta of the block to add.
+ * @param $options
+ *   $options as you would pass to l(). May include query arguments for
+ *   block-specific config.
+ *
+ * @return
+ *   An HTML link.
+ */
+function homebox_add_link($text, $page, $module, $delta, $options = array()) {
+  $options['query']['token'] = homebox_get_token($page);
+  return l($text, 'homebox/js/' . $page->name . '/add/' . $module . '/' . $delta, $options);
 }
 
 function homebox_save_form($form_state, $page) {
