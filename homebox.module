@@ -79,11 +79,6 @@ function homebox_menu() {
     'access callback' => '_homebox_user_access_save_homebox',
     'type' => MENU_CALLBACK,
   );
-  $items['homebox/js/delete'] = array(
-    'page callback' => 'homebox_js_delete_item',
-    'access callback' => '_homebox_user_access_save_homebox',
-    'type' => MENU_CALLBACK,
-  );
   $items['homebox/js/%homebox/add/%/%'] = array(
     'page callback' => 'homebox_add_block',
     'page arguments' => array(2, 4, 5),
@@ -1259,43 +1254,6 @@ function homebox_add_block($page, $module, $delta) {
   _homebox_save_user_settings($page, $user_blocks);
 
   drupal_goto(homebox_get_path($page));
-}
-
-/**
- * Javascript callback
- * 
- * Delete a custom block
- */
-function homebox_js_delete_item() {
-  drupal_json(TRUE);
-  
-  // Load page from POST name
-  $page = homebox_get_page(filter_xss(trim($_POST['name'])));
-  
-  // Load block ID from POST
-  $block = trim($_POST['block']);
-  
-  // Make sure page allows custom items
-  // Make sure we have a block ID
-  if (!$block) {
-    drupal_json(TRUE);
-    exit();
-  }
-  
-  // Fetch user settings
-  $user_blocks = _homebox_get_user_settings($page);
-  
-  // Make sure user settings exist
-  if (!$user_blocks) {
-    drupal_json(TRUE);
-    exit(); 
-  }
-  
-  // Remove the block
-  unset($user_blocks[$block]);
-  
-  // Save settings
-  _homebox_save_user_settings($page, $user_blocks);
 }
 
 /**

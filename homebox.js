@@ -85,22 +85,6 @@ Drupal.behaviors.homebox = function (context) {
  * Declare all dialog windows
  */
 Drupal.homebox.initDialogs = function () {
-  // Deletion confirmation dialog
-  $('#homebox-delete-custom-message').dialog({
-    autoOpen: false,
-    modal: true,
-    height: 145,
-    width: 500,
-    buttons: {
-      'Delete': function () {
-        Drupal.homebox.deleteItem($(this).find('input').val());
-      },
-      Cancel: function () {
-        $(this).dialog('close');
-      }
-    }
-  });
-
   // Restore to default in-progress dialog
   $('#homebox-restore-inprogress').dialog({
     autoOpen: false,
@@ -232,28 +216,6 @@ Drupal.homebox.maximizeBox = function (icon) {
       $('input#homebox_toggle_' + $(portlet).attr('id')).attr('disabled', 'disabled');
     }
   }
-};
-
-/**
- * Delete a custom block from the page
- */
-Drupal.homebox.deleteItem = function (block) {
-  $('#homebox-delete-custom-message').html(Drupal.t('Deleting item') + '...');
-
-  $.ajax({
-    url: Drupal.settings.basePath + '?q=homebox/js/delete',
-    type: 'POST',
-    cache: 'false',
-    dataType: 'json',
-    data: {name: Drupal.homebox.name, block: block},
-    success: function () {
-      $('#homebox-delete-custom-message').html(Drupal.t('Refreshing page') + '...');
-      location.reload(); // Reload page
-    },
-    error: function () {
-      $('#homebox-delete-custom-message').html('<span style="color:red;">' + Drupal.t('Deletion failed. Please refresh page.') + '</span>');
-    }
-  });
 };
 
 Drupal.homebox.pageChanged = function () {
@@ -417,15 +379,6 @@ Drupal.behaviors.homeboxPortlet = function (context) {
     // Remove tooltips on header clicks
     $portletHeader.click(function () {
       $('.tipsy').remove();
-    });
-
-    // Delete custom item link
-    $('.homebox-delete-custom-link').click(function () {
-      // Place the block ID into the dialog
-      $('#homebox-delete-custom-message input').val(
-        $(this).attr('id').replace('delete-', '')
-      );
-      $('#homebox-delete-custom-message').dialog('open');
     });
   });
 };

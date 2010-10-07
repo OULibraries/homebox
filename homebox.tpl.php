@@ -24,10 +24,6 @@
       This action cannot be undone.'); ?></div>
     </div>
     <div id="homebox-restore-inprogress"><?php print t('Restoring default settings') . '...'; ?></div>
-    <div id="homebox-delete-custom-message" title="<?php print t('Deletion confirmation'); ?>">
-      <?php print t('Are you sure you want to delete this item? This action cannot be undone.'); ?>
-      <input type="hidden" value="" />
-    </div>
   <?php endif; ?>
 
   <?php if (!empty($add_links)): ?>

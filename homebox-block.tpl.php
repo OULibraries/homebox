@@ -29,9 +29,6 @@
           <?php endfor ?>
         </div></div>
       <?php endif; ?>
-      <?php if ($block->module == 'homebox'): ?>
-        <button id="delete-<?php print $block->key; ?>" class="homebox-delete-custom-link"><?php print t('Delete'); ?></button>
-      <?php endif; ?>
       <?php if (isset($block->edit_form)): print $block->edit_form; endif; ?>
     </div>
     <div class="portlet-content content"><?php print $block->content; ?></div>
