@@ -33,12 +33,6 @@ Drupal.behaviors.homebox = function (context) {
       }
     });
 
-    // Initialize popup dialogs
-    Drupal.homebox.initDialogs();
-
-    // Intialize popup links
-    Drupal.homebox.initDialogLinks();
-
     $homebox.find('#homebox-add-link').click(function () {
       $homebox.find('#homebox-add').toggle();
     });
@@ -82,46 +76,6 @@ Drupal.behaviors.homebox = function (context) {
 };
 
 /**
- * Declare all dialog windows
- */
-Drupal.homebox.initDialogs = function () {
-  // Restore to default in-progress dialog
-  $('#homebox-restore-inprogress').dialog({
-    autoOpen: false,
-    modal: true,
-    height: 100
-  });
-
-  // Restore to default confirmation dialog
-  $('#homebox-restore-confirmation').dialog({
-    height: 160,
-    width: 450,
-    autoOpen: false,
-    modal: true,
-    buttons: {
-      'Restore': function () {
-        $(this).dialog('close');
-        Drupal.homebox.restoreBoxes();
-      },
-      Cancel: function () {
-        $(this).dialog('close');
-      }
-    }
-  });
-};
-
-/**
- * Attach click events to all links which handle
- * dialog windows
- */
-Drupal.homebox.initDialogLinks = function () {
-  // Restore to defaults link
-  $('#homebox-restore-link').click(function () {
-    $('#homebox-restore-confirmation').dialog('open');
-  });
-};
-
-/**
  * Set all column heights equal
  */
 Drupal.homebox.equalizeColumnsHeights = function () {
@@ -134,29 +88,6 @@ Drupal.homebox.equalizeColumnsHeights = function () {
   }).each(function () {
     if ($(this).parent('.homebox-column-wrapper').attr('style') !== 'width: 100%;') {
       $(this).height(maxHeight);
-    }
-  });
-};
-
-/**
- * Deletes user's settings via AJAX call, then
- * reloads the page to restore the defaults
- */
-Drupal.homebox.restoreBoxes = function () {
-  // Show in-progress dialog
-  $('#homebox-restore-inprogress').dialog('open');
-
-  $.ajax({
-    url: Drupal.settings.basePath + '?q=homebox/js/restore',
-    type: 'POST',
-    cache: 'false',
-    dataType: 'json',
-    data: {name: Drupal.homebox.name},
-    success: function () {
-      location.reload(); // Reload page to show defaults
-    },
-    error: function () {
-      $('#homebox-restore-inprogress').html('<span style="color:red;">' + Drupal.t('Restore failed. Please refresh page.') + '</span>');
     }
   });
 };

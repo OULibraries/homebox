@@ -14,16 +14,8 @@
       <?php if (!empty($add_links)): ?>
         <a href="javascript:void(0)" id="homebox-add-link"><?php print t('Add a block') ?></a>
       <?php endif; ?>
-      <button id="homebox-restore-link"><?php print t('Restore to defaults'); ?></button>
       <?php print $save_form; ?>
     </div>
-  
-    <!-- Used by jQuery UI to provide popups -->
-    <div id="homebox-restore-confirmation" title="<?php print t('Are you sure you want to restore to defaults?'); ?>">
-      <div style="width:400px;"><?php print t('Completing this action will purge your custom settings and items and restore the page to the default configuration.
-      This action cannot be undone.'); ?></div>
-    </div>
-    <div id="homebox-restore-inprogress"><?php print t('Restoring default settings') . '...'; ?></div>
   <?php endif; ?>
 
   <?php if (!empty($add_links)): ?>

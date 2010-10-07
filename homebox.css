@@ -175,7 +175,6 @@ div.homebox-colors {
 #homebox-buttons {
   margin: 5px 0;
 }
-#homebox-buttons button,
 #homebox-buttons a {
   background: #F6F6F6;
   border: 1px solid #CCCCCC;
@@ -197,21 +196,19 @@ div.homebox-colors {
   font-style: italic;
   display: none;
 }
-.homebox-delete-custom-link {
-  font-size: 85%;
-  border: none;
-  color: #1C94C4;
-  cursor: pointer;
-  background: #FFF;
-}
 #homebox-add {
   display: none;
 }
 #homebox-add a {
   font-weight: bold;
 }
-#homebox-add a.used {
+#homebox-add a.used,
+#homebox-add a.restore {
   font-weight: normal;
+}
+#homebox-add a.restore {
+  display: block;
+  margin-top: 1em;
 }
 #homebox-buttons form {
   position: relative;
@@ -224,17 +221,4 @@ div.homebox-colors {
 }
 .homebox-auto-save #homebox-save-form {
   display: none;
-}
-
-/* 
- * jQuery UI 
- * 
- * Until Drupal get's an updated jQuery UI
- * and theme support
- */
-
-.ui-dialog-overlay { 
-  background: #aaaaaa url(images/overlay.png) 50% 50% repeat-x; 
-  opacity: .30;
-  filter:Alpha(Opacity=30); 
 }
