@@ -1415,7 +1415,7 @@ function _homebox_get_user_settings($page, $init = FALSE, $_reset = FALSE) {
     unset($cache[$key]);
   }
 
-  if (!isset($cache[$key])) {
+  if (!isset($cache[$key]) || ($init && $cache[$key] === FALSE)) {
     $settings = db_result(db_query("SELECT settings FROM {homebox_users} WHERE uid = %d AND name = '%s'", $user->uid, $page->name));
     $cache[$key] = $settings ? unserialize($settings) : FALSE;
 
