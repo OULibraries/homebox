@@ -543,7 +543,7 @@ function homebox_prepare_block($block_key, $page) {
   }
 
   // Attempt to find a block in the cache table.
-  if ((bool) $page->settings['cache'] && !count(module_implements('node_grants')) && $_SERVER['REQUEST_METHOD'] == 'GET' && ($cid = _block_get_cache_id($block)) && ($cache = cache_get($cid, 'cache_block'))) {
+  if ((bool) $page->settings['cache'] && !count(module_implements('node_grants')) && $_SERVER['REQUEST_METHOD'] == 'GET' && ($cid = homebox_get_cache_id($page, $block)) && ($cache = cache_get($cid, 'cache_block'))) {
     $array = $cache->data;
   }
   else {
@@ -597,6 +597,46 @@ function homebox_prepare_block($block_key, $page) {
 }
 
 /**
+ * Get a cache ID suitable for using with homebox.
+ *
+ * @param $page
+ *   A homebox page object.
+ * @param $block
+ *   A homebox block object.
+ */
+function homebox_get_cache_id($page, $block) {
+  // Get block info for cache setting
+  static $infos;
+  if (!isset($infos[$block->module])) {
+    $infos[$block->module] = module_invoke($block->module, 'block', 'list');
+  }
+  if (isset($infos[$block->module][$block->delta]['cache'])) {
+    $block->cache = $infos[$block->module][$block->delta]['cache'];
+  }
+  else {
+    $block->cache = BLOCK_CACHE_PER_ROLE;
+  }
+
+  // Cache per-page doesn't do so well when blocks are on homebox pages.
+  if ($block->cache & BLOCK_CACHE_PER_PAGE) {
+    $block->cache &= ~BLOCK_CACHE_PER_PAGE;
+  }
+
+  // Use standard block key
+  if ($cid = _block_get_cache_id($block)) {
+    // But append unique 
+    if (isset($block->edit_form)) {
+      global $user;
+      $cid .= ':' . $user->uid . ':' . $page->name . ':' . $block->key;
+    }
+
+    return $cid;
+  }
+
+  return FALSE;
+}
+
+/**
  * Get an edit form from the implementing module and add the standard buttons
  * and submit handling.
  */
@@ -636,6 +676,11 @@ function homebox_block_edit_form_builder_submit($form, &$form_state) {
   _homebox_save_user_settings($page, $user_blocks);
 
   $form_state['redirect'] = FALSE;
+
+  // Clear block-specific cache.
+  init_theme();
+  $block->edit_form = TRUE;
+  cache_clear_all(homebox_get_cache_id($page, $block), 'cache_block');
 }
 
 /**
