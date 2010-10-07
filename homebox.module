@@ -627,7 +627,7 @@ function homebox_build_block($page, $key) {
   ));
 }
 
-function homebox_block($op, $delta, $edit) {
+function homebox_block($op, $delta = NULL, $edit = array()) {
   switch ($op) {
     case 'list':
       return array(
