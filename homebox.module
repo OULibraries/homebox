@@ -1440,7 +1440,7 @@ function _homebox_save_user_settings($page, $blocks) {
   // This function is only called after user status
   // and perms were checked
   global $user;
-  $user_blocks = _homebox_get_user_settings($page);
+  $user_blocks = _homebox_get_user_settings($page, TRUE);
   
   $i = 0;
   foreach ($blocks as $key => $value) {
@@ -1454,6 +1454,12 @@ function _homebox_save_user_settings($page, $blocks) {
     if ($user_blocks !== FALSE && isset($user_blocks[$key])) {
       $blocks[$key] = homebox_merge_settings($user_blocks[$key], $blocks[$key]);
     }
+  }
+  // Preserve any existing user blocks, which are page blocks, and not already
+  // saved above. These are disabled page defaults, and need to remain to
+  // continue overriding the page default.
+  foreach (array_intersect_key($user_blocks, array_diff_key($page->settings['blocks'], $blocks)) as $key => $value) {
+    $blocks[$key] = $value;
   }
 
   // Remove any old settings
