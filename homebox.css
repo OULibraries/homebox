@@ -1,4 +1,6 @@
-
+#homebox {
+  position: relative;
+}
 #homebox-admin-display-form .roles {
   font-size: 86%;
 }
@@ -172,16 +174,47 @@ div.homebox-colors {
 }
 
 /* Page configure UI */
-#homebox-buttons {
-  margin: 5px 0;
+#homebox-add {
+  margin: 10px 0;
 }
-#homebox-buttons a {
-  background: #F6F6F6;
-  border: 1px solid #CCCCCC;
-  color: #1C94C4;
-  cursor: pointer;
-  margin-right: 2px;
-  padding: 4px 6px;
+#homebox-add ul {
+  margin: 0;
+  padding: 0;
+}
+#homebox-add li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: block;
+  background: none;
+  float: left;
+  margin: 0 10px 10px 0;
+}
+#homebox-add .last {
+  margin: 0;
+}
+#homebox-add a {
+  display: block;
+  width: 130px;
+  height: 40px;
+  background: #f4f4f4 url("images/stripe.png");
+  padding: 5px;
+  overflow: hidden;
+  border-top: 1px solid transparent;
+  outline: 1px solid transparent;
+}
+#homebox .used {
+  background: #F0F0F0;
+  border-top: 1px solid #FFFFFF;
+  outline: 1px solid #DDDDDD;
+}
+#homebox .restore {
+  background: none;
+  border-top: none;
+  outline: none;
+}
+.homebox-msg {
+  margin-right: 10px;
 }
 #homebox-minimize-to-save {
   font-size: 90%;
@@ -206,18 +239,16 @@ div.homebox-colors {
 #homebox-add a.restore {
   font-weight: normal;
 }
-#homebox-add a.restore {
-  display: block;
-  margin-top: 1em;
-}
-#homebox-buttons form {
-  position: relative;
-  display: inline;
-  white-space: nowrap;
-}
-#homebox-buttons form div {
+#center #homebox-save-form {
+  margin: 0;
+  padding: 0;
   position: absolute;
-  display: inline;
+  top: 0;
+  right: 0;
+}
+#homebox-buttons .form-submit {
+  margin: 0;
+  cursor: pointer;
 }
 .homebox-auto-save #homebox-save-form {
   display: none;

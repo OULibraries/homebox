@@ -117,7 +117,7 @@ Drupal.homebox.maximizeBox = function (icon) {
       $(portlet).find('.portlet-close').show();
 
       // Show the save button
-      $('#homebox-save-link').show();
+      $('#homebox-save-form .form-submit').show();
       $('#homebox-minimize-to-save').hide();
 
       // Restore the checkbox under "Edit Content"
@@ -140,7 +140,7 @@ Drupal.homebox.maximizeBox = function (icon) {
       $(portlet).find('.portlet-close').hide();
 
       // Hide the save button
-      $('#homebox-save-link').hide();
+      $('#homebox-save-form .form-submit').hide();
       $('#homebox-minimize-to-save').show();
 
       // Disable the checkbox under "Edit content"

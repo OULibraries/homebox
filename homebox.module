@@ -372,7 +372,7 @@ function homebox_build($page) {
       }
     }
     $add_links['restore'] = l(t('Restore to defaults'), 'homebox/' . $page->name . '/restore', array('attributes' => array('class' => 'restore')));
-    $add_links = theme('item_list', $add_links);
+    $add_links = theme('item_list', $add_links, $title, 'ul', array('class' => 'clear-block'));
 
     $save_form = drupal_get_form('homebox_save_form', $page);
   }
@@ -425,6 +425,10 @@ function homebox_save_form($form_state, $page) {
   $form['blocks'] = array(
     '#type' => 'hidden',
   );
+  $form['messages'] = array(
+    '#value' => '<span id="homebox-minimize-to-save" class="homebox-msg">' . t('Minimize to save') . '</span>'
+    . '<span id="homebox-changes-made" class="homebox-msg">' . t('Unsaved') . '</span>',
+  );
   $form['save'] = array(
     '#type' => 'submit',
     '#value' => t('Save'),
@@ -432,10 +436,6 @@ function homebox_save_form($form_state, $page) {
       'path' => 'homebox/js/' . $page->name . '/save',
       'event' => 'click',
     ),
-  );
-  $form['messages'] = array(
-    '#value' => '<span id="homebox-minimize-to-save">' . t('Minimize to save') . '</span>'
-    . '<span id="homebox-changes-made">* ' . t('Unsaved') . '</span>',
   );
 
   return $form;
