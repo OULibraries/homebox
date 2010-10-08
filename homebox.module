@@ -619,7 +619,7 @@ function homebox_get_cache_id($page, $block) {
 
   // Cache per-page doesn't do so well when blocks are on homebox pages.
   if ($block->cache & BLOCK_CACHE_PER_PAGE) {
-    $block->cache &= ~BLOCK_CACHE_PER_PAGE;
+    $block->cache |= ~BLOCK_CACHE_PER_PAGE;
   }
 
   // Use standard block key
