@@ -176,26 +176,21 @@ Drupal.behaviors.homeboxPortlet = function (context) {
 
     // Attach click event to maximize icon
     $portletHeader.find('.portlet-maximize').click(function () {
-      $(this).toggleClass('portlet-maximize');
-      $(this).toggleClass('portlet-minimize');
+      $(this).toggleClass('portlet-maximize').toggleClass('portlet-minimize');
       Drupal.homebox.maximizeBox(this);
       Drupal.homebox.equalizeColumnsHeights();
     });
 
     // Attach click event on minus
     $portletHeader.find('.portlet-minus').click(function () {
-      $(this).toggleClass('portlet-minus');
-      $(this).toggleClass('portlet-plus');
+      $(this).toggleClass('portlet-minus').toggleClass('portlet-plus');
       $portlet.find('.portlet-content').toggle();
       Drupal.homebox.equalizeColumnsHeights();
       Drupal.homebox.pageChanged();
-    });
-
-    // Attach click event on minus
-    $portletHeader.find('.portlet-minus').each(function () {
+    })
+    .each(function () {
       if (!$portlet.find('.portlet-content').is(':visible')) {
-        $(this).toggleClass('portlet-minus');
-        $(this).toggleClass('portlet-plus');
+        $(this).toggleClass('portlet-minus').toggleClass('portlet-plus');
         Drupal.homebox.equalizeColumnsHeights();
       }
     });
@@ -203,14 +198,11 @@ Drupal.behaviors.homeboxPortlet = function (context) {
     // Attach double click event on portlet header
     $portlet.find('.portlet-title').dblclick(function () {
       if ($portlet.find('.portlet-content').is(':visible')) {
-        $portletHeader.find('.portlet-minus').toggleClass('portlet-plus');
-        $portletHeader.find('.portlet-minus').toggleClass('portlet-minus');
+        $portletHeader.find('.portlet-minus').toggleClass('portlet-plus').toggleClass('portlet-minus');
       }
       else {
-        $portletHeader.find('.portlet-plus').toggleClass('portlet-minus');
-        $portletHeader.find('.portlet-plus').toggleClass('portlet-plus');
+        $portletHeader.find('.portlet-plus').toggleClass('portlet-minus').toggleClass('portlet-plus');
       }
-
       $portlet.find('.portlet-content').toggle();
 
       Drupal.homebox.equalizeColumnsHeights();
