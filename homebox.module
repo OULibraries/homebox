@@ -372,7 +372,7 @@ function homebox_build($page) {
       }
     }
     $add_links['restore'] = l(t('Restore to defaults'), 'homebox/' . $page->name . '/restore', array('attributes' => array('class' => 'restore')));
-    $add_links = theme('item_list', $add_links, $title, 'ul', array('class' => 'clear-block'));
+    $add_links = theme('item_list', $add_links, NULL, 'ul', array('class' => 'clear-block'));
 
     $save_form = drupal_get_form('homebox_save_form', $page);
   }
@@ -1267,9 +1267,11 @@ function homebox_add_block($page, $module, $delta) {
     'movable' => 1,
     'closable' => 1,
   );
-  foreach (module_invoke($module, 'homebox_block_keys', (object) $block) as $key) {
-    if (isset($_REQUEST[$key])) {
-      $block[$key] = $_REQUEST[$key];
+  if (module_hook($block['module'], 'homebox_block_keys')) {
+    foreach (module_invoke($module, 'homebox_block_keys', (object) $block) as $key) {
+      if (isset($_REQUEST[$key])) {
+        $block[$key] = $_REQUEST[$key];
+      }
     }
   }
   
