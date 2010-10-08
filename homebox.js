@@ -158,26 +158,6 @@ Drupal.homebox.pageChanged = function () {
   }
 };
 
-Drupal.homebox.convertRgbToHex = function (rgb) {
-  if (!jQuery.browser.msie) {
-    // Script taken from
-    // http://stackoverflow.com/questions/638948/background-color-hex-to-js-variable-jquery
-    var parts = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-    // parts now should be ["rgb(0, 70, 255", "0", "70", "255"]
-    delete (parts[0]);
-    for (var i = 1; i <= 3; i += 1) {
-      parts[i] = parseInt(parts[i], 10).toString(16);
-      if (parts[i].length === 1) {
-        parts[i] = '0' + parts[i];
-      }
-    }
-    return '#' + parts.join(''); // '0070ff'
-  }
-  else {
-    return rgb;
-  }
-};
-
 Drupal.behaviors.homeboxPortlet = function (context) {
   $('.homebox-portlet:not(.homebox-processed)', context).addClass('homebox-processed').each(function () {
     var $portlet = $(this),
@@ -277,12 +257,12 @@ Drupal.behaviors.homeboxPortlet = function (context) {
 
       // Add color classes to blocks
       // This is used when we save so we know what color it is
-      $portlet.addClass('homebox-color-' + Drupal.homebox.convertRgbToHex(color).replace('#', ''));
+      $portlet.addClass('homebox-color-' + color.replace('#', ''));
 
       // Apply the colors via style attributes
       // This avoid dynamic CSS
-      $portletHeader.attr('style', 'background: ' + Drupal.homebox.convertRgbToHex(color));
-      $portlet.find('.homebox-portlet-inner').attr('style', 'border: 1px solid ' + Drupal.homebox.convertRgbToHex(color));
+      $portletHeader.attr('style', 'background: ' + color);
+      $portlet.find('.homebox-portlet-inner').attr('style', 'border: 1px solid ' + color);
       Drupal.homebox.pageChanged();
     });
 
