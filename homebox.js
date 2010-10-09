@@ -162,7 +162,7 @@ Drupal.behaviors.homeboxPortlet = function (context) {
   $('.homebox-portlet:not(.homebox-processed)', context).addClass('homebox-processed').each(function () {
     var $portlet = $(this),
       $portletHeader = $portlet.find('.portlet-header'),
-      $portletSettings = $portletHeader.find('.portlet-settings'),
+      $portletSettings = $portlet.find('.portlet-settings'),
       $portletConfig = $portlet.find('.portlet-config');
 
     // Restore classes saved before AHAH, they back some page-wide

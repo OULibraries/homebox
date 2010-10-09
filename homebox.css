@@ -110,7 +110,7 @@
   z-index: 10; /* IE is terrible */
   position: relative; /* IE is terrible */
 }
-.portlet-settings {
+.portlet-header .portlet-settings {
   background: url(images/settings.gif);
 }
 .portlet-plus {
