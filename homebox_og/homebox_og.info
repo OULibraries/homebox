@@ -4,4 +4,4 @@ description = Provides integration with Organic Groups and Homebox
 dependencies[] = homebox
 dependencies[] = og
 package = Homebox
-core = 6.x
+core = 7.x

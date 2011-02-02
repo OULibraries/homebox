@@ -2,7 +2,13 @@
 // $Id$
 
 /**
- * Implementation of hook_uninstall().
+ * @file
+ * Install, update and uninstall functions for the homebox_og module.
+ *
+ */
+
+/**
+ * Implements hook_uninstall().
  */
 function homebox_og_uninstall() {
   // Remove variables

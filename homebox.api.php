@@ -1,10 +1,9 @@
 <?php
-// $Id:
+// $Id$
 
 /**
- * @file Homebox API
- *
- * Blocks are rendered through hook_block(). The $edit parameter is overloaded
+ * @file
+ * Homebox API: Blocks are rendered through hook_block(). The $edit parameter is overloaded
  * with the homebox block object, which included properties for any customized
  * fields.
  */

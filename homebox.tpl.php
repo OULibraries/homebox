@@ -29,7 +29,7 @@
         <?php foreach ($regions[$i] as $key => $weight): ?>
           <?php foreach ($weight as $block): ?>
             <?php if ($block->content): ?>
-              <?php print theme('homebox_block', $block, $page); ?>
+              <?php print theme('homebox_block', array('block' => $block, 'page' => $page)); ?>
             <?php endif; ?>
           <?php endforeach; ?>
         <?php endforeach; ?>

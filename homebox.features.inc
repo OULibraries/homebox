@@ -16,13 +16,13 @@ function _homebox_features_api() {
       'default_hook' => 'homebox',
       'default_file' => FEATURES_DEFAULTS_INCLUDED_COMMON,
       'features_source' => TRUE,
-      'file' => drupal_get_path('module', 'homebox') .'/homebox.features.inc',
+      'file' => drupal_get_path('module', 'homebox') . '/homebox.features.inc',
     ),
   );
 }
 
 /**
- * Implementation of hook_features_export_options().
+ * Implements hook_features_export_options().
  */
 function homebox_features_export_options() {
   $exports = array();
@@ -37,7 +37,7 @@ function homebox_features_export_options() {
 }
 
 /**
- * Implementation of hook_features_export().
+ * Implements hook_features_export().
  */
 function homebox_features_export($data, &$export, $module_name = '') {
   $pipe = array();
@@ -51,7 +51,7 @@ function homebox_features_export($data, &$export, $module_name = '') {
 }
 
 /**
- * Implementation of hook_features_export_render().
+ * Implements hook_features_export_render().
  */
 function homebox_features_export_render($module = 'foo', $data) {
   $code = array();
@@ -80,7 +80,7 @@ function homebox_features_export_render($module = 'foo', $data) {
 }
 
 /**
- * Implementation of hook_features_revert().
+ * Implements hook_features_revert().
  */
 function homebox_features_revert($module = NULL) {
   // Get homebox pages from feature
@@ -90,7 +90,5 @@ function homebox_features_revert($module = NULL) {
     foreach ($pages as $name => $settings) {
       homebox_delete_page($name);
     }
-
-    drupal_flush_all_caches();
   }
 }

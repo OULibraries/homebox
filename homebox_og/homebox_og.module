@@ -6,8 +6,8 @@
  *   Organic Groups integration for Homebox
  */
 
-/*
- * Implementation of hook_menu()
+/**
+ * Implements hook_menu().
  */
 function homebox_og_menu() {
   $items = array();
@@ -40,8 +40,8 @@ function homebox_og_menu() {
   return $items;
 }
 
-/*
- * Implementation of hook_menu_alter()
+/**
+ * Implements hook_menu_alter().
  *
  * Give Homebox the opportunity to override group homepage nodes
  */
@@ -99,17 +99,17 @@ function _homebox_og_user_access_view_homebox($page, $node) {
   // Can the user access the node?
   // Can the user view the Homebox?
   if (og_is_group_type($node->type)
-    && (node_access('view', $node))
-    && _homebox_user_access_view_homebox($page)) {
-      // Check if the group tab is set to members only
-      if (variable_get('homebox_og_tab_membersonly', 0)) {
-        if (og_is_group_member($node->nid)) {
-          return TRUE;
-        }
-        else {
-          return FALSE;
-        }
+      && (node_access('view', $node))
+      && _homebox_user_access_view_homebox($page)) {
+    // Check if the group tab is set to members only
+    if (variable_get('homebox_og_tab_membersonly', 0)) {
+      if (og_is_group_member($node->nid)) {
+        return TRUE;
       }
+      else {
+        return FALSE;
+      }
+    }
 
     return TRUE;
   }
@@ -121,7 +121,7 @@ function _homebox_og_user_access_view_homebox($page, $node) {
 /**
  * OG Homebox settings form
  */
-function homebox_og_group_settings_page() {
+function homebox_og_group_settings_page($form, &$form_state) {
   $form = array();
 
   // Gather all available pages
