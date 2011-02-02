@@ -4,3 +4,4 @@ CHANGELOG for Homebox for Drupal
 
 7.x-2.x-dev 2011/02/02
   - by brianV: Initial D7 port.
+  - by brianV: Match column widths with case-insensitive regex rather than exact match in homebox.js due to IE irregularity.
