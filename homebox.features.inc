@@ -90,7 +90,7 @@ function homebox_features_revert($module = NULL) {
     foreach ($pages as $name => $settings) {
       homebox_delete_page($name);
     }
-    
+
     drupal_flush_all_caches();
   }
 }
