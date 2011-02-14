@@ -578,7 +578,7 @@ function homebox_prepare_block($block_key, $page) {
   }
 
   // If no title provided we try to get one from blocks table
-  if (!$block->subject) {
+  if (!$block->subject && isset($block->bid)) {
     $block->subject = db_result(db_query("SELECT title FROM {blocks} WHERE bid = %d", $block->bid));
   }
   if (!$block->subject && $block->module == 'views') {
