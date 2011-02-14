@@ -1636,27 +1636,6 @@ function _homebox_user_access_view_user_homebox($page, $profile) {
 }
 
 /**
- * Implements hook_requirements().
- */
-function homebox_requirements($phase) {
-  $requirements = array();
-
-  switch ($phase) {
-    case 'runtime':
-      if (variable_get('homebox_version', 0) != HOMEBOX_VERSION) {
-        $requirements['homebox_upgrade'] = array(
-          'title' => t('Homebox 2'),
-          'value' => t('Corrupt'),
-          'description' => t('There is no upgrade path between Homebox 1.x and 2.x. You must completely uninstall and reinstall Homebox.'),
-          'severity' => REQUIREMENT_ERROR,
-        );
-      }
-  }
-
-  return $requirements;
-}
-
-/**
  * Implements hook_features_api().
  */
 function homebox_features_api() {
