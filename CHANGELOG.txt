@@ -7,3 +7,4 @@ CHANGELOG for Homebox for Drupal
   - by brianV: Match column widths with case-insensitive regex rather than exact match in homebox.js due to IE irregularity.
   - #1049416 by grobot: Fixed Missing argument 3 for db_query_range().
   - #1053946 by thekevinday: Fixed Homebox doesn't display views properly.
+  - #1052456 by thekevingday: Fixed Invalid json uses.

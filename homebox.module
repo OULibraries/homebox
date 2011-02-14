@@ -283,7 +283,6 @@ function template_preprocess_homebox(&$variables) {
 
   // Add Homebox JavaScript files
   drupal_add_js($module_path . '/homebox.js', array('type' => 'file', 'scope' => 'header', 'group' => JS_DEFAULT, 'defer' => FALSE, 'cache' => TRUE, 'preprocess' => TRUE));
-  drupal_add_js($module_path . '/includes/json2.js', array('type' => 'file', 'scope' => 'header', 'group' => JS_DEFAULT, 'defer' => FALSE, 'cache' => TRUE, 'preprocess' => TRUE));
   drupal_add_js($module_path . '/includes/tipsy/jquery.tipsy.js', array('type' => 'file', 'scope' => 'header', 'group' => JS_DEFAULT, 'defer' => FALSE, 'cache' => TRUE, 'preprocess' => TRUE));
 
   // Add CSS for homebox
@@ -725,7 +724,7 @@ function homebox_block_edit_form_builder_submit($form, &$form_state) {
  * Render a single block, for AJAX callbacks.
  */
 function homebox_build_block($page, $key) {
-  drupal_json(
+  drupal_json_output(
     array(
       'status' => TRUE,
       'data' => theme('homebox_block', array('block' => homebox_prepare_block($key, $page), 'page' => $page)),
