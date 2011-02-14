@@ -31,6 +31,6 @@
       <?php endif; ?>
       <?php if (isset($block->edit_form)): print $block->edit_form; endif; ?>
     </div>
-     <div class="portlet-content content"><?php print drupal_render($block->content); ?></div>
+     <div class="portlet-content content"><?php if (is_string($block->content)){ print $block->content; } else { print drupal_render($block->content); } ?></div>
   </div>
 </div>

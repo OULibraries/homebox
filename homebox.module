@@ -611,7 +611,7 @@ function homebox_prepare_block($block_key, $page) {
 
   // We don't continue to assign this block since Drupal didn't returned any
   // content which could be permissions rules applied by any module.
-  if (isset($block->content) && !is_array($block->content) && trim($block->content)) {
+  if (!isset($block->content) || !is_array($block->content) && trim($block->content) == "") {
     return NULL;
   }
 
