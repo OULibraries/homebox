@@ -985,7 +985,7 @@ function homebox_check_name($name, $element = NULL) {
   }
 
   // Check for name dupes
-  if ((bool) db_query_range('SELECT 1 FROM {homebox_pages} WHERE name = :name', array(':name' => $name))->fetchField()) {
+  if ((bool) db_query('SELECT 1 FROM {homebox_pages} WHERE name = :name', array(':name' => $name))->fetchField()) {
     if ($element) {
       form_set_error($element, t('The page name %name already exists. Please choose another page name.', array('%name' => $name)));
     }
