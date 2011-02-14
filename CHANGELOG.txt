@@ -9,3 +9,4 @@ CHANGELOG for Homebox for Drupal
   - #1053946 by thekevinday: Fixed Homebox doesn't display views properly.
   - #1052456 by thekevingday: Fixed Invalid json uses.
   - by brianV: Remove unneeded hook_requirements().
+  - by brianV: Fix the bad deltas in homebox_example.module.

@@ -49,20 +49,20 @@ function homebox_example_homebox() {
       3 => 25,
     ),
     'blocks' => array(// The available blocks on the page
-      'node_0' => array(// The block key; Format = module_delta
+      'node_recent' => array(// The block key; Format = module_delta
         'module' => 'node', // The module this block belongs to
-        'delta' => '0', // The block delta
-        'region' => 1, // Which region to place this block in
+        'delta' => 'recent', // The block delta
+        'region' => 2, // Which region to place this block in
         'movable' => 1, // Can this block be dragged?
         'status' => 1, // Is this block visible by default (if not, it can be toggled)?
         'open' => 1, // Is this block expanded by default?
         'closable' => 1, // Can users close this block?
         'title' => '', // Blank if default block title should be used, if not, use a custom one
-        'weight' => -8, // The weight of the block (smaller numbers raise to the top)
+        'weight' => -8, // The weight of the block (lower numbers raise to the top)
       ),
-      'user_2' => array(
+      'user_new' => array(
         'module' => 'user',
-        'delta' => '2',
+        'delta' => 'new', // Who's New block.
         'region' => 1,
         'movable' => 1,
         'status' => 1,
@@ -71,10 +71,10 @@ function homebox_example_homebox() {
         'title' => '',
         'weight' => -7,
       ),
-      'user_1' => array(
+      'user_online' => array(
         'module' => 'user',
-        'delta' => '1',
-        'region' => 3,
+        'delta' => 'online', // Who's Online block.
+        'region' => 1,
         'movable' => 1,
         'status' => 1,
         'open' => 1,
@@ -82,9 +82,9 @@ function homebox_example_homebox() {
         'title' => '',
         'weight' => -7,
       ),
-      'system_0' => array(
+      'system_powered_by' => array(
         'module' => 'system',
-        'delta' => '0',
+        'delta' => 'powered-by', // Powered By block.
         'region' => 2,
         'movable' => 1,
         'status' => 1,
@@ -93,10 +93,10 @@ function homebox_example_homebox() {
         'title' => '',
         'weight' => -7,
       ),
-      'user_3' => array(
-        'module' => 'user',
-        'delta' => '3',
-        'region' => 2,
+      'menu_navigation' => array(
+        'module' => 'menu',
+        'delta' => 'navigation', // Navigation Menu block.
+        'region' => 3,
         'movable' => 1,
         'status' => 1,
         'open' => 1,
