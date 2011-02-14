@@ -53,7 +53,7 @@ function homebox_admin_page() {
     '#type' => 'textfield',
     '#title' => t('Title'),
     '#size' => 32,
-    '#default_value' => $page->settings['title'],
+    '#default_value' => isset($page->settings['title']) ? $page->settings['title'] : '',
     '#maxlength' => 64,
     '#prefix' => theme('advanced_help_topic', 'homebox', 'new-page'),
     '#description' => t('The title of the page that will be created.'),
@@ -63,7 +63,7 @@ function homebox_admin_page() {
     '#type' => 'textfield',
     '#title' => t('Path'),
     '#size' => 32,
-    '#default_value' => $page->settings['path'],
+    '#default_value' => isset($page->settings['path']) ? $page->settings['path'] : '',
     '#maxlength' => 255,
     '#description' => t('Optionally specify an alternative URL by which this page can be accessed. For example, type "dashboard" when creating a Dashboard page. Use a relative path and don\'t add a trailing slash or the URL alias won\'t work.'),
   );
@@ -72,28 +72,28 @@ function homebox_admin_page() {
     '#type' => 'checkbox',
     '#title' => t('Create a menu entry'),
     '#description' => t('If checked, a menu entry will be created for this page.'),
-    '#default_value' => $page ? $page->settings['menu'] : 1,
+    '#default_value' => isset($page->settings['menu']) ? $page->settings['menu'] : 1,
   );
 
   $form['page']['options']['enabled'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable the page'),
     '#description' => t('If unchecked, only users with the <em>administer homebox</em> permission will be able to view this page.'),
-    '#default_value' => $page ? $page->settings['enabled'] : 1,
+    '#default_value' => isset($page->settings['enabled']) ? $page->settings['enabled'] : 1,
   );
 
   $form['page']['options']['auto_save'] = array(
     '#type' => 'checkbox',
     '#title' => t('Auto-save on changes'),
     '#description' => t('If checked, changes by users are saved immediately.'),
-    '#default_value' => $page ? $page->settings['auto_save'] : 1,
+    '#default_value' => isset($page->settings['auto_save']) ? $page->settings['auto_save'] : 1,
   );
 
   $form['page']['options']['full'] = array(
     '#type' => 'checkbox',
     '#title' => t('Disable block regions'),
     '#description' => t('If checked, the theme block regions will be disabled for this page, giving more room for the homebox.'),
-    '#default_value' => $page ? $page->settings['full'] : 0,
+    '#default_value' => isset($page->settings['full']) ? $page->settings['full'] : 0,
   );
 
   $result = db_query('SELECT rid, name FROM {role} ORDER BY name');
@@ -104,7 +104,7 @@ function homebox_admin_page() {
   $form['page']['options']['roles'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Allow only certain roles to access the page'),
-    '#default_value' => count($page->settings['roles']) ? $page->settings['roles'] : array('authenticated user'),
+    '#default_value' => (isset($page->settings['roles']) && count($page->settings['roles'])) ? $page->settings['roles'] : array('authenticated user'),
     '#options' => $role_options,
     '#description' => t('Select which roles can view the page.'),
   );

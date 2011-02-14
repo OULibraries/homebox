@@ -6,6 +6,7 @@ CHANGELOG for Homebox for Drupal
   o Fixed warning during install
   o Added a condition on hook_views_pre_execute() to prevent user_save from firing when not on a homebox context
   o README.txt update
+  o by brianV: Make homebox_admin_page() E_ALL compliant.
 
 6.x-1.x-dev - 2009/05/19
   o Fixed uninstall procedure to delete url aliases from url_alias table
