@@ -413,7 +413,11 @@ function homebox_build($page) {
   if (!count($page->settings['widths'])) {
     $num_regions = count($regions);
     for ($i = 1; $i <= $num_regions; $i++) {
-      $page->settings['widths'][$i] = round(100 / $num_regions, 0, PHP_ROUND_HALF_DOWN);
+      $width = 100 / $num_regions;
+      
+      // We use a combination of round() and floor() to get this rounded to two decimal places
+      // since the $mode argument isn't introducted into round() until PHP 5.3.0.
+      $page->settings['widths'][$i] = round(floor($width * 100) / 100, 2);
     }
   }
 

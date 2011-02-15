@@ -8,6 +8,7 @@ CHANGELOG for Homebox for Drupal
   - by brianV: make sure the block still exists before adding it to the list of allowed blocks.
   - by brianV: make sure a views display with the given display_id exists before attempting to fetch a block description from it.
   - by brianV: if custom widths aren't set, make each width a percentage of the total available.
+  - by brianV: make custom widths code compatible with PHP <= 5.3.0.
 
 7.x-2.0-beta1 2011/02/14
   - by brianV: Initial D7 port.
