@@ -409,6 +409,14 @@ function homebox_build($page) {
     $save_form = NULL;
   }
 
+  // If custom widths aren't set, make each width a percentage of the total available.
+  if (!count($page->settings['widths'])) {
+    $num_regions = count($regions);
+    for ($i = 1; $i <= $num_regions; $i++) {
+      $page->settings['widths'][$i] = round(100 / $num_regions, 0, PHP_ROUND_HALF_DOWN);
+    }
+  }
+
   // Build output
   $output = theme('homebox', array('regions' => $regions, 'available_blocks' => $allowed_blocks, 'column_count' => $column_count, 'page' => $page, 'add_links' => $add_links, 'save_form' => $save_form));
 
