@@ -74,7 +74,7 @@ function homebox_example_homebox() {
       'user_online' => array(
         'module' => 'user',
         'delta' => 'online', // Who's Online block.
-        'region' => 1,
+        'region' => 3,
         'movable' => 1,
         'status' => 1,
         'open' => 1,
@@ -93,6 +93,7 @@ function homebox_example_homebox() {
         'title' => '',
         'weight' => -7,
       ),
+/*
       'menu_navigation' => array(
         'module' => 'menu',
         'delta' => 'navigation', // Navigation Menu block.
@@ -104,6 +105,7 @@ function homebox_example_homebox() {
         'title' => '',
         'weight' => 1,
       ),
+*/
     ),
   );
 

@@ -4,6 +4,7 @@ CHANGELOG for Homebox for Drupal
 
 7.x-2.x-dev xxxx/xx/xx
   - by brianV: update arguments to og_is_group_type() in homebox_og.module.
+  - by brianV: remove navigation menu from homebox_example to avoid throwing errors.
 
 7.x-2.0-beta1 2011/02/14
   - by brianV: Initial D7 port.
