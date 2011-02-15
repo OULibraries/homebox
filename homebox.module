@@ -347,9 +347,11 @@ function homebox_build($page) {
     if (!isset($info[$block['module']])) {
       $info[$block['module']] = module_invoke($block['module'], 'block_info');
     }
-    $allowed_blocks[$block['module']][$block['delta']] = $info[$block['module']][$block['delta']];
-    if (!empty($block['title'])) {
-      $allowed_blocks[$block['module']][$block['delta']]['info'] = $block['title'];
+    if (isset($info[$block['module']][$block['delta']])) {
+      $allowed_blocks[$block['module']][$block['delta']] = $info[$block['module']][$block['delta']];
+      if (!empty($block['title'])) {
+        $allowed_blocks[$block['module']][$block['delta']]['info'] = $block['title'];
+      }
     }
   }
 
