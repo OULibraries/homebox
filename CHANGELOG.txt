@@ -6,6 +6,7 @@ CHANGELOG for Homebox for Drupal
   - by brianV: update arguments to og_is_group_type() in homebox_og.module.
   - by brianV: remove navigation menu from homebox_example to avoid throwing errors.
   - by brianV: make sure the block still exists before adding it to the list of allowed blocks.
+  - by brianV: make sure a views display with the given display_id exists before attempting to fetch a block description from it.
 
 7.x-2.0-beta1 2011/02/14
   - by brianV: Initial D7 port.

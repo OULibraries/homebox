@@ -1275,7 +1275,7 @@ function _homebox_get_view_name($block) {
   // This indicates it's a special one.
   if (drupal_substr($delta, 0, 1) == '-') {
     list($nothing, $type, $name, $display_id) = explode('-', $delta);
-    if ($view = views_get_view($name)) {
+    if ($view = views_get_view($name) && isset($view->display[$display_id])) {
       $name = $view->display[$display_id]->display_options['block_description'];
       $view->destroy();
     }
@@ -1284,7 +1284,7 @@ function _homebox_get_view_name($block) {
   list($name, $display_id) = explode('-', $delta);
 
   // Load the view
-  if ($view = views_get_view($name)) {
+  if ($view = views_get_view($name) && isset($view->display[$display_id])) {
     $name = $view->display[$display_id]->display_options['block_description'];
     $view->destroy();
   }
