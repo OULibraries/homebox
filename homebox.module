@@ -289,16 +289,13 @@ function template_preprocess_homebox(&$variables) {
   drupal_add_css($module_path . '/homebox.css', array('type' => 'file', 'group' => CSS_DEFAULT, 'media' => 'all', 'preprocess' => TRUE));
   drupal_add_css($module_path . '/includes/tipsy/tipsy.css', array('type' => 'file', 'group' => CSS_DEFAULT, 'media' => 'all', 'preprocess' => TRUE));
 
-  $classes = array(
-    'column-count-' . $variables['column_count'],
-    'homebox-' . $variables['page']->name,
-  );
-  if (isset($variables['page']->settings['auto_save']) && $variables['page']->settings['auto_save']) {
-    $classes[] = 'homebox-auto-save';
-  }
-  $variables['classes'] = implode(' ', $classes);
 
-  return $variables;
+  $variables['classes_array'][] = 'column-count-' . $variables['column_count'];
+  $variables['classes_array'][] = 'homebox-' . $variables['page']->name;
+
+  if (isset($variables['page']->settings['auto_save']) && $variables['page']->settings['auto_save']) {
+    $variables['classes_array'][] = 'homebox-auto-save';
+  }
 }
 
 /**
@@ -476,7 +473,7 @@ function homebox_save_form($form, &$form_state, $page) {
     '#value' => $page->name,
   );
   $form['messages'] = array(
-    '#value' => '<span id="homebox-minimize-to-save" class="homebox-msg">' . t('Minimize to save') . '</span>'
+    '#markup' => '<span id="homebox-minimize-to-save" class="homebox-msg">' . t('Minimize to save') . '</span>'
     . '<span id="homebox-changes-made" class="homebox-msg">' . t('Unsaved') . '</span>',
   );
   $form['save'] = array(
