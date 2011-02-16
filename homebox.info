@@ -5,9 +5,3 @@ dependencies[] = block
 dependencies[] = jquery_ui
 package = Homebox
 core = 6.x
-
-; Information added by drupal.org packaging script on 2010-05-22
-version = "6.x-2.x-dev"
-core = "6.x"
-project = "homebox"
-datestamp = "1274530155"

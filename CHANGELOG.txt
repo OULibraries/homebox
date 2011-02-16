@@ -110,3 +110,6 @@ CHANGELOG for Homebox for Drupal
   o Lots of updates to support drupal.org usage after redesign.
   o by brianV: Whitespace fixes and CHANGELOG.txt updates.
   o by brianV: Match column widths with case-insensitive regex rather than exact match in homebox.js due to IE irregularity.
+  
+6.x-3.x-dev xxxx/xx/xx
+  o Moved 6.x-2.x-dev branch to 6.x-3.x since 6.x-2.x-dev is not compatible with 6.x-2.1 release do to drupal.org redesign-related updates.
