@@ -3,6 +3,8 @@
 CHANGELOG for Homebox for Drupal
 
 7.x-2.x-dev xxxx/xx/xx
+
+7.x-2.x-beta3 2011/02/17
   - by brianV: Remove unneeded hook_update_n() implementations for D5-D6 update.
   - by brianV: Fix autosave.
   - by drumm: Fix equalizeColumnHeight() JS function, which fixes the block landing zones.
