@@ -111,6 +111,8 @@ CHANGELOG for Homebox for Drupal
   o by brianV: Whitespace fixes and CHANGELOG.txt updates.
   o by brianV: Match column widths with case-insensitive regex rather than exact match in homebox.js due to IE irregularity.
   
-6.x-3.x-dev xxxx/xx/xx
+6.x-3.0-beta1 2011/02/17
   o Moved 6.x-2.x-dev branch to 6.x-3.x since 6.x-2.x-dev is not compatible with 6.x-2.1 release do to drupal.org redesign-related updates.
   o by drumm: Fix equalizeColumnHeight() JS function, which fixes the block landing zones.
+
+6.x-3.x-dev xxxx/xx/xx
