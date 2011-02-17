@@ -113,3 +113,4 @@ CHANGELOG for Homebox for Drupal
   
 6.x-3.x-dev xxxx/xx/xx
   o Moved 6.x-2.x-dev branch to 6.x-3.x since 6.x-2.x-dev is not compatible with 6.x-2.1 release do to drupal.org redesign-related updates.
+  o by drumm: Fix equalizeColumnHeight() JS function, which fixes the block landing zones.
