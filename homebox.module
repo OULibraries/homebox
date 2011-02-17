@@ -226,6 +226,7 @@ function homebox_theme($blocks) {
         'add_links' => NULL,
         'save_form' => NULL,
         'page' => NULL,
+        'auto_save' => NULL,
       ),
       'template' => 'homebox', // Set template to homebox.tpl.php
     ),
@@ -380,7 +381,6 @@ function homebox_build($page) {
     $add_links = NULL;
     $save_form = NULL;
   }
-
 
   // Build output
   $output = theme('homebox', $regions, $page->settings['regions'], $add_links, $save_form, $page);

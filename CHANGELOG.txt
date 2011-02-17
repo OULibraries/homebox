@@ -116,3 +116,4 @@ CHANGELOG for Homebox for Drupal
   o by drumm: Fix equalizeColumnHeight() JS function, which fixes the block landing zones.
 
 6.x-3.x-dev xxxx/xx/xx
+  o by brianV: fix autosave
