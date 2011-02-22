@@ -84,9 +84,15 @@
   Drupal.homebox.equalizeColumnsHeights = function () {
     var maxHeight = 0;
     Drupal.homebox.$columns.each(function () {
-      $(this).height('auto');
-      maxHeight = Math.max($(this).height(), maxHeight);
-    }).height(maxHeight);
+      if ($(this).parent('.homebox-column-wrapper').attr('style').match(/width: 100%/i) == null) {
+        $(this).height('auto');
+        maxHeight = Math.max($(this).height(), maxHeight);
+      }
+    }).each(function () {
+      if ($(this).parent('.homebox-column-wrapper').attr('style').match(/width: 100%/i) == null) {
+        $(this).height(maxHeight);
+      }
+    });
   };
 
   Drupal.homebox.maximizeBox = function (icon) {
