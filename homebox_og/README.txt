@@ -1,4 +1,3 @@
-// $Id$
 
 Homebox 2 can integrate with the Organic Groups module.
 
