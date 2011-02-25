@@ -1,4 +1,3 @@
-// $Id$
 Drupal.homebox = {};
 Drupal.behaviors.homebox = function(context) {
   $homebox = $('#homebox:not(.homebox-processed)', context).addClass('homebox-processed');
