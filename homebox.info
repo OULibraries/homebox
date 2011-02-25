@@ -1,4 +1,3 @@
-; $Id$
 name = Homebox
 description = Provides user with a page like iGoogle, Netvibes or bbc.co.uk front page
 dependencies[] = block

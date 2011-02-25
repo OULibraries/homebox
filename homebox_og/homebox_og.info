@@ -1,4 +1,3 @@
-; $Id$
 name = Homebox OG
 description = Provides integration with Organic Groups and Homebox
 dependencies[] = homebox

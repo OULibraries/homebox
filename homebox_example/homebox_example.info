@@ -1,4 +1,3 @@
-; $Id$
 name = Homebox example
 description = An example implementation of the Homebox API
 dependencies[] = homebox
