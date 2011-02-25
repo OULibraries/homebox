@@ -1,4 +1,3 @@
-// $Id$
 
 CHANGELOG for Homebox for Drupal
 

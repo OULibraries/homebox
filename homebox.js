@@ -1,4 +1,3 @@
-// $Id$
 Drupal.homebox = {
   config: {}
 };
