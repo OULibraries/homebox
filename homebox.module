@@ -550,7 +550,7 @@ function homebox_prepare_block($block_key, $page) {
 
   // Get the edit form early, in case it changes the block.
   if (module_hook($block_settings['module'], 'homebox_block_edit_form')) {
-    $block->edit_form = drupal_get_form('homebox_block_edit_' . $block_settings['module'] . '_' . $block_settings['delta'] . '_form', $page, (object) $block_settings);
+    $block->edit_form = drupal_render(drupal_get_form('homebox_block_edit_' . $block_settings['module'] . '_' . $block_settings['delta'] . '_form', $page, (object) $block_settings));
     // Prepend messages the form may have generated.
     $block->edit_form = theme('status_messages', array('display' => 'error')) . $block->edit_form;
 
@@ -687,7 +687,7 @@ function homebox_get_cache_id($page, $block) {
  * Get an edit form from the implementing module and add the standard buttons
  * and submit handling.
  */
-function homebox_block_edit_form_builder(&$form_state, $page, $block) {
+function homebox_block_edit_form_builder($form, &$form_state, $page, $block) {
   $form = module_invoke($block->module, 'homebox_block_edit_form', $block);
 
   $form['#attributes']['class'] = 'clear-block';
