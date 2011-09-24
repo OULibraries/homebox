@@ -157,6 +157,20 @@ Drupal.homebox.pageChanged = function () {
   }
 };
 
+Drupal.homebox.hexColor = function (rgb) {
+  // Handle hex strings like: #CCCCCC, #CCC, CCCCCC, CCC
+  hexval = rgb.match(/^(#)?(\w{3})(\w{2})?$/);
+  if (hexval) {
+    return (!hexval[1] ? "#" + hexval[0] : hexval[0]);
+  }
+
+  rgb = rgb.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+))?\)$/);
+  function hex(x) {
+      return ("0" + parseInt(x).toString(16)).slice(-2);
+  }
+  return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+};
+
 Drupal.behaviors.homeboxPortlet = function (context) {
   $('.homebox-portlet:not(.homebox-processed)', context).addClass('homebox-processed').each(function () {
     var $portlet = $(this),
@@ -239,6 +253,7 @@ Drupal.behaviors.homeboxPortlet = function (context) {
     // Add click behaviour to color buttons
     $portlet.find('.homebox-color-selector').click(function () {
       var color = $(this).css('background-color');
+      color = Drupal.homebox.hexColor(color);
 
       $.each($portlet.attr('class').split(' '), function (key, value) {
         if (value.indexOf('homebox-color-') === 0) {
