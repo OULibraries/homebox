@@ -5,6 +5,7 @@ CHANGELOG for Homebox for Drupal
   - #946206 by rv0 | flecus: Fixed Changed the color of the block is not saved.
   - #1107020 by heyrocker, alakon: Fixed 'User profile Homebox' link does not belong in floating primary admin menu.
   - #1152692 by heyrocker: Fixed Custom edit forms do not work.
+  - #1202592 by setvik, slashrsm: Fixed Features export: jquery_ui() is not depencency anymore in D7.
 
 7.x-2.x-beta3 2011/02/17
   - by brianV: Remove unneeded hook_update_n() implementations for D5-D6 update.

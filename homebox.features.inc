@@ -41,7 +41,6 @@ function homebox_features_export_options() {
 function homebox_features_export($data, &$export, $module_name = '') {
   $pipe = array();
   $export['dependencies']['homebox'] = 'homebox';
-  $export['dependencies']['homebox'] = 'jquery_ui';
   foreach ($data as $name) {
     $export['features']['homebox'][$name] = $name;
   }
