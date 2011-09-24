@@ -3,3 +3,4 @@ description = Provides user with a page like iGoogle, Netvibes or bbc.co.uk fron
 dependencies[] = block
 package = Homebox
 core = 7.x
+configure = admin/structure/homebox

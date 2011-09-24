@@ -12,7 +12,7 @@ function homebox_og_menu() {
   $items = array();
 
   // Admin OG/Homebox settings
-  $items['admin/og/homebox'] = array(
+  $items['admin/config/group/homebox'] = array(
     'title' => 'Organic groups Homebox',
     'description' => 'Choose a homebox to act as a group home page',
     'page callback' => 'drupal_get_form',

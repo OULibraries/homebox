@@ -159,7 +159,7 @@ function homebox_menu() {
   );
 
   // Admin user settings
-  $items['admin/user/homebox'] = array(
+  $items['admin/config/people/homebox'] = array(
     'title' => 'User profile Homebox',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('homebox_user_settings_page'),
