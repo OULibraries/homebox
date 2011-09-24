@@ -8,16 +8,6 @@
 Welcome to Homebox 2.
 
 
-REQUIREMENTS
-------------
-
- * jQuery UI 6.x-1.3 - http://drupal.org/project/jquery_ui
- * jQuery UI 1.6
-   - Grab jQuery UI package from Google Code - http://jquery-ui.googlecode.com/files/jquery.ui-1.6.zip
- * PHP >= 5.2
-   - This is required for JSON support.
-
-
 RECOMMENDED
 ---------------------
 
