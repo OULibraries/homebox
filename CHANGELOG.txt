@@ -2,6 +2,8 @@
 CHANGELOG for Homebox for Drupal
 
 7.x-2.x-dev xxxx/xx/xx
+
+7.x-2.x-beta4 2011/10/04
   - #946206 by rv0 | flecus: Fixed Changed the color of the block is not saved.
   - #1107020 by heyrocker, alakon: Fixed 'User profile Homebox' link does not belong in floating primary admin menu.
   - #1152692 by heyrocker: Fixed Custom edit forms do not work.
