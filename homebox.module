@@ -550,7 +550,7 @@ function homebox_prepare_block($block_key, $page) {
     $array = module_invoke($block->module, 'block', 'view', $block->delta, array('homebox' => $block));
 
     // Block.module will return 'n/a' if a custom block has been deleted
-    if ($array['content'] == 'n/a') {
+    if (isset($array['content']) && $array['content'] == 'n/a') {
       // If this is the case, skip this block
       return NULL;
     }
