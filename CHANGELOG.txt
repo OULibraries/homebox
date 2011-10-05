@@ -2,6 +2,7 @@
 CHANGELOG for Homebox for Drupal
 
 7.x-2.x-dev xxxx/xx/xx
+  - #1296902 by EvanDonovan: Fixed Homebox user profile path should be admin/people/homebox, not admin/user/homebox.
 
 7.x-2.x-beta4 2011/10/04
   - #946206 by rv0 | flecus: Fixed Changed the color of the block is not saved.
