@@ -4,6 +4,7 @@ CHANGELOG for Homebox for Drupal
 7.x-2.x-dev xxxx/xx/xx
   - #1296902 by EvanDonovan: Fixed Homebox user profile path should be admin/people/homebox, not admin/user/homebox.
   - #1295292 by theullrich: Fixed Getting  BLOCK_CACHE_PER_PAGE error.
+  - #1294790 by mongolito404: Added Homebox should uses hook_block_view_alter() and hook_block_view_MODULE_DELTA_alter() implementations.
 
 7.x-2.x-beta4 2011/10/04
   - #946206 by rv0 | flecus: Fixed Changed the color of the block is not saved.
