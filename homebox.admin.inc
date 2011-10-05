@@ -54,6 +54,7 @@ function homebox_admin_page() {
     '#size' => 32,
     '#default_value' => check_plain(isset($page->settings['title']) ? $page->settings['title'] : ''),
     '#maxlength' => 64,
+    '#required' => TRUE,
     '#prefix' => theme('advanced_help_topic', 'homebox', 'new-page'),
     '#description' => t('The title of the page that will be created.'),
   );
@@ -64,7 +65,8 @@ function homebox_admin_page() {
     '#size' => 32,
     '#default_value' => isset($page->settings['path']) ? $page->settings['path'] : '',
     '#maxlength' => 255,
-    '#description' => t('Optionally specify an alternative URL by which this page can be accessed. For example, type "dashboard" when creating a Dashboard page. Use a relative path and don\'t add a trailing slash or the URL alias won\'t work.'),
+    '#required' => TRUE,
+    '#description' => t('Specify an alternative URL by which this page can be accessed. For example, type "dashboard" when creating a Dashboard page. Use a relative path and don\'t add a trailing slash or the URL alias won\'t work.'),
   );
 
   $form['page']['options']['menu'] = array(

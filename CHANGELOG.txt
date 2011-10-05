@@ -131,3 +131,4 @@ CHANGELOG for Homebox for Drupal
   o Fix syntax error.
   
 6.x-3.x-dev xxxx/xx/xx
+  o #1175786 by brianV: Fixed Path claims to be optional but is not.
