@@ -7,7 +7,7 @@
  */
 ?>
 <?php global $user; ?>
-<div id="homebox" class="<?php print $classes ?>">
+<div id="homebox" class="<?php print $classes ?> clearfix">
   <?php if ($user->uid): ?>
     <div id="homebox-buttons">
       <?php if (!empty($add_links)): ?>
@@ -35,5 +35,4 @@
       </div>
     </div>
   <?php endfor; ?>
-  <div class="clear-block"></div>
 </div>
