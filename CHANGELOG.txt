@@ -7,6 +7,7 @@ CHANGELOG for Homebox for Drupal
   - #1152692 by heyrocker: Fixed Custom edit forms do not work.
   - #1202592 by setvik, slashrsm: Fixed Features export: jquery_ui() is not depencency anymore in D7.
   - Fix XSS vulnerability in homebox_og.
+  - #1289338 filter on output, validate on input.
 
 7.x-2.x-beta3 2011/02/17
   - by brianV: Remove unneeded hook_update_n() implementations for D5-D6 update.

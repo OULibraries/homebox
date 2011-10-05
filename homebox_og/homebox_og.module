@@ -25,7 +25,7 @@ function homebox_og_menu() {
     $page = homebox_get_page($name);
     if ($page) {
       $items['node/%node/' . $page->settings['path']] = array(
-        'title' => $page->settings['title'],
+        'title' => check_plain($page->settings['title']),
         'page callback' => 'homebox_build',
         'page arguments' => array($page),
         'access callback' => '_homebox_og_user_access_view_homebox',
@@ -129,7 +129,7 @@ function homebox_og_group_settings_page($form, &$form_state) {
   // Build form options
   $options = array();
   foreach ($pages as $page) {
-    $options[$page->name] = $page->settings['title'] . ' (' . $page->name . ')';
+    $options[$page->name] = check_plain($page->settings['title'] . ' (' . $page->name . ')');
   }
 
   $form['help'] = array(

@@ -506,7 +506,7 @@ function homebox_save_form_submit($form, $form_state) {
  *   A user object
  */
 function homebox_pre_build_user($page, $user) {
-  drupal_set_title($user->name);
+  drupal_set_title(t("Homebox for @user", array('@user' => $user->name));
   $output = homebox_build($page);
 
   // Only return if output is available
