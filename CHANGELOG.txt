@@ -2,7 +2,7 @@
 CHANGELOG for Homebox for Drupal
 
 7.x-2.x-dev xxxx/xx/xx
-
+  - #1236848 by catch: Fixed _homebox_check_views_block_access() looks unnecessary.
 
 7.x-2.x-beta6 2011/10/05
   - Fix another bad syntax error.
