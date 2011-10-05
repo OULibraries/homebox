@@ -65,7 +65,7 @@ function homebox_og_override_group($node) {
         // Make sure the user has permission to view the homebox
         if (_homebox_user_access_view_homebox($page)) {
           // Force group name as title
-          drupal_set_title($node->title);
+          drupal_set_title(check_plain($node->title));
           // Return the designated homebox
           return homebox_build($page);
         }
