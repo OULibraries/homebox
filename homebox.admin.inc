@@ -704,7 +704,7 @@ function homebox_configure_form($form, &$form_state, $page) {
     '#description' => t('Optionally set custom widths for each available region.
       If these values are omitted, the regions will all be the same width, set horizontally. !example
       To achieve a layout like the image to the right, you would set the column count to 4, with widths of 100, 50, 50, and 100.',
-      array('!example' => '<br/><img src="' . base_path() . drupal_get_path('module', 'homebox') . '/images/layout-example.png" alt="Layout" style="float:right;"/>'),
+      array('!example' => '<br/><img src="' . base_path() . drupal_get_path('module', 'homebox') . '/images/layout-example.png" alt="Layout" style="float:right;"/>')
     ),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
