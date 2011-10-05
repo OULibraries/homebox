@@ -123,3 +123,4 @@ CHANGELOG for Homebox for Drupal
   o Filter and validate homebox titles.
   
 6.x-3.x-dev xxxx/xx/xx
+  o Fix syntax error.
