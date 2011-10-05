@@ -51,6 +51,7 @@ function homebox_admin_page($form, &$form_state, $page = FALSE) {
     '#size' => 32,
     '#default_value' => $page ? $page->settings['title'] : '',
     '#maxlength' => 64,
+    '#required' => TRUE,
     '#prefix' => theme('advanced_help_topic', array('module' => 'homebox', 'topic' => 'new-page')),
     '#description' => t('The title of the page that will be created.'),
   );
@@ -58,10 +59,11 @@ function homebox_admin_page($form, &$form_state, $page = FALSE) {
   $form['page']['options']['path'] = array(
     '#type' => 'textfield',
     '#title' => t('Path'),
+    '#required' => TRUE,
     '#size' => 32,
     '#default_value' => $page ? $page->settings['path'] : '',
     '#maxlength' => 255,
-    '#description' => t('Optionally specify an alternative URL by which this page can be accessed. For example, type "dashboard" when creating a Dashboard page. Use a relative path and don\'t add a trailing slash or the URL alias won\'t work.'),
+    '#description' => t('Apecify a URL by which this page can be accessed. For example, type "dashboard" when creating a Dashboard page. Use a relative path and don\'t add a trailing slash or the URL alias won\'t work.'),
   );
 
   $form['page']['options']['menu'] = array(
@@ -202,7 +204,8 @@ function homebox_admin_page_validate($form, &$form_state) {
     if (empty($form_state['values']['path'])) {
       form_set_error('path', t('You must enter a path.'));
     }
-    // If so, make sure it's valid
+    
+    // Make sure it's valid
     else {
       homebox_check_path($form_state['values']['path'], $form_state['values']['name'], 'path');
     }
