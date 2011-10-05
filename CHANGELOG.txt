@@ -128,3 +128,4 @@ CHANGELOG for Homebox for Drupal
 6.x-3.x-dev xxxx/xx/xx
   o #1236848 by catch: Fixed _homebox_check_views_block_access() looks unnecessary.
   o #1287550 by vectoroc: Changed notice in homebox_prepare_block().
+  o Fix syntax error.

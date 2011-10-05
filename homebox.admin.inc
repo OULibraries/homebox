@@ -190,7 +190,7 @@ function homebox_admin_page_validate($form, &$form_state) {
   }
 
   // If no imported settings...
-  if (!$form_state['values']['import']) {
+  if (!$form_state['values']['import'] ||
     $form_state['values']['import'] == NULL) {
 
     // Validate title.
