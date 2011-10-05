@@ -12,7 +12,7 @@ function homebox_admin_page() {
   $page = homebox_get_page(arg(4));
 
   if ($page) {
-    drupal_set_title(t('Edit !title', array('!title' => $page->settings['title'])));
+    drupal_set_title(t('Edit @title', array('@title' => $page->settings['title'])));
   }
 
   if (!$page) {
@@ -52,7 +52,7 @@ function homebox_admin_page() {
     '#type' => 'textfield',
     '#title' => t('Title'),
     '#size' => 32,
-    '#default_value' => isset($page->settings['title']) ? $page->settings['title'] : '',
+    '#default_value' => check_plain(isset($page->settings['title']) ? $page->settings['title'] : ''),
     '#maxlength' => 64,
     '#prefix' => theme('advanced_help_topic', 'homebox', 'new-page'),
     '#description' => t('The title of the page that will be created.'),
@@ -191,8 +191,13 @@ function homebox_admin_page_validate($form, &$form_state) {
 
   // If no imported settings...
   if (!$form_state['values']['import']) {
-    // Filter title
-    $form_state['values']['title'] = filter_xss($form_state['values']['title']);
+    $form_state['values']['import'] == NULL) {
+
+    // Validate title.
+    $test = strip_tags($form_state['values']['title']);
+    if ($test != $form_state['values']['title']) {
+      form_set_error('title', t('Limit the title to non HTML characters.'));
+    }
 
     // Make sure a title is present
     if (!$form_state['values']['title']) {
@@ -345,7 +350,7 @@ function homebox_admin_form_to_page(&$page, $form_state) {
  * Form builder function for module settings.
  */
 function homebox_layout($page) {
-  drupal_set_title(t('!page_name layout', array('!page_name' => $page->settings['title'])));
+  drupal_set_title(t('@page_name layout', array('@page_name' => $page->settings['title'])));
 
   // Gets admin build block helper for usort function
   require_once(drupal_get_path('module', 'block') .'/block.admin.inc');
@@ -400,7 +405,7 @@ function homebox_export_form(&$form_state, $page) {
   $code .= '$homebox->settings = ' . var_export($page->settings, TRUE) . ';';
 
   $form['export'] = array(
-    '#title' => $page->name,
+    '#title' => check_plain($page->name),
     '#type' => 'textarea',
     '#rows' => 30,
     '#value' => $code,
@@ -544,7 +549,7 @@ function homebox_admin_display_form_submit($form, &$form_state) {
    */
 
   menu_rebuild();
-  drupal_set_message(t('Layout settings have been updated for !page_title.', array('!page_title' => $page->settings['title'])));
+  drupal_set_message(t('Layout settings have been updated for @page_title.', array('@page_title' => $page->settings['title'])));
   $form_state['redirect'] = 'admin/build/homebox';
 }
 
@@ -652,7 +657,7 @@ function template_preprocess_homebox_admin_display_form(&$variables) {
  *  $form
  */
 function homebox_configure_form(&$form_state, $page) {
-  drupal_set_title(t('!page_name settings', array('!page_name' => $page->settings['title'])));
+  drupal_set_title(t('@page_name settings', array('@page_name' => $page->settings['title'])));
 
   $form['columns'] = array(
     '#type' => 'select',
@@ -913,7 +918,7 @@ function homebox_user_settings_page() {
   $options = array();
   if ($pages) {
     foreach ($pages as $page) {
-      $options[$page->name] = $page->settings['title'] . ' (' . $page->name . ')';
+      $options[$page->name] = check_plain($page->settings['title'] . ' (' . $page->name . ')');
     }
   }
 

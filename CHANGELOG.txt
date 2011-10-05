@@ -120,3 +120,4 @@ CHANGELOG for Homebox for Drupal
 6.x-3.x-dev xxxx/xx/xx
   o by brianV: revert #1063928 to remove 100% width columns from the maximum-height check.
   o #946206 by rv0 | flecus: Fixed Changed the color of the block is not saved.
+  o Filter and validate homebox titles.

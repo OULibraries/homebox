@@ -31,7 +31,7 @@ function homebox_menu() {
   if (is_array($pages) && count($pages) > 0) {
     foreach ($pages as $page) {
       $items[$page->settings['path']] = array(
-        'title' => $page->settings['title'],
+        'title' => check_plain($page->settings['title']),
         'page callback' => 'homebox_build',
         'page arguments' => array($page),
         'access callback' => '_homebox_user_access_view_homebox',
@@ -39,7 +39,7 @@ function homebox_menu() {
         'type' => $page->settings['menu'] ? MENU_NORMAL_ITEM : MENU_CALLBACK,
       );
       $items[$page->settings['path'] . '/block/%'] = array(
-        'title' => $page->settings['title'],
+        'title' => check_plain($page->settings['title']),
         'page callback' => 'homebox_build_block',
         'page arguments' => array($page, count(explode('/', $page->settings['path'])) + 1),
         'access callback' => '_homebox_user_access_view_homebox',
@@ -54,7 +54,7 @@ function homebox_menu() {
     $page = homebox_get_page($name);
     if ($page) {
       $items['user/%user/' . $page->settings['path']] = array(
-        'title' => $page->settings['title'],
+        'title' => check_plain($page->settings['title']),
         'page callback' => 'homebox_pre_build_user',
         'page arguments' => array($page, 1),
         'access callback' => '_homebox_user_access_view_user_homebox',
@@ -459,7 +459,7 @@ function homebox_save_form_submit($form, $form_state) {
  *   A user object
  */
 function homebox_pre_build_user($page, $user) {
-  drupal_set_title($user->name);
+  drupal_set_title(t("Homebox for @user", array('@user' => $user->name));
   $output = homebox_build($page);
 
   // Only return if output is available
