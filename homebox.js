@@ -78,16 +78,14 @@ Drupal.behaviors.homebox = function (context) {
  * Set all column heights equal
  */
 Drupal.homebox.equalizeColumnsHeights = function () {
-  var maxHeight = 0;
+  var maxHeight = {}, row;
   Drupal.homebox.$columns.each(function () {
-    if ($(this).parent('.homebox-column-wrapper').attr('style').match(/width: 100%/i) == null) {
-      $(this).height('auto');
-      maxHeight = Math.max($(this).height(), maxHeight);
-    }
+    row = $(this).parent('.homebox-column-wrapper').attr('class').match(/homebox-row-(\d+)/i)[1];
+    $(this).height('auto');
+    maxHeight[row] = maxHeight[row] ? Math.max($(this).height(), maxHeight[row]) : $(this).height();
   }).each(function () {
-    if ($(this).parent('.homebox-column-wrapper').attr('style').match(/width: 100%/i) == null) {
-      $(this).height(maxHeight);
-    }
+    row = $(this).parent('.homebox-column-wrapper').attr('class').match(/homebox-row-(\d+)/i)[1];
+    $(this).height(maxHeight[row]);
   });
 };
 

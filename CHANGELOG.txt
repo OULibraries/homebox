@@ -132,3 +132,4 @@ CHANGELOG for Homebox for Drupal
   
 6.x-3.x-dev xxxx/xx/xx
   o #1175786 by brianV: Fixed Path claims to be optional but is not.
+  o #955072 by almaudoh: Make Homebox only equalize heights of columns within the same row.
