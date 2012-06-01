@@ -378,8 +378,17 @@ function homebox_build($page) {
   }
 
   // Sort each region/column based on key value
+  // Also separate the regions into rows based on the region widths
+  $sum_width = 0;
+  $row = 0;
   for ($i = 1; $i <= count($regions); $i++) {
     ksort($regions[$i]);
+    $sum_width += $page->settings['widths'][$i];
+    if ($sum_width > 100) {
+      $row++;
+      $sum_width = 0;
+    }
+    $page->settings['rows'][$i] = $row;
   }
 
   // Add block links
