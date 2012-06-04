@@ -6,7 +6,7 @@
  * Default theme implementation each homebox block.
  */
 ?>
-<div id="homebox-block-<?php print $block->key; ?>" class="<?php print $block->homebox_classes ?> clear-block block block-<?php print $block->module ?>">
+<div id="homebox-block-<?php print $block->key; ?>" class="<?php print $block->homebox_classes ?> clearfix block block-<?php print $block->module ?>">
   <div class="homebox-portlet-inner">
     <h3 class="portlet-header">
       <?php if ($block->closable): ?>
@@ -21,7 +21,7 @@
     </h3>
     <div class="portlet-config">
       <?php if ($page->settings['color']): ?>
-        <div class="clear-block"><div class="homebox-colors">
+        <div class="clearfix"><div class="homebox-colors">
           <span class="homebox-color-message"><?php print t('Select a color') . ':'; ?></span>
           <?php for ($i=0; $i < HOMEBOX_NUMBER_OF_COLOURS; $i++): ?>
             <span class="homebox-color-selector" style="background-color: <?php print $page->settings['colors'][$i] ?>;">&nbsp;</span>

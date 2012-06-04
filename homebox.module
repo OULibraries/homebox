@@ -395,7 +395,7 @@ function homebox_build($page) {
       }
     }
     $add_links['restore'] = l(t('Restore to defaults'), 'homebox/' . $page->name . '/restore', array('attributes' => array('class' => 'restore')));
-    $add_links = theme('item_list', array('items' => $add_links, 'title' => NULL, 'type' => 'ul', 'attributes' => array('class' => 'clear-block')));
+    $add_links = theme('item_list', array('items' => $add_links, 'title' => NULL, 'type' => 'ul', 'attributes' => array('class' => 'clearfix')));
 
     $form = drupal_get_form('homebox_save_form', $page);
     $save_form = drupal_render($form);
@@ -694,7 +694,7 @@ function homebox_get_cache_id($page, $block) {
 function homebox_block_edit_form_builder($form, &$form_state, $page, $block) {
   $form = module_invoke($block->module, 'homebox_block_edit_form', $block);
 
-  $form['#attributes']['class'] = 'clear-block';
+  $form['#attributes']['class'] = 'clearfix';
   $form['save'] = array(
     '#type' => 'submit',
     '#id' => 'save-' . $block->key,
