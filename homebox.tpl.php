@@ -23,7 +23,7 @@
 
   <div class="homebox-maximized"></div>
   <?php for ($i = 1; $i <= count($regions); $i++): ?>
-    <div class="homebox-column-wrapper homebox-column-wrapper-<?php print $i; ?>"<?php print $page->settings['widths'][$i] ? ' style="width: ' . $page->settings['widths'][$i] . '%;"' : ''; ?>>
+    <div class="homebox-column-wrapper homebox-column-wrapper-<?php print $i; ?> homebox-row-<?php print $page->settings['rows'][$i]; ?>"<?php print $page->settings['widths'][$i] ? ' style="width: ' . $page->settings['widths'][$i] . '%;"' : ''; ?>>
       <div class="homebox-column" id="homebox-column-<?php print $i; ?>">
         <?php foreach ($regions[$i] as $key => $weight): ?>
           <?php foreach ($weight as $block): ?>
