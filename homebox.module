@@ -288,8 +288,6 @@ function template_preprocess_homebox(&$variables) {
   drupal_add_css($module_path . '/homebox.css', array('type' => 'file', 'group' => CSS_DEFAULT, 'media' => 'all', 'preprocess' => TRUE));
   drupal_add_css($module_path . '/includes/tipsy/tipsy.css', array('type' => 'file', 'group' => CSS_DEFAULT, 'media' => 'all', 'preprocess' => TRUE));
 
-
-  $variables['classes_array'][] = 'column-count-' . $variables['column_count'];
   $variables['classes_array'][] = 'homebox-' . $variables['page']->name;
 
   if (isset($variables['page']->settings['auto_save']) && $variables['page']->settings['auto_save']) {
