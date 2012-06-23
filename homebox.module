@@ -1498,6 +1498,8 @@ function _homebox_save_user_settings($page, $blocks) {
  *   A homebox page object.
  */
 function homebox_restore_defaults($form, &$form_state, $page) {
+  global $user;
+
   $form = array();
 
   $form['page'] = array(
@@ -1505,7 +1507,7 @@ function homebox_restore_defaults($form, &$form_state, $page) {
     '#value' => $page->name,
   );
 
-  return confirm_form($form, t('Restore %title to defaults?', array('%title' => $page->settings['title'])), homebox_get_path($page));
+  return confirm_form($form, t('Restore %title to defaults?', array('%title' => t($page->settings['title'], array('@user' => $user->name)))), homebox_get_path($page));
 }
 
 /**
