@@ -40,10 +40,10 @@
 
         // Populate hidden form element with block order and values.
         Drupal.homebox.$pageSave.mousedown(function () {
-          var blocks = {};
-          Drupal.homebox.$columns.each(function (colIndex) {
-            // Determine region
-            colIndex = colIndex + 1;
+          var blocks = {}, regionIndex;
+          Drupal.homebox.$columns.each(function () {
+            // Determine region out of column-id.
+            regionIndex = $(this).attr('id').replace(/homebox-column-/, '');
             $(this).find('.homebox-portlet').each(function (boxIndex) {
               var $this = $(this),
                 color = 'default';
@@ -57,7 +57,7 @@
 
               // Build blocks object
               blocks[$this.attr('id').replace(/^homebox-block-/, '')] = $.param({
-                region: colIndex,
+                region: regionIndex,
                 status: $this.is(':visible') ? 1 : 0,
                 color: color,
                 open: $this.find('.portlet-content').is(':visible') ? 1 : 0
