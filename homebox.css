@@ -168,8 +168,6 @@ div.homebox-colors {
 }
 #homebox-add a {
   display: block;
-  width: 130px;
-  height: 40px;
   background: #f4f4f4 url("images/stripe.png");
   padding: 5px;
   overflow: hidden;
