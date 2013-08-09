@@ -1457,12 +1457,13 @@ function _homebox_save_user_settings($page, $blocks) {
     // Add weights to blocks
     $blocks[$key]['weight'] = ++$i;
 
-    // Carry over existing settings
+    // Carry over existing settings for defined blocks
     if (isset($page->settings['blocks'][$key])) {
-      $blocks[$key] = homebox_merge_settings($page->settings['blocks'][$key], $blocks[$key]);
+      $blocks[$key] = array_merge($page->settings['blocks'][$key], $blocks[$key]);
     }
+    // Carry over settings for block copies since these do not get merged above
     if ($user_blocks !== FALSE && isset($user_blocks[$key])) {
-      $blocks[$key] = homebox_merge_settings($user_blocks[$key], $blocks[$key]);
+      $blocks[$key] = array_merge($user_blocks[$key], $blocks[$key]);
     }
   }
   if ($user_blocks !== FALSE) {
