@@ -714,7 +714,7 @@ function homebox_get_cache_id($page, $block) {
 function homebox_block_edit_form_builder($form, &$form_state, $page, $block) {
   $form = module_invoke($block->module, 'homebox_block_edit_form', $block);
 
-  $form['#attributes']['class'] = 'clearfix';
+  $form['#attributes']['class'][] = 'clearfix';
   $form['save'] = array(
     '#type' => 'submit',
     '#id' => 'save-' . $block->key,
