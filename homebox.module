@@ -1301,7 +1301,7 @@ function homebox_add_block($page, $module, $delta) {
 
   _homebox_save_user_settings($page, $user_blocks);
 
-  drupal_goto(homebox_get_path($page));
+  $form_state['redirect'] = homebox_get_path($page);
 }
 
 /**
