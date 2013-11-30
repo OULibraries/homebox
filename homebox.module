@@ -112,6 +112,18 @@ function homebox_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('homebox_admin_page', 4),
     'access arguments' => array('administer homebox'),
+    'title callback' => '_homebox_admin_page_title',
+    'title arguments' => array(4),
+    'type' => MENU_CALLBACK,
+    'file' => 'homebox.admin.inc',
+  );
+  $items['admin/structure/homebox/clone/%homebox'] = array(
+    'title' => 'Clone homebox',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('homebox_clone_page', 4),
+    'access arguments' => array('administer homebox'),
+    'title callback' => '_homebox_clone_page_title',
+    'title arguments' => array(4),
     'type' => MENU_CALLBACK,
     'file' => 'homebox.admin.inc',
   );
@@ -1055,8 +1067,8 @@ function homebox_check_path($path, $name = NULL, $element = NULL) {
 /**
  * Validation helper to check a page object
  *
- * @param $data
- *   A page object either in the form of imported PHP code or an actual object
+ * @param $homebox
+ *   A page object.
  * @param $name
  *   Optionally specify and override the machine name of the page
  * @param $element
@@ -1064,20 +1076,7 @@ function homebox_check_path($path, $name = NULL, $element = NULL) {
  * @return
  *   A complete page object, or FALSE if data was invalid
  */
-function homebox_check_page_object($data, $name = NULL, $element = NULL) {
-  $homebox = '';
-
-  if (!is_object($data)) {
-    // Evaluate the imported object
-    ob_start();
-    eval($data);
-    ob_end_clean();
-  }
-  else {
-    // Not importing - just use $data
-    $homebox = $data;
-  }
-
+function homebox_check_page_object($homebox, $name = NULL, $element = NULL) {
   // Whether or not the import is valid
   $status = TRUE;
 
@@ -1616,5 +1615,29 @@ function homebox_page_alter(&$page) {
   // If the custom attribute is present, hide the blocks.
   if (isset($page['#homebox_hide_blocks'])) {
     unset($page['sidebar_first'], $page['sidebar_second']);
+  }
+}
+
+/**
+ * Title callback for homebox admin page.
+ */
+function _homebox_admin_page_title($page = FALSE) {
+  if ($page) {
+    return t('Edit @title', array('@title' => $page->settings['title']));
+  }
+  else {
+    return t('Edit homebox');
+  }
+}
+
+/**
+ * Title callback for homebox admin page.
+ */
+function _homebox_clone_page_title($page = FALSE) {
+  if ($page) {
+    return t('Clone @title', array('@title' => $page->settings['title']));
+  }
+  else {
+    return t('Clone homebox');
   }
 }
