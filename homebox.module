@@ -1300,8 +1300,7 @@ function homebox_add_block($page, $module, $delta) {
   $user_blocks = array_merge(array($key => $block), $user_blocks);
 
   _homebox_save_user_settings($page, $user_blocks);
-
-  $form_state['redirect'] = homebox_get_path($page);
+  drupal_goto(homebox_get_path($page));
 }
 
 /**
@@ -1525,7 +1524,7 @@ function homebox_restore_defaults_submit($form, &$form_state) {
     ->execute();
 
   $page = homebox_load($form_state['values']['page']);
-  drupal_goto(homebox_get_path($page));
+  $form_state['redirect'] = homebox_get_path($page);
 }
 
 /**
