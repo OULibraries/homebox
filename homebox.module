@@ -389,6 +389,16 @@ function homebox_build($page) {
     }
   }
 
+  // If custom widths aren't set, make each width a percentage of the total available.
+  if (!count($page->settings['widths'])) {
+    $num_regions = count($regions);
+    for ($i = 1; $i <= $num_regions; $i++) {
+      // We use a combination of round() and floor() to get this rounded to two decimal places
+      // since the $mode argument isn't introducted into round() until PHP 5.3.0.
+      $page->settings['widths'][$i] = round(floor((100 / $num_regions) * 100) / 100, 2);
+    }
+  }
+
   // Sort each region/column based on key value
   // Also separate the regions into rows based on the region widths
   $sum_width = 0;
@@ -424,16 +434,6 @@ function homebox_build($page) {
   else {
     $add_links = NULL;
     $save_form = NULL;
-  }
-
-  // If custom widths aren't set, make each width a percentage of the total available.
-  if (!count($page->settings['widths'])) {
-    $num_regions = count($regions);
-    for ($i = 1; $i <= $num_regions; $i++) {
-      // We use a combination of round() and floor() to get this rounded to two decimal places
-      // since the $mode argument isn't introducted into round() until PHP 5.3.0.
-      $page->settings['widths'][$i] = round(floor((100 / $num_regions) * 100) / 100, 2);
-    }
   }
 
   // Build output
