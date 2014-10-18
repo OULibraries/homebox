@@ -398,7 +398,7 @@ function homebox_build($page) {
     $sum_width += $page->settings['widths'][$i];
     if ($sum_width > 100) {
       $row++;
-      $sum_width = 0;
+      $sum_width = $page->settings['widths'][$i];
     }
     $page->settings['rows'][$i] = $row;
   }
