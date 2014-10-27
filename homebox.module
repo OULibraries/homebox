@@ -1363,12 +1363,10 @@ function homebox_flush_settings($page) {
  * Retrieve an array of all available pages either in the
  * database or by hook_homebox()
  *
- * @param $api
- *   Whether or not to invoke other modules for pages
  * @return
  *   An array of page objects
  */
-function homebox_pages($api = TRUE) {
+function homebox_pages() {
   $pages = array();
 
   // Fetch all available pages from database
@@ -1380,18 +1378,16 @@ function homebox_pages($api = TRUE) {
   }
 
   // Fetch all available pages from API
-  if ($api) {
-    $result = module_invoke_all('homebox');
-    foreach ($result as $name => $data) {
-      // Build page object
-      $page = new stdClass;
-      $page->name = $name;
-      $page->settings = $data;
+  $result = module_invoke_all('homebox');
+  foreach ($result as $name => $data) {
+    // Build page object
+    $page = new stdClass;
+    $page->name = $name;
+    $page->settings = $data;
 
-      // Check the data before using it
-      if ($page = homebox_check_page_object($page)) {
-        $pages[] = $page;
-      }
+    // Check the data before using it
+    if ($page = homebox_check_page_object($page)) {
+      $pages[] = $page;
     }
   }
 
