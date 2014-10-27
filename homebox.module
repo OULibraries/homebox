@@ -352,13 +352,15 @@ function homebox_build($page) {
   $allowed_blocks = array();
   $info = array();
   foreach ($blocks as $block) {
-    if (!isset($info[$block['module']])) {
-      $info[$block['module']] = module_invoke($block['module'], 'block_info');
-    }
-    if (isset($info[$block['module']][$block['delta']])) {
-      $allowed_blocks[$block['module']][$block['delta']] = $info[$block['module']][$block['delta']];
-      if (!empty($block['title'])) {
-        $allowed_blocks[$block['module']][$block['delta']]['info'] = $block['title'];
+    if (_homebox_can_view_block((object) $block)) {
+      if (!isset($info[$block['module']])) {
+        $info[$block['module']] = module_invoke($block['module'], 'block_info');
+      }
+      if (isset($info[$block['module']][$block['delta']])) {
+        $allowed_blocks[$block['module']][$block['delta']] = $info[$block['module']][$block['delta']];
+        if (!empty($block['title'])) {
+          $allowed_blocks[$block['module']][$block['delta']]['info'] = $block['title'];
+        }
       }
     }
   }
