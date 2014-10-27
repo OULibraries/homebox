@@ -312,7 +312,7 @@ function homebox_admin_page_delete_confirm($form, &$form_state, $page) {
   $form['#operation'] = homebox_page_is_api($page->name) ? t('revert') : t('delete');
   $form['#page'] = $page;
 
-  $caption .= '<p>' . t('This action cannot be undone.') . '</p>';
+  $caption = '<p>' . t('This action cannot be undone.') . '</p>';
   return confirm_form($form, t('Are you sure you want to !operation homebox page %title?', array('!operation' => $form['#operation'], '%title' => $page->settings['title'])), 'admin/structure/homebox', $caption, ucfirst($form['#operation']));
 }
 
