@@ -568,7 +568,10 @@ function homebox_prepare_block($block_key, $page) {
   $block = new stdClass;
 
   // Get the edit form early, in case it changes the block.
-  if (module_hook($block_settings['module'], 'homebox_block_edit_form')) {
+  // Before retrieving the full form from drupal_get_form(), ensure the block is
+  // configurable. Just checking for the form hook implementation isn't
+  // sufficient since one module may provide more than one block.
+  if (module_hook($block_settings['module'], 'homebox_block_edit_form') && module_invoke($block_settings['module'], 'homebox_block_keys', (object) $block_settings)) {
     $get_form = drupal_get_form('homebox_block_edit_' . $block_settings['module'] . '_' . $block_settings['delta'] . '_form', $page, (object) $block_settings);
     $block->edit_form = drupal_render($get_form);
     // Prepend messages the form may have generated.
