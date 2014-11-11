@@ -407,10 +407,12 @@ function homebox_build($page) {
   $row = 0;
   for ($i = 1; $i <= count($regions); $i++) {
     ksort($regions[$i]);
-    $sum_width += $page->settings['widths'][$i];
-    if ($sum_width > 100) {
-      $row++;
-      $sum_width = $page->settings['widths'][$i];
+    if (!empty($page->settings['widths'][$i])) {
+      $sum_width += $page->settings['widths'][$i];
+      if ($sum_width > 100) {
+        $row++;
+        $sum_width = $page->settings['widths'][$i];
+      }
     }
     $page->settings['rows'][$i] = $row;
   }
