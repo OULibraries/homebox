@@ -13,7 +13,9 @@
         //  return c.match(/^homebox-(?!processed)/);
         //})[0].replace(/^homebox-/, '');
         Drupal.homebox.$page = $homebox;
-        Drupal.homebox.$pageSave = $homebox.find('#homebox-save-form input[type=submit]');
+
+        // Try to find the button to save homebox state.
+        Drupal.homebox.$pageSave = $homebox.find('#homebox-save-form [type=submit]');
 
         // Equilize columns height
         Drupal.homebox.equalizeColumnsHeights();
