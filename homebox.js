@@ -9,9 +9,6 @@
       if ($homebox.length > 0) {
         // Find all columns
         Drupal.homebox.$columns = $homebox.find('div.homebox-column');
-        //Drupal.homebox.name = $.grep($homebox.attr('class').split(' '), function (c) {
-        //  return c.match(/^homebox-(?!processed)/);
-        //})[0].replace(/^homebox-/, '');
         Drupal.homebox.$page = $homebox;
 
         // Try to find the button to save homebox state.
